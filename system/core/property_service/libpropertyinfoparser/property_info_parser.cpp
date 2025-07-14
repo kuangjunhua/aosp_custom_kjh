@@ -197,6 +197,7 @@ bool PropertyInfoAreaFile::LoadDefaultPath() {
 }
 
 bool PropertyInfoAreaFile::LoadPath(const char* filename) {
+  // 打开文件
   int fd = open(filename, O_CLOEXEC | O_NOFOLLOW | O_RDONLY);
 
   struct stat fd_stat;
@@ -212,8 +213,10 @@ bool PropertyInfoAreaFile::LoadPath(const char* filename) {
     return false;
   }
 
+  // 获取大小
   auto mmap_size = fd_stat.st_size;
 
+  // mmap操作
   void* map_result = mmap(nullptr, mmap_size, PROT_READ, MAP_SHARED, fd, 0);
   if (map_result == MAP_FAILED) {
     close(fd);
@@ -229,6 +232,7 @@ bool PropertyInfoAreaFile::LoadPath(const char* filename) {
   }
 
   close(fd);
+  // 保存指针和大小，后续直接操作，速度更快
   mmap_base_ = map_result;
   mmap_size_ = mmap_size;
   return true;

@@ -1003,6 +1003,8 @@ int SecondStageMain(int argc, char** argv) {
 
     InstallSignalFdHandler(&epoll);
     InstallInitNotifier(&epoll);
+
+    // 启动属性服务
     StartPropertyService(&property_fd);
 
     // Make the time that init stages started available for bootstat to log.

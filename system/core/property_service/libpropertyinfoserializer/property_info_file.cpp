@@ -110,6 +110,7 @@ void ParsePropertyInfoFile(const std::string& file_contents, bool require_prefix
   // their results concatenated.
   errors->clear();
 
+  // 每次读取一行
   for (const auto& line : Split(file_contents, "\n")) {
     auto trimmed_line = Trim(line);
     if (trimmed_line.empty() || StartsWith(trimmed_line, "#")) {
@@ -118,12 +119,14 @@ void ParsePropertyInfoFile(const std::string& file_contents, bool require_prefix
 
     auto property_info_entry = PropertyInfoEntry{};
     auto parse_error = std::string{};
+    // 逐行解析，结果存放到property_info_entry
     if (!ParsePropertyInfoLine(trimmed_line, require_prefix_or_exact, &property_info_entry,
                                &parse_error)) {
       errors->emplace_back(parse_error);
       continue;
     }
 
+    // 将解析的结果存放到property_infos
     property_infos->emplace_back(property_info_entry);
   }
 }

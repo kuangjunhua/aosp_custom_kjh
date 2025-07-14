@@ -152,6 +152,7 @@ static inline bool IsDtVbmetaCompatible(const Fstab& fstab) {
 
 static Result<Fstab> ReadFirstStageFstab() {
     Fstab fstab;
+    // qaz init firststage 先从dt设备树中读取分区
     if (!ReadFstabFromDt(&fstab)) {
         if (ReadDefaultFstab(&fstab)) {
             fstab.erase(std::remove_if(fstab.begin(), fstab.end(),
@@ -163,6 +164,7 @@ static Result<Fstab> ReadFirstStageFstab() {
             return Error() << "failed to read default fstab for first stage mount";
         }
     }
+    // qaz init firststage 返回读取到的fstab分区信息（分区，挂载点，type, 挂载参数等） 
     return fstab;
 }
 
@@ -225,6 +227,7 @@ FirstStageMount::FirstStageMount(Fstab fstab) : need_dm_verity_(false), fstab_(s
 }
 
 Result<std::unique_ptr<FirstStageMount>> FirstStageMount::Create() {
+    // qaz
     auto fstab = ReadFirstStageFstab();
     if (!fstab.ok()) {
         return fstab.error();
@@ -797,11 +800,13 @@ bool FirstStageMountVBootV2::InitAvbHandle() {
 // ----------------
 // Creates devices and logical partitions from storage devices
 bool DoCreateDevices() {
+    // qaz init firststage 在存储设备中创建设备与逻辑分区， fsm就是分区表对象
     auto fsm = FirstStageMount::Create();
     if (!fsm.ok()) {
         LOG(ERROR) << "Failed to create FirstStageMount: " << fsm.error();
         return false;
     }
+    // qaz init firststage 开始利用分区表创建设备：FirstStageMount::DoCreateDevices
     return (*fsm)->DoCreateDevices();
 }
 

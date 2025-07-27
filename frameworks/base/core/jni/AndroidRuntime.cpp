@@ -1233,19 +1233,19 @@ void AndroidRuntime::start(const char* className, const Vector<String8>& options
     //const char* kernelHack = getenv("LD_ASSUME_KERNEL");
     //ALOGD("Found LD_ASSUME_KERNEL='%s'\n", kernelHack);
 
-    /* start the virtual machine */
-    JniInvocation jni_invocation;
-    jni_invocation.Init(NULL);
+    /* start the virtual machine, 启动Jni的一些环境 */ 
+    JniInvocation jni_invocation; 
+    jni_invocation.Init(NULL); // 帮助JVM启动接口，一些初始化的动作：1.寻找libart.so(Java虚拟机需要的一些库)并加载进来. 2. 在so里面拿到几个重要的API，把这些API赋给jni_invocation，后续jni_invocation可以使用这些API（函数）
     JNIEnv* env;
-    if (startVm(&mJavaVM, &env, zygote, primary_zygote) != 0) {
+    if (startVm(&mJavaVM, &env, zygote, primary_zygote) != 0) { // 启动虚拟机 1.启动Vm(虚拟机)，拿到一个JVM的实例 2. 意味着有了Java的环境->有了Jni的环境，在Jni层里面执行一些函数
         return;
     }
-    onVmCreated(env);
+    onVmCreated(env); // AndroidRuntim子类AppRuntime重写的一个函数
 
     /*
      * Register android functions.
      */
-    if (startReg(env) < 0) {
+    if (startReg(env) < 0) { // 注册安卓的一些function(非常非常重要)，包括了Jni层,就是 Native C++ API 绑定到Java层的一些注册接口（Java层和C++层互通，实现两层互相调用）
         ALOGE("Unable to register all android natives\n");
         return;
     }
@@ -1266,7 +1266,7 @@ void AndroidRuntime::start(const char* className, const Vector<String8>& options
     classNameStr = env->NewStringUTF(className);
     assert(classNameStr != NULL);
     env->SetObjectArrayElement(strArray, 0, classNameStr);
-
+    // 用Jni的一些接口把C++的参数转换成Java参数
     for (size_t i = 0; i < options.size(); ++i) {
         jstring optionsStr = env->NewStringUTF(options.itemAt(i).string());
         assert(optionsStr != NULL);
@@ -1276,20 +1276,20 @@ void AndroidRuntime::start(const char* className, const Vector<String8>& options
     /*
      * Start VM.  This thread becomes the main thread of the VM, and will
      * not return until the VM exits.
-     */
+     */ // c++传递的是com.android.internal.os.ZygoteInit，要转换成com/android.internal/os/ZygoteInit
     char* slashClassName = toSlashClassName(className != NULL ? className : "");
     jclass startClass = env->FindClass(slashClassName);
     if (startClass == NULL) {
         ALOGE("JavaVM unable to locate class '%s'\n", slashClassName);
         /* keep going */
     } else {
-        jmethodID startMeth = env->GetStaticMethodID(startClass, "main",
+        jmethodID startMeth = env->GetStaticMethodID(startClass, "main", // 拿到类对应的main方法
             "([Ljava/lang/String;)V");
         if (startMeth == NULL) {
             ALOGE("JavaVM unable to find main() in '%s'\n", className);
             /* keep going */
         } else {
-            env->CallStaticVoidMethod(startClass, startMeth, strArray);
+            env->CallStaticVoidMethod(startClass, startMeth, strArray); // 调用这个main方法，参数：类 main方法 参数。这个接口调用完就正式进入ZygoteInit这个进程
 
 #if 0
             if (env->ExceptionCheck())
@@ -1685,7 +1685,7 @@ static const RegJNIRec gRegJNI[] = {
      * and never released.  Use Push/Pop to manage the storage.
      */
     env->PushLocalFrame(200);
-
+    // 注册Jni的一些处理函数
     if (register_jni_procs(gRegJNI, NELEM(gRegJNI), env) < 0) {
         env->PopLocalFrame(NULL);
         return -1;

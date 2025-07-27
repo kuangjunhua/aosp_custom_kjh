@@ -1757,8 +1757,9 @@ static void SpecializeCommon(JNIEnv* env, uid_t uid, gid_t gid, jintArray gids, 
                              bool mount_storage_dirs) {
     const char* process_name = is_system_server ? "system_server" : "zygote";
     auto fail_fn = std::bind(ZygoteFailure, env, process_name, managed_nice_name, _1);
+    // 将process_name, managed_nice_name参数写死到ExtractJString中作为第一、二个参数，ExtractJString的第三个参数在extract_fn(managed_se_info)中传入
     auto extract_fn = std::bind(ExtractJString, env, process_name, managed_nice_name, _1);
-
+    // 调用和得到C++类型的参数
     auto se_info = extract_fn(managed_se_info);
     auto nice_name = extract_fn(managed_nice_name);
     auto instruction_set = extract_fn(managed_instruction_set);
@@ -1771,7 +1772,7 @@ static void SpecializeCommon(JNIEnv* env, uid_t uid, gid_t gid, jintArray gids, 
 
     SetInheritable(permitted_capabilities, fail_fn);
 
-    DropCapabilitiesBoundingSet(fail_fn);
+    DropCapabilitiesBoundingSet(fail_fn); // 移除一些权限级
 
     bool need_pre_initialize_native_bridge = !is_system_server && instruction_set.has_value() &&
             android::NativeBridgeAvailable() &&
@@ -1787,7 +1788,7 @@ static void SpecializeCommon(JNIEnv* env, uid_t uid, gid_t gid, jintArray gids, 
 
     // Isolate app data, jit profile and sandbox data directories by overlaying a tmpfs on those
     // dirs and bind mount all related packages separately.
-    if (mount_data_dirs) {
+    if (mount_data_dirs) { // 做一些数据隔离的操作
         // Sdk sandbox data isolation does not need to occur for app processes since sepolicy
         // prevents access to sandbox data anyway.
         appid_t appId = multiuser_get_app_id(uid);
@@ -1829,7 +1830,7 @@ static void SpecializeCommon(JNIEnv* env, uid_t uid, gid_t gid, jintArray gids, 
                                                                     : nullptr,
                                            instruction_set.value().c_str());
     }
-
+    // 调一些静态方法（C++环境调用了Java的一些代码）
     if (is_system_server && !(runtime_flags & RuntimeFlags::PROFILE_SYSTEM_SERVER)) {
         // Prefetch the classloader for the system server. This is done early to
         // allow a tie-down of the proper system server selinux domain.

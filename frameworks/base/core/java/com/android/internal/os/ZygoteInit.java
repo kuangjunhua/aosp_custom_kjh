@@ -858,6 +858,7 @@ public class ZygoteInit {
 
         // Mark zygote start. This ensures that thread creation will throw
         // an error.
+        // 限制创建线程，避免出现资源竞争等问题
         ZygoteHooks.startZygoteNoThreadCreation();
 
         // Zygote goes into its own process group.
@@ -875,6 +876,7 @@ public class ZygoteInit {
                     SystemProperties.get("sys.boot_completed"));
 
             String bootTimeTag = Process.is64Bit() ? "Zygote64Timing" : "Zygote32Timing";
+            // 用于检测时序
             TimingsTraceLog bootTimingsTraceLog = new TimingsTraceLog(bootTimeTag,
                     Trace.TRACE_TAG_DALVIK);
             bootTimingsTraceLog.traceBegin("ZygoteInit");

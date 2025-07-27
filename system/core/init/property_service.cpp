@@ -134,7 +134,7 @@ static int PropertyAuditCallback(void* data, security_class_t /*cls*/, char* buf
         LOG(ERROR) << "AuditCallback invoked with null data arguments!";
         return 0;
     }
-
+    // 打印属性selinux需要用到的一些东西
     snprintf(buf, len, "property=%s pid=%d uid=%d gid=%d", d->name, d->cr->pid, d->cr->uid,
              d->cr->gid);
     return 0;
@@ -384,26 +384,31 @@ static std::optional<uint32_t> PropertySet(const std::string& name, const std::s
                                            SocketConnection* socket, std::string* error) {
     size_t valuelen = value.size();
 
+    // 非法属性名称判断
     if (!IsLegalPropertyName(name)) {
         *error = "Illegal property name";
         return {PROP_ERROR_INVALID_NAME};
     }
 
+    // 非法属性值判断：主要是长度是否合法
     if (auto result = IsLegalPropertyValue(name, value); !result.ok()) {
         *error = result.error().message();
         return {PROP_ERROR_INVALID_VALUE};
     }
 
+    // 属性查找是否已经存在
     prop_info* pi = (prop_info*)__system_property_find(name.c_str());
     if (pi != nullptr) {
+        // 如果是只读的，不能设置直接返回
         // ro.* properties are actually "write-once".
         if (StartsWith(name, "ro.")) {
             *error = "Read-only property was already set";
             return {PROP_ERROR_READ_ONLY_PROPERTY};
         }
-
+        // 否则的话可以更新属性
         __system_property_update(pi, value.c_str(), valuelen);
     } else {
+        // 属性不存在，则添加
         int rc = __system_property_add(name.c_str(), name.size(), value.c_str(), valuelen);
         if (rc < 0) {
             *error = "__system_property_add failed";
@@ -411,16 +416,20 @@ static std::optional<uint32_t> PropertySet(const std::string& name, const std::s
         }
     }
 
+    // 如果是persist.开头的，进行特殊处理
     // Don't write properties to disk until after we have read all default
     // properties to prevent them from being overwritten by default values.
     if (socket && persistent_properties_loaded && StartsWith(name, "persist.")) {
         if (persist_write_thread) {
+            // 如果有异步persist线程的话，这里调用给线程发消息
             persist_write_thread->Write(name, value, std::move(*socket));
             return {};
         }
+        // 这个是同步操作，如果没有异步线程的话
         WritePersistentProperty(name, value);
     }
 
+    // 通知属性变化
     NotifyPropertyChange(name, value);
     return {PROP_SUCCESS};
 }
@@ -582,6 +591,7 @@ uint32_t HandlePropertySetNoSocket(const std::string& name, const std::string& v
 static void handle_property_set_fd() {
     static constexpr uint32_t kDefaultSocketTimeout = 2000; /* ms */
 
+    // 接收来自一个客户端的链接
     int s = accept4(property_set_fd, nullptr, nullptr, SOCK_CLOEXEC);
     if (s == -1) {
         return;
@@ -599,17 +609,20 @@ static void handle_property_set_fd() {
     uint32_t timeout_ms = kDefaultSocketTimeout;
 
     uint32_t cmd = 0;
+    // 接收cmd
     if (!socket.RecvUint32(&cmd, &timeout_ms)) {
         PLOG(ERROR) << "sys_prop: error while reading command from the socket";
         socket.SendUint32(PROP_ERROR_READ_CMD);
         return;
     }
 
+    // 处理cmd的类型
     switch (cmd) {
     case PROP_MSG_SETPROP: {
         char prop_name[PROP_NAME_MAX];
         char prop_value[PROP_VALUE_MAX];
 
+        // 接收name及value
         if (!socket.RecvChars(prop_name, PROP_NAME_MAX, &timeout_ms) ||
             !socket.RecvChars(prop_value, PROP_VALUE_MAX, &timeout_ms)) {
           PLOG(ERROR) << "sys_prop(PROP_MSG_SETPROP): error while reading name/value from the socket";
@@ -619,6 +632,7 @@ static void handle_property_set_fd() {
         prop_name[PROP_NAME_MAX-1] = 0;
         prop_value[PROP_VALUE_MAX-1] = 0;
 
+        // 获取上下文
         std::string source_context;
         if (!socket.GetSourceContext(&source_context)) {
             PLOG(ERROR) << "Unable to set property '" << prop_name << "': getpeercon() failed";
@@ -627,6 +641,7 @@ static void handle_property_set_fd() {
 
         const auto& cr = socket.cred();
         std::string error;
+        // 调用Handler处理
         auto result = HandlePropertySetNoSocket(prop_name, prop_value, source_context, cr, &error);
         if (result != PROP_SUCCESS) {
             LOG(ERROR) << "Unable to set property '" << prop_name << "' from uid:" << cr.uid
@@ -1119,6 +1134,7 @@ void PropertyLoadBootDefaults() {
     // property files, regardless of if they are "ro." properties or not.
     std::map<std::string, std::string> properties;
 
+    // 是否是恢复模式
     if (IsRecoveryMode()) {
         if (auto res = load_properties_from_file("/prop.default", nullptr, &properties);
             !res.ok()) {
@@ -1129,6 +1145,8 @@ void PropertyLoadBootDefaults() {
     // /<part>/etc/build.prop is the canonical location of the build-time properties since S.
     // Falling back to /<part>/defalt.prop and /<part>/build.prop only when legacy path has to
     // be supported, which is controlled by the support_legacy_path_until argument.
+    
+    // 从分区读取属性
     const auto load_properties_from_partition = [&properties](const std::string& partition,
                                                               int support_legacy_path_until) {
         auto path = "/" + partition + "/etc/build.prop";
@@ -1219,6 +1237,7 @@ void PropertyLoadBootDefaults() {
 bool LoadPropertyInfoFromFile(const std::string& filename,
                               std::vector<PropertyInfoEntry>* property_infos) {
     auto file_contents = std::string();
+    // 读取属性上下文文件
     if (!ReadFileToString(filename, &file_contents)) {
         PLOG(ERROR) << "Could not read properties from '" << filename << "'";
         return false;
@@ -1226,6 +1245,7 @@ bool LoadPropertyInfoFromFile(const std::string& filename,
 
     auto errors = std::vector<std::string>{};
     bool require_prefix_or_exact = SelinuxGetVendorAndroidVersion() >= __ANDROID_API_R__;
+    // 解析属性信息文件到property_infos
     ParsePropertyInfoFile(file_contents, require_prefix_or_exact, property_infos, &errors);
     // Individual parsing errors are reported but do not cause a failed boot, which is what
     // returning false would do here.
@@ -1235,10 +1255,15 @@ bool LoadPropertyInfoFromFile(const std::string& filename,
 
     return true;
 }
-
+/**
+ * 获取不同分区及不同目录下的属性上下文文件并加载到property_infos
+ * 
+ */
 void CreateSerializedPropertyInfo() {
     auto property_infos = std::vector<PropertyInfoEntry>();
+    // 判断这个文件是否存在：-1表示不存在
     if (access("/system/etc/selinux/plat_property_contexts", R_OK) != -1) {
+        // 加载属性信息到property_infos
         if (!LoadPropertyInfoFromFile("/system/etc/selinux/plat_property_contexts",
                                       &property_infos)) {
             return;
@@ -1274,7 +1299,7 @@ void CreateSerializedPropertyInfo() {
         LoadPropertyInfoFromFile("/odm_property_contexts", &property_infos);
         LoadPropertyInfoFromFile("/dev/selinux/apex_property_contexts", &property_infos);
     }
-
+    // 到此property_infos存放着许多items,每个item是PropertyInfoEntry
     auto serialized_contexts = std::string();
     auto error = std::string();
     if (!BuildTrie(property_infos, "u:object_r:default_prop:s0", "string", &serialized_contexts,
@@ -1284,9 +1309,11 @@ void CreateSerializedPropertyInfo() {
     }
 
     constexpr static const char kPropertyInfosPath[] = "/dev/__properties__/property_info";
+    // 将序列化的数据写入property_info文件
     if (!WriteStringToFile(serialized_contexts, kPropertyInfosPath, 0444, 0, 0, false)) {
         PLOG(ERROR) << "Unable to write serialized property infos to file";
     }
+    // 对此文件加载selinux上下文
     selinux_android_restorecon(kPropertyInfosPath, 0);
 }
 
@@ -1317,22 +1344,29 @@ static void ProcessKernelDt() {
         return;
     }
 
+    // 打开DT目录，实例化为dir对象（智能指针）
     std::unique_ptr<DIR, int (*)(DIR*)> dir(opendir(get_android_dt_dir().c_str()), closedir);
     if (!dir) return;
 
     std::string dt_file;
     struct dirent* dp;
+    // 遍历读取目录内容
     while ((dp = readdir(dir.get())) != NULL) {
+        // 过滤掉不需要的文件
         if (dp->d_type != DT_REG || !strcmp(dp->d_name, "compatible") ||
             !strcmp(dp->d_name, "name")) {
             continue;
         }
 
+        // 获取文件名
         std::string file_name = get_android_dt_dir() + dp->d_name;
 
+        // 读取文件内容：就是属性值存放到dt_file
         android::base::ReadFileToString(file_name, &dt_file);
+        // 替换符号
         std::replace(dt_file.begin(), dt_file.end(), ',', '.');
 
+        // 设置属性ro.boot.xxx，dt_file是属性值
         InitPropertySet("ro.boot."s + dp->d_name, dt_file);
     }
 }
@@ -1340,8 +1374,11 @@ static void ProcessKernelDt() {
 constexpr auto ANDROIDBOOT_PREFIX = "androidboot."sv;
 
 static void ProcessKernelCmdline() {
+    // 处理来自/proc/cmdline的属性
     ImportKernelCmdline([&](const std::string& key, const std::string& value) {
+        // key是不是以androidboot.开头
         if (StartsWith(key, ANDROIDBOOT_PREFIX)) {
+            // 调接口进行设置
             InitPropertySet("ro.boot." + key.substr(ANDROIDBOOT_PREFIX.size()), value);
         }
     });
@@ -1349,6 +1386,7 @@ static void ProcessKernelCmdline() {
 
 
 static void ProcessBootconfig() {
+    // 处理来自/bootconfig的属性
     ImportBootconfig([&](const std::string& key, const std::string& value) {
         if (StartsWith(key, ANDROIDBOOT_PREFIX)) {
             InitPropertySet("ro.boot." + key.substr(ANDROIDBOOT_PREFIX.size()), value);
@@ -1357,29 +1395,43 @@ static void ProcessBootconfig() {
 }
 
 void PropertyInit() {
+    // 设置selinux的日志回调
     selinux_callback cb;
+    // 回调的内容就是打印一些日志
     cb.func_audit = PropertyAuditCallback;
     selinux_set_callback(SELINUX_CB_AUDIT, cb);
 
+    // 创建属性目录
     mkdir("/dev/__properties__", S_IRWXU | S_IXGRP | S_IXOTH);
+    // 创建序列化的属性信息
     CreateSerializedPropertyInfo();
+
+    // 属性共享内存的初始化
+    // 位于bionic/libc/system_properties.c
     if (__system_property_area_init()) {
         LOG(FATAL) << "Failed to initialize property area";
     }
+
+    // 加载序列化属性信息的默认路径 文件，并进行mmap映射到内存，直接操作内存，效率更高
     if (!property_info_area.LoadDefaultPath()) {
         LOG(FATAL) << "Failed to load serialized property info file";
     }
 
     // If arguments are passed both on the command line and in DT,
     // properties set in DT always have priority over the command-line ones.
+
+    // 处理来自内核设备树的参数
     ProcessKernelDt();
+    // 处理来自启动命令行的属性
     ProcessKernelCmdline();
+    // 处理来自boot的属性
     ProcessBootconfig();
 
     // Propagate the kernel variables to internal variables
     // used by init as well as the current required properties.
     ExportKernelBootProps();
 
+    // 加载默认启动属性，如build.prop, default.prop等，以/system/下的build.prop为例，这些通常是由Android.mk,BoardConfig.mk或device.mk,或init.rc等文件中定义并经过系统编译生成
     PropertyLoadBootDefaults();
 }
 
@@ -1425,11 +1477,13 @@ static void PropertyServiceThread() {
         LOG(FATAL) << result.error();
     }
 
+    // 接收来自系统服务的属性设置请求
     if (auto result = epoll.RegisterHandler(property_set_fd, handle_property_set_fd);
         !result.ok()) {
         LOG(FATAL) << result.error();
     }
 
+    // 接收来自init的属性设置请求
     if (auto result = epoll.RegisterHandler(init_socket, HandleInitSocket); !result.ok()) {
         LOG(FATAL) << result.error();
     }
@@ -1486,13 +1540,15 @@ void StartPropertyService(int* epoll_socket) {
     InitPropertySet("ro.property_service.version", "2");
 
     int sockets[2];
+    // 创建双向通信的unix套接字，用于property_service和init进程直接的通信
     if (socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0, sockets) != 0) {
         PLOG(FATAL) << "Failed to socketpair() between property_service and init";
     }
-    *epoll_socket = from_init_socket = sockets[0];
-    init_socket = sockets[1];
+    *epoll_socket = from_init_socket = sockets[0]; // 一个是给init进程的
+    init_socket = sockets[1]; // 一个给service
     StartSendingMessages();
 
+    // 创建监听socket, /dev/socket/property_service这个节点
     if (auto result = CreateSocket(PROP_SERVICE_NAME, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK,
                                    /*passcred=*/false, /*should_listen=*/false, 0666, /*uid=*/0,
                                    /*gid=*/0, /*socketcon=*/{});
@@ -1502,14 +1558,18 @@ void StartPropertyService(int* epoll_socket) {
         LOG(FATAL) << "start_property_service socket creation failed: " << result.error();
     }
 
+    // 最多允许8个客户端链接到property_service
     listen(property_set_fd, 8);
 
+    // 创建服务线程property_service_thread:入口PropertyServiceThread
     auto new_thread = std::thread{PropertyServiceThread};
     property_service_thread.swap(new_thread);
 
+    // 如果支持异步写入
     auto async_persist_writes =
             android::base::GetBoolProperty("ro.property_service.async_persist_writes", false);
 
+    // 则创建一个persist写入线程，用于异步保存属性到持久化存储中
     if (async_persist_writes) {
         persist_write_thread = std::make_unique<PersistWriteThread>();
     }

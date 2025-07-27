@@ -365,15 +365,20 @@ std::string ReadFstabFromDt() {
         return {};
     }
 
+    // qaz init firststage 读取/fstab目录内的文件
     std::string fstabdir_name = get_android_dt_dir() + "/fstab";
+    // qaz init firststage 打开目录
     std::unique_ptr<DIR, int (*)(DIR*)> fstabdir(opendir(fstabdir_name.c_str()), closedir);
     if (!fstabdir) return {};
 
     dirent* dp;
     // Each element in fstab_dt_entries is <mount point, the line format in fstab file>.
     std::vector<std::pair<std::string, std::string>> fstab_dt_entries;
+
+    // qaz init firststage 读取目录
     while ((dp = readdir(fstabdir.get())) != NULL) {
         // skip over name, compatible and .
+        // qaz init firststage 遍历
         if (dp->d_type != DT_DIR || dp->d_name[0] == '.') continue;
 
         // create <dev> <mnt_point>  <type>  <mnt_flags>  <fsmgr_flags>\n
@@ -382,6 +387,7 @@ std::string ReadFstabFromDt() {
         std::string value;
         // skip a partition entry if the status property is present and not set to ok
         file_name = android::base::StringPrintf("%s/%s/status", fstabdir_name.c_str(), dp->d_name);
+        // qaz init firststage 读取dt文件目录下的状态，放到value中
         if (ReadDtFile(file_name, &value)) {
             if (value != "okay" && value != "ok") {
                 LINFO << "dt_fstab: Skip disabled entry for partition " << dp->d_name;
@@ -389,16 +395,20 @@ std::string ReadFstabFromDt() {
             }
         }
 
+        // qaz init firststage 读取/dir/name/dev文件
         file_name = android::base::StringPrintf("%s/%s/dev", fstabdir_name.c_str(), dp->d_name);
         if (!ReadDtFile(file_name, &value)) {
             LERROR << "dt_fstab: Failed to find device for partition " << dp->d_name;
             return {};
         }
+        // qaz init firststage 这个就是分区文件，存放到fasab_entry中
         fstab_entry.push_back(value);
 
         std::string mount_point;
+        // qaz init firststage dir/name/mnt_point:挂载点文件
         file_name =
             android::base::StringPrintf("%s/%s/mnt_point", fstabdir_name.c_str(), dp->d_name);
+        // qaz init firststage 得到挂载点
         if (ReadDtFile(file_name, &value)) {
             LINFO << "dt_fstab: Using a specified mount point " << value << " for " << dp->d_name;
             mount_point = value;

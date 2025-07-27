@@ -173,6 +173,7 @@ bool LoadKernelModules(bool recovery, bool want_console, bool want_parallel, int
         LOG(FATAL) << "Failed to parse kernel version " << uts.release;
     }
 
+    // 打开目录/lib/modules  qaz
     std::unique_ptr<DIR, decltype(&closedir)> base_dir(opendir(MODULE_BASE_DIR), closedir);
     if (!base_dir) {
         LOG(INFO) << "Unable to open /lib/modules, skipping module loading.";
@@ -180,6 +181,7 @@ bool LoadKernelModules(bool recovery, bool want_console, bool want_parallel, int
     }
     dirent* entry;
     std::vector<std::string> module_dirs;
+    //qaz 获取目录
     while ((entry = readdir(base_dir.get()))) {
         if (entry->d_type != DT_DIR) {
             continue;
@@ -189,6 +191,7 @@ bool LoadKernelModules(bool recovery, bool want_console, bool want_parallel, int
             dir_minor != minor) {
             continue;
         }
+        // 将模块内的目录存放到容器中， 目录有各种模块文件 qaz
         module_dirs.emplace_back(entry->d_name);
     }
 
@@ -198,12 +201,17 @@ bool LoadKernelModules(bool recovery, bool want_console, bool want_parallel, int
     // current kernel version, so the sort only applies to a label that
     // follows the kernel version, for example /lib/modules/5.4 vs.
     // /lib/modules/5.4-gki.
+    // qaz 排序目录
     std::sort(module_dirs.begin(), module_dirs.end());
 
     for (const auto& module_dir : module_dirs) {
         std::string dir_path = MODULE_BASE_DIR "/";
+        // qaz 生成一个具体的子模块路径
         dir_path.append(module_dir);
+        // qaz 创建一个Modprobe模块对象
         Modprobe m({dir_path}, GetModuleLoadList(recovery, dir_path));
+
+        // qaz 加载子模块内的模块
         bool retval = m.LoadListedModules(!want_console);
         modules_loaded = m.GetModuleCount();
         if (modules_loaded > 0) {
@@ -222,6 +230,7 @@ bool LoadKernelModules(bool recovery, bool want_console, bool want_parallel, int
 }
 
 int FirstStageMain(int argc, char** argv) {
+    // linux信号捕获处理 qaz
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
     }
@@ -239,6 +248,8 @@ int FirstStageMain(int argc, char** argv) {
     CHECKCALL(setenv("PATH", _PATH_DEFPATH, 1));
     // Get the basic filesystem setup we need put together in the initramdisk
     // on / and then we'll let the rc file figure out the rest.
+
+    // 创建一些目录挂载文件系统 qaz
     CHECKCALL(mount("tmpfs", "/dev", "tmpfs", MS_NOSUID, "mode=0755"));
     CHECKCALL(mkdir("/dev/pts", 0755));
     CHECKCALL(mkdir("/dev/socket", 0755));
@@ -257,9 +268,12 @@ int FirstStageMain(int argc, char** argv) {
     android::base::ReadFileToString("/proc/bootconfig", &bootconfig);
     gid_t groups[] = {AID_READPROC};
     CHECKCALL(setgroups(arraysize(groups), groups));
+
+    // 挂载sysfs,selinuxfs等文件系统 qaz
     CHECKCALL(mount("sysfs", "/sys", "sysfs", 0, NULL));
     CHECKCALL(mount("selinuxfs", "/sys/fs/selinux", "selinuxfs", 0, NULL));
 
+    // 创建设备节点/dev/kmsg, kmsg_debug等 qaz
     CHECKCALL(mknod("/dev/kmsg", S_IFCHR | 0600, makedev(1, 11)));
 
     if constexpr (WORLD_WRITABLE_KMSG) {
@@ -297,6 +311,7 @@ int FirstStageMain(int argc, char** argv) {
                     "mode=0755,uid=0,gid=0"))
 #undef CHECKCALL
 
+    // 重定向，并初始化内核日志系统 qaz
     SetStdioToDevNull(argv);
     // Now that tmpfs is mounted on /dev and we have /dev/kmsg, we can actually
     // talk to the outside world...
@@ -328,6 +343,7 @@ int FirstStageMain(int argc, char** argv) {
 
     boot_clock::time_point module_start_time = boot_clock::now();
     int module_count = 0;
+    // 加载内核模块 qaz
     if (!LoadKernelModules(IsRecoveryMode() && !ForceNormalBoot(cmdline, bootconfig), want_console,
                            want_parallel, module_count)) {
         if (want_console != FirstStageConsoleParam::DISABLED) {
@@ -347,6 +363,7 @@ int FirstStageMain(int argc, char** argv) {
     bool created_devices = false;
     if (want_console == FirstStageConsoleParam::CONSOLE_ON_FAILURE) {
         if (!IsRecoveryMode()) {
+            // qaz 创建设备
             created_devices = DoCreateDevices();
             if (!created_devices) {
                 LOG(ERROR) << "Failed to create device nodes early";

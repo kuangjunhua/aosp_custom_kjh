@@ -31,7 +31,8 @@ bool BuildTrie(const std::vector<PropertyInfoEntry>& property_info,
                std::string* serialized_trie, std::string* error) {
   // Check that names are legal first
   auto trie_builder = TrieBuilder(default_context, default_type);
-
+  
+  // 将每个条目中的信息作为属性添加到Trie中，目的是创建一个trie数据结构，将它们序列化成string，方便存储
   for (const auto& [name, context, type, is_exact] : property_info) {
     if (!trie_builder.AddToTrie(name, context, type, is_exact, error)) {
       return false;
@@ -39,6 +40,7 @@ bool BuildTrie(const std::vector<PropertyInfoEntry>& property_info,
   }
 
   auto trie_serializer = TrieSerializer();
+  // Trie序列化器对trie数据结构进行序列化
   *serialized_trie = trie_serializer.SerializeTrie(trie_builder);
   return true;
 }

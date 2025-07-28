@@ -672,7 +672,7 @@ public final class SystemServer implements Dumpable {
         // Check for factory test mode.
         mFactoryTestMode = FactoryTest.getMode();
 
-        // Record process start information.
+        // 记录进程的启动信息.
         mStartCount = SystemProperties.getInt(SYSPROP_START_COUNT, 0) + 1;
         mRuntimeStartElapsedTime = SystemClock.elapsedRealtime();
         mRuntimeStartUptime = SystemClock.uptimeMillis();
@@ -778,15 +778,15 @@ public final class SystemServer implements Dumpable {
             t.traceBegin("InitBeforeStartServices");
 
             // Record the process start information in sys props.
-            SystemProperties.set(SYSPROP_START_COUNT, String.valueOf(mStartCount));
-            SystemProperties.set(SYSPROP_START_ELAPSED, String.valueOf(mRuntimeStartElapsedTime));
-            SystemProperties.set(SYSPROP_START_UPTIME, String.valueOf(mRuntimeStartUptime));
-
+            SystemProperties.set(SYSPROP_START_COUNT, String.valueOf(mStartCount)); // 记录启动次数
+            SystemProperties.set(SYSPROP_START_ELAPSED, String.valueOf(mRuntimeStartElapsedTime)); // 启动耗时
+            SystemProperties.set(SYSPROP_START_UPTIME, String.valueOf(mRuntimeStartUptime)); // 开始时间
+            // 参数写到日志
             EventLog.writeEvent(EventLogTags.SYSTEM_SERVER_START,
                     mStartCount, mRuntimeStartUptime, mRuntimeStartElapsedTime);
 
             // Set the device's time zone (a system property) if it is not set or is invalid.
-            SystemTimeZone.initializeTimeZoneSettingsIfRequired();
+            SystemTimeZone.initializeTimeZoneSettingsIfRequired(); // 设置系统所在的时区
 
             // If the system has "persist.sys.language" and friends set, replace them with
             // "persist.sys.locale". Note that the default locale at this point is calculated
@@ -795,7 +795,7 @@ public final class SystemServer implements Dumpable {
             // and system apps are allowed to set them.
             //
             // NOTE: Most changes made here will need an equivalent change to
-            // core/jni/AndroidRuntime.cpp
+            // core/jni/AndroidRuntime.cpp 设置系统语言
             if (!SystemProperties.get("persist.sys.language").isEmpty()) {
                 final String languageTag = Locale.getDefault().toLanguageTag();
 
@@ -805,7 +805,7 @@ public final class SystemServer implements Dumpable {
                 SystemProperties.set("persist.sys.localevar", "");
             }
 
-            // The system server should never make non-oneway calls
+            // 不应该在Binder线程池中执行一些阻塞的调用
             Binder.setWarnOnBlocking(true);
             // The system server should always load safe labels
             PackageItemInfo.forceSafeLabels();
@@ -834,6 +834,7 @@ public final class SystemServer implements Dumpable {
             // had to fallback to a different runtime because it is
             // running as root and we need to be the system user to set
             // the property. http://b/11463182
+            // 确保系统属性和当前运行的虚拟机的运行时库保持一致
             SystemProperties.set("persist.sys.dalvik.vm.lib.2", VMRuntime.getRuntime().vmLibrary());
 
             // Mmmmmm... more memory!
@@ -858,7 +859,7 @@ public final class SystemServer implements Dumpable {
             BinderInternal.disableBackgroundScheduling(true);
 
             // Increase the number of binder threads in system_server
-            BinderInternal.setMaxThreads(sMaxBinderThreads);
+            BinderInternal.setMaxThreads(sMaxBinderThreads);//Binder内部的线程最大31个
 
             // Prepare the main looper thread (this thread).
             android.os.Process.setThreadPriority(
@@ -874,7 +875,7 @@ public final class SystemServer implements Dumpable {
             System.loadLibrary("android_servers");
 
             // Allow heap / perf profiling.
-            initZygoteChildHeapProfiling();
+            initZygoteChildHeapProfiling(); // 启用堆、栈、性能分析
 
             // Debug builds - spawn a thread to monitor for fd leaks.
             if (Build.IS_DEBUGGABLE) {
@@ -883,10 +884,10 @@ public final class SystemServer implements Dumpable {
 
             // Check whether we failed to shut down last time we tried.
             // This call may not return.
-            performPendingShutdown();
+            performPendingShutdown(); // 执行一些开关机的动作、重启行为
 
             // Initialize the system context.
-            createSystemContext();
+            createSystemContext(); // 初始化系统上下文
 
             // Call per-process mainline module initialization.
             ActivityThread.initializeMainlineModules();
@@ -895,14 +896,15 @@ public final class SystemServer implements Dumpable {
             ServiceManager.addService("system_server_dumper", mDumper);
             mDumper.addDumpable(this);
 
-            // Create the system service manager.
+            // Create the system service manager. 帮助SystemServer管理服务
             mSystemServiceManager = new SystemServiceManager(mSystemContext);
             mSystemServiceManager.setStartInfo(mRuntimeRestart,
                     mRuntimeStartElapsedTime, mRuntimeStartUptime);
             mDumper.addDumpable(mSystemServiceManager);
-
+            // 将mSystemServiceManager作为一个服务放到LocalServices, 其他服务可能会用到mSystemServiceManager
             LocalServices.addService(SystemServiceManager.class, mSystemServiceManager);
             // Prepare the thread pool for init tasks that can be parallelized
+            // 启动一个线程池，执行一些服务，启动时可能会启动很多服务，并行执行一些服务
             SystemServerInitThreadPool tp = SystemServerInitThreadPool.start();
             mDumper.addDumpable(tp);
 
@@ -941,9 +943,9 @@ public final class SystemServer implements Dumpable {
         // Start services.
         try {
             t.traceBegin("StartServices");
-            startBootstrapServices(t);
-            startCoreServices(t);
-            startOtherServices(t);
+            startBootstrapServices(t); // 启动引导服务
+            startCoreServices(t); // 启动核心服务
+            startOtherServices(t); // 启动其他服务
             startApexServices(t);
             // Only update the timeout after starting all the services so that we use
             // the default timeout to start system server.
@@ -1065,6 +1067,7 @@ public final class SystemServer implements Dumpable {
      * in one place here.  Unless your service is also entwined in these dependencies, it should be
      * initialized in one of the other functions.
      */
+    // 会启动两个重要的服务：ATMS PKMS
     private void startBootstrapServices(@NonNull TimingsTraceAndSlog t) {
         t.traceBegin("startBootstrapServices");
 
@@ -1107,6 +1110,7 @@ public final class SystemServer implements Dumpable {
         // the source (i.e. keystore) is ready, and before the apps (or the first customer in the
         // system) run.
         t.traceBegin("StartFileIntegrityService");
+        // FileIntegrityService要能添加到mSystemServiceManager, FileIntegrityService一定是继承SystemService的
         mSystemServiceManager.startService(FileIntegrityService.class);
         t.traceEnd();
 

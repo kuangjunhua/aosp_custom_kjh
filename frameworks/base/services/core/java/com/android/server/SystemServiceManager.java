@@ -137,6 +137,7 @@ public final class SystemServiceManager implements Dumpable {
      * @return The service instance.
      */
     public SystemService startService(String className) {
+        // 通过类加载器得到 SystemService 这个类
         final Class<SystemService> serviceClass = loadClassFromLoader(className,
                 this.getClass().getClassLoader());
         return startService(serviceClass);
@@ -201,9 +202,10 @@ public final class SystemServiceManager implements Dumpable {
      * @return The service instance, never null.
      * @throws RuntimeException if the service fails to start.
      */
+    // 启动一个服务的详细过程
     public <T extends SystemService> T startService(Class<T> serviceClass) {
         try {
-            final String name = serviceClass.getName();
+            final String name = serviceClass.getName(); // 获取类名
             Slog.i(TAG, "Starting " + name);
             Trace.traceBegin(Trace.TRACE_TAG_SYSTEM_SERVER, "StartService " + name);
 
@@ -214,6 +216,7 @@ public final class SystemServiceManager implements Dumpable {
             }
             final T service;
             try {
+                // 通过传递进来的类得到构造器，通过构造器实例化一个service
                 Constructor<T> constructor = serviceClass.getConstructor(Context.class);
                 service = constructor.newInstance(mContext);
             } catch (InstantiationException ex) {
@@ -229,7 +232,7 @@ public final class SystemServiceManager implements Dumpable {
                 throw new RuntimeException("Failed to create service " + name
                         + ": service constructor threw an exception", ex);
             }
-
+            // 启动service
             startService(service);
             return service;
         } finally {
@@ -246,13 +249,13 @@ public final class SystemServiceManager implements Dumpable {
         }
         mServiceClassnames.add(className);
 
-        // Register it.
+        // 注册service
         mServices.add(service);
 
         // Start it.
         long time = SystemClock.elapsedRealtime();
         try {
-            service.onStart();
+            service.onStart(); // LifeCycle的onStart
         } catch (RuntimeException ex) {
             throw new RuntimeException("Failed to start service " + service.getClass().getName()
                     + ": onStart threw an exception", ex);

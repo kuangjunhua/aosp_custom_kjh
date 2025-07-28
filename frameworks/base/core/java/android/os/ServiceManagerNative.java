@@ -34,6 +34,7 @@ public final class ServiceManagerNative {
      * TODO: delete this method and have clients use
      *     IServiceManager.Stub.asInterface instead
      */
+    // 把IBinder对象转成对应的service接口
     @UnsupportedAppUsage
     public static IServiceManager asInterface(IBinder obj) {
         if (obj == null) {

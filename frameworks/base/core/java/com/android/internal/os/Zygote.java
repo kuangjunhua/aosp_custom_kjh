@@ -628,8 +628,7 @@ public final class Zygote {
     private static native int nativeGetUsapPoolCount();
 
     /**
-     * @return The event FD used for communication between the signal handler and the ZygoteServer
-     *         poll loop
+     * @return 事件FD用于信号处理程序和ZygoteServer轮询循环之间的通信
      */
     static FileDescriptor getUsapPoolEventFD() {
         FileDescriptor fd = new FileDescriptor();

@@ -737,6 +737,7 @@ void IPCThreadState::joinThreadPool(bool isMain)
     do {
         processPendingDerefs();
         // now get the next command to be processed, waiting if necessary
+        // 获取并执行一个Command
         result = getAndExecuteCommand();
 
         if (result < NO_ERROR && result != TIMED_OUT && result != -ECONNREFUSED && result != -EBADF) {

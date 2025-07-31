@@ -629,7 +629,7 @@ status_t IPCThreadState::getAndExecuteCommand()
     status_t result;
     int32_t cmd;
 
-    result = talkWithDriver();
+    result = talkWithDriver(); // 和驱动交互
     if (result >= NO_ERROR) {
         size_t IN = mIn.dataAvail();
         if (IN < sizeof(int32_t)) return result;
@@ -738,6 +738,7 @@ void IPCThreadState::joinThreadPool(bool isMain)
         processPendingDerefs();
         // now get the next command to be processed, waiting if necessary
         // 获取并执行一个Command
+        // 接收端入口
         result = getAndExecuteCommand();
 
         if (result < NO_ERROR && result != TIMED_OUT && result != -ECONNREFUSED && result != -EBADF) {
@@ -825,6 +826,8 @@ status_t IPCThreadState::transact(int32_t handle,
 
     LOG_ONEWAY(">>>> SEND from pid %d uid %d %s", getpid(), getuid(),
         (flags & TF_ONE_WAY) == 0 ? "READ REPLY" : "ONE WAY");
+        // BC_TRANSACTION 表示从客户端将数据传给service
+        // BR_xxx表示接收数据
     err = writeTransactionData(BC_TRANSACTION, flags, handle, code, data, nullptr);
 
     if (err != NO_ERROR) {
@@ -1008,7 +1011,7 @@ status_t IPCThreadState::waitForResponse(Parcel *reply, status_t *acquireResult)
     int32_t err;
 
     while (1) {
-        if ((err=talkWithDriver()) < NO_ERROR) break;
+        if ((err=talkWithDriver()) < NO_ERROR) break; // 和驱动进行交互， 写进驱动以完成
         err = mIn.errorCheck();
         if (err < NO_ERROR) break;
         if (mIn.dataAvail() == 0) continue;
@@ -1121,9 +1124,9 @@ status_t IPCThreadState::talkWithDriver(bool doReceive)
     // from data left in the input buffer and the caller
     // has requested to read the next data.
     const size_t outAvail = (!doReceive || needRead) ? mOut.dataSize() : 0;
-
-    bwr.write_size = outAvail;
-    bwr.write_buffer = (uintptr_t)mOut.data();
+    // binder_transaction_data -> Parcel -> binder_write_read 最终发往驱动的数据
+    bwr.write_size = outAvail; // 数据大小
+    bwr.write_buffer = (uintptr_t)mOut.data(); // 数据
 
     // This is what we'll read.
     if (doReceive && needRead) {
@@ -1164,6 +1167,7 @@ status_t IPCThreadState::talkWithDriver(bool doReceive)
             ALOGI("%s", message.c_str());
         }
 #if defined(__ANDROID__)
+// ioctl(mProcess->mDriverFD, BINDER_WRITE_READ, &bwr) 发送数据给底层驱动
         if (ioctl(mProcess->mDriverFD, BINDER_WRITE_READ, &bwr) >= 0)
             err = NO_ERROR;
         else
@@ -1232,11 +1236,12 @@ status_t IPCThreadState::talkWithDriver(bool doReceive)
 status_t IPCThreadState::writeTransactionData(int32_t cmd, uint32_t binderFlags,
     int32_t handle, uint32_t code, const Parcel& data, status_t* statusBuffer)
 {
+    // binder_transaction_data 封装了Binder底层驱动通信的数据结构
     binder_transaction_data tr;
 
     tr.target.ptr = 0; /* Don't pass uninitialized stack data to a remote process */
-    tr.target.handle = handle;
-    tr.code = code;
+    tr.target.handle = handle; // 驱动里面标识哪一个服务的（发给谁）
+    tr.code = code; // 那个api
     tr.flags = binderFlags;
     tr.cookie = 0;
     tr.sender_pid = 0;
@@ -1244,8 +1249,8 @@ status_t IPCThreadState::writeTransactionData(int32_t cmd, uint32_t binderFlags,
 
     const status_t err = data.errorCheck();
     if (err == NO_ERROR) {
-        tr.data_size = data.ipcDataSize();
-        tr.data.ptr.buffer = data.ipcData();
+        tr.data_size = data.ipcDataSize(); // 调用参数大小
+        tr.data.ptr.buffer = data.ipcData(); // 参数指针
         tr.offsets_size = data.ipcObjectsCount()*sizeof(binder_size_t);
         tr.data.ptr.offsets = data.ipcObjects();
     } else if (statusBuffer) {
@@ -1259,8 +1264,8 @@ status_t IPCThreadState::writeTransactionData(int32_t cmd, uint32_t binderFlags,
         return (mLastError = err);
     }
 
-    mOut.writeInt32(cmd);
-    mOut.write(&tr, sizeof(tr));
+    mOut.writeInt32(cmd); // 业务命令 BC_TRANSACTION
+    mOut.write(&tr, sizeof(tr)); // mOut是一个Parcel,一个序列化的类，需要传递给Binder驱动
 
     return NO_ERROR;
 }
@@ -1357,7 +1362,7 @@ status_t IPCThreadState::executeCommand(int32_t cmd)
         {
             binder_transaction_data_secctx tr_secctx;
             binder_transaction_data& tr = tr_secctx.transaction_data;
-
+            // 从驱动读数据
             if (cmd == (int) BR_TRANSACTION_SEC_CTX) {
                 result = mIn.read(&tr_secctx, sizeof(tr_secctx));
             } else {
@@ -1420,6 +1425,8 @@ status_t IPCThreadState::executeCommand(int32_t cmd)
                 // safely acquire a strong reference before doing anything else with it.
                 if (reinterpret_cast<RefBase::weakref_type*>(
                         tr.target.ptr)->attemptIncStrong(this)) {
+                            // cookie就是Binder服务端的IBinder
+                            // 调用BBinder里面的transact方法，在Binder.cpp文件中
                     error = reinterpret_cast<BBinder*>(tr.cookie)->transact(tr.code, buffer,
                             &reply, tr.flags);
                     reinterpret_cast<BBinder*>(tr.cookie)->decStrong(this);

@@ -365,7 +365,7 @@ status_t BpBinder::transact(
                 LOG_ALWAYS_FATAL("Binder kernel driver disabled at build time");
                 return INVALID_OPERATION;
             }
-
+            // 调用进程所对应的底层的Binder线程的transact方法: binderHandle()为0表示要发往servicemanager
             status = IPCThreadState::self()->transact(binderHandle(), code, data, reply, flags);
         }
         if (data.dataSize() > LOG_TRANSACTIONS_OVER_SIZE) {

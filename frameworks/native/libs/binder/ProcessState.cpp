@@ -160,6 +160,7 @@ sp<ProcessState> ProcessState::init(const char *driver, bool requireDefault)
 
 sp<IBinder> ProcessState::getContextObject(const sp<IBinder>& /*caller*/)
 {
+    // context就是一个BpBinder对象
     sp<IBinder> context = getStrongProxyForHandle(0);
 
     if (context) {
@@ -311,8 +312,15 @@ ProcessState::handle_entry* ProcessState::lookupHandleLocked(int32_t handle)
 }
 
 // see b/166779391: cannot change the VNDK interface, so access like this
-extern sp<BBinder> the_context_object;
-
+extern sp<BBinder> the_context_object; // 服务端的IBinder对象
+/**
+ * 传的参数handle为0的特殊含义:
+ * 在Binder通信的时候对servicemanager来说，在其内部注册了很多servicename->IBinder
+ * 在通信的时候APP1要经过Binder Driver与APP2通信，但只有一个驱动，有很多APP（进程），
+ * servicemanager也是一个进程（Binder的一个进程，也需要提供Binder服务的接口），
+ * 对每一个Binder服务来说，驱动都会给它创建实例映射，在驱动内部也会维护一个键值对：handle -> IBinder
+ * handle为0表示servicemanager,创建的BpBinder就是用handle为0封装的一个BpBinder
+ */
 sp<IBinder> ProcessState::getStrongProxyForHandle(int32_t handle)
 {
     sp<IBinder> result;
@@ -348,24 +356,27 @@ sp<IBinder> ProcessState::getStrongProxyForHandle(int32_t handle)
                 // Note that this is not race-free if the context manager
                 // dies while this code runs.
 
-                IPCThreadState* ipc = IPCThreadState::self();
+                IPCThreadState* ipc = IPCThreadState::self(); // 跟底层Binder通信的一个线程实例
 
                 CallRestriction originalCallRestriction = ipc->getCallRestriction();
                 ipc->setCallRestriction(CallRestriction::NONE);
 
                 Parcel data;
+                // 检测服务端在不在
                 status_t status = ipc->transact(
                         0, IBinder::PING_TRANSACTION, data, nullptr, 0);
 
                 ipc->setCallRestriction(originalCallRestriction);
-
+                // 如果服务端不在直接返回
                 if (status == DEAD_OBJECT)
                    return nullptr;
             }
-
+            // 服务端在则创建一个Binder,得到一个BpBinder对象
+            // handler为0 表示封装的就是servicemanager的服务端IBinder对象
             sp<BpBinder> b = BpBinder::PrivateAccessor::create(handle);
             e->binder = b.get();
             if (b) e->refs = b->getWeakRefs();
+            // 这个BpBinder特指servicemanager里面的IBinder
             result = b;
         } else {
             // This little bit of nastyness is to allow us to add a primary
@@ -375,7 +386,7 @@ sp<IBinder> ProcessState::getStrongProxyForHandle(int32_t handle)
             e->refs->decWeak(this);
         }
     }
-
+    // 返回的是BpBinder
     return result;
 }
 

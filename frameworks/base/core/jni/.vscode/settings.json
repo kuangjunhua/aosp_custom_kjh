@@ -55,5 +55,15 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false
+  "C_Cpp_Runner.msvcSecureNoWarnings": false,
+  "files.associations": {
+    "array": "cpp",
+    "memory": "cpp",
+    "format": "cpp",
+    "istream": "cpp",
+    "functional": "cpp",
+    "tuple": "cpp",
+    "utility": "cpp",
+    "variant": "cpp"
+  }
 }

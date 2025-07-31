@@ -469,7 +469,7 @@ private:
 class JavaBBinderHolder
 {
 public:
-    sp<JavaBBinder> get(JNIEnv* env, jobject obj)
+    sp<JavaBBinder> get(JNIEnv* env, jobject obj) // obj就是要添加到servicemanager的IBinder
     {
         AutoMutex _l(mLock);
         sp<JavaBBinder> b = mBinder.promote();
@@ -769,8 +769,8 @@ jobject javaObjectForIBinder(JNIEnv* env, const sp<IBinder>& val)
 
     BinderProxyNativeData* nativeData = new BinderProxyNativeData();
     nativeData->mOrgue = new DeathRecipientList;
-    nativeData->mObject = val;
-
+    nativeData->mObject = val; // BpBinder
+    // BinderProxy.java->getInstance(nativeData, BpBinder) 创建了一个BinderProxy对象
     jobject object = env->CallStaticObjectMethod(gBinderProxyOffsets.mClass,
             gBinderProxyOffsets.mGetInstance, (jlong) nativeData, (jlong) val.get());
     if (env->ExceptionCheck()) {
@@ -796,13 +796,16 @@ jobject javaObjectForIBinder(JNIEnv* env, const sp<IBinder>& val)
 
     return object;
 }
-
+/**
+ * env->GetLongField在Jni层方向调用Java层的接口
+ */
 sp<IBinder> ibinderForJavaObject(JNIEnv* env, jobject obj)
 {
     if (obj == NULL) return NULL;
 
     // Instance of Binder?
     if (env->IsInstanceOf(obj, gBinderOffsets.mClass)) {
+        // 拿到Java层的对象转换成C++层对象
         JavaBBinderHolder* jbh = (JavaBBinderHolder*)
             env->GetLongField(obj, gBinderOffsets.mObject);
 
@@ -1117,13 +1120,15 @@ const char* const kBinderPathName = "android/os/Binder";
 static int int_register_android_os_Binder(JNIEnv* env)
 {
     jclass clazz = FindClassOrDie(env, kBinderPathName);
-
+    // 拿到类
     gBinderOffsets.mClass = MakeGlobalRefOrDie(env, clazz);
+    // 拿到方法
     gBinderOffsets.mExecTransact = GetMethodIDOrDie(env, clazz, "execTransact", "(IJJI)Z");
     gBinderOffsets.mGetInterfaceDescriptor = GetMethodIDOrDie(env, clazz, "getInterfaceDescriptor",
         "()Ljava/lang/String;");
     gBinderOffsets.mTransactionCallback =
             GetStaticMethodIDOrDie(env, clazz, "transactionCallback", "(IIII)V");
+    // 拿到mObject对象
     gBinderOffsets.mObject = GetFieldIDOrDie(env, clazz, "mObject", "J");
 
     return RegisterMethodsOrDie(
@@ -1161,6 +1166,7 @@ jint android_os_Debug_getDeathObjectCount(JNIEnv* env, jobject clazz)
 static jobject android_os_BinderInternal_getContextObject(JNIEnv* env, jobject clazz)
 {
     sp<IBinder> b = ProcessState::self()->getContextObject(NULL);
+    // 将Jni层的IBinder对象封装成一个Java对象（BinderProxy）
     return javaObjectForIBinder(env, b);
 }
 
@@ -1420,7 +1426,7 @@ static jboolean android_os_BinderProxy_transact(JNIEnv* env, jobject obj,
     if (reply == NULL && replyObj != NULL) {
         return JNI_FALSE;
     }
-
+    // 从数据里面拿到C++的IBinder对象，target是一个BpBinder
     IBinder* target = getBPNativeData(env, obj)->mObject.get();
     if (target == NULL) {
         jniThrowException(env, "java/lang/IllegalStateException", "Binder has been finalized!");
@@ -1444,6 +1450,7 @@ static jboolean android_os_BinderProxy_transact(JNIEnv* env, jobject obj,
     }
 
     //printf("Transact from Java code to %p sending: ", target); data->print();
+    //frameworks\native\libs\binder\BpBinder.cpp
     status_t err = target->transact(code, *data, reply, flags);
     //if (reply) printf("Transact from Java code to %p received: ", target); reply->print();
 
@@ -1598,7 +1605,7 @@ static int int_register_android_os_BinderProxy(JNIEnv* env)
         MakeGlobalRefOrDie(env, FindClassOrDie(env, "java/lang/StackOverflowError"));
 
     jclass clazz = FindClassOrDie(env, kBinderProxyPathName);
-    gBinderProxyOffsets.mClass = MakeGlobalRefOrDie(env, clazz);
+    gBinderProxyOffsets.mClass = MakeGlobalRefOrDie(env, clazz); // 创建一个全局引用
     gBinderProxyOffsets.mGetInstance = GetStaticMethodIDOrDie(env, clazz, "getInstance",
             "(JJ)Landroid/os/BinderProxy;");
     gBinderProxyOffsets.mSendDeathNotice =

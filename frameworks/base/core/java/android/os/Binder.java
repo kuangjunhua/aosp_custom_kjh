@@ -221,6 +221,7 @@ public class Binder implements IBinder {
      * @hide
      */
     public static IBinder allowBlocking(IBinder binder) {
+        // 参数是IBinder，返回值还是IBinder
         try {
             if (binder instanceof BinderProxy) {
                 ((BinderProxy) binder).mWarnOnBlocking = false;

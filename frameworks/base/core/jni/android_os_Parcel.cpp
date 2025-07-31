@@ -335,10 +335,16 @@ static void android_os_Parcel_writeString16(JNIEnv *env, jclass clazz, jlong nat
     }
 }
 
-static void android_os_Parcel_writeStrongBinder(JNIEnv* env, jclass clazz, jlong nativePtr, jobject object)
+static void android_os_Parcel_writeStrongBinder(JNIEnv* env, jclass clazz, jlong nativePtr, jobject object) // 后面两个参数就是Java层传递过来额参数，object就是IBinder
 {
+    // 这里的Parcel是C++层定义的Parcel,不是Java层定义的，
+    // frameworks\native\libs\binder\Parcel.cpp
     Parcel* parcel = reinterpret_cast<Parcel*>(nativePtr);
     if (parcel != NULL) {
+        /**
+         * ibinderForJavaObject(env, object)的目的是将Java层传递过来的对象转换成C++层的对象
+         * 返回一个JavaBBinder
+         */
         const status_t err = parcel->writeStrongBinder(ibinderForJavaObject(env, object));
         if (err != NO_ERROR) {
             signalExceptionForError(env, clazz, err);

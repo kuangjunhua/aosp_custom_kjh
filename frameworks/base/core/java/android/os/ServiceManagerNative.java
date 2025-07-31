@@ -42,6 +42,7 @@ public final class ServiceManagerNative {
         }
 
         // ServiceManager is never local
+        // servicemanager IBinder -> BpBinder -> BinderProxy -> ServiceManagerProxy() -> ServiceManagerNative()
         return new ServiceManagerProxy(obj);
     }
 }
@@ -50,7 +51,9 @@ public final class ServiceManagerNative {
 // mRemote is no longer used
 class ServiceManagerProxy implements IServiceManager {
     public ServiceManagerProxy(IBinder remote) {
-        mRemote = remote;
+        mRemote = remote; // remote是传递进来的BinderProxy
+        // IServiceManager.Stub.Proxy(obj)
+        // mServiceManager是客户端调用的Proxy对象（asInterface中封装成的Proxy对象）
         mServiceManager = IServiceManager.Stub.asInterface(remote);
     }
 
@@ -70,6 +73,7 @@ class ServiceManagerProxy implements IServiceManager {
 
     public void addService(String name, IBinder service, boolean allowIsolated, int dumpPriority)
             throws RemoteException {
+        // Proxy调用addService方法
         mServiceManager.addService(name, service, allowIsolated, dumpPriority);
     }
 

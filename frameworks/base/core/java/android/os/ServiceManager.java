@@ -119,12 +119,14 @@ public final class ServiceManager {
     }
 
     @UnsupportedAppUsage
+    // 返回的是ServiceManagerProxy
     private static IServiceManager getIServiceManager() {
         if (sServiceManager != null) {
             return sServiceManager;
         }
 
         // Find the service manager
+        // BinderInternal.getContextObject 返回一个BinderProxy 对象，这是一个Java对象
         sServiceManager = ServiceManagerNative
                 .asInterface(Binder.allowBlocking(BinderInternal.getContextObject()));
         return sServiceManager;
@@ -174,6 +176,7 @@ public final class ServiceManager {
      * @param name the name of the new service
      * @param service the service object
      * @hide
+     * 从SystemServer中的 ServiceManager.addService调到这里
      */
     @UnsupportedAppUsage
     public static void addService(String name, IBinder service) {
@@ -210,6 +213,7 @@ public final class ServiceManager {
     public static void addService(String name, IBinder service, boolean allowIsolated,
             int dumpPriority) {
         try {
+            // 调用的是ServiceManagerProxy的addService
             getIServiceManager().addService(name, service, allowIsolated, dumpPriority);
         } catch (RemoteException e) {
             Log.e(TAG, "error in addService", e);

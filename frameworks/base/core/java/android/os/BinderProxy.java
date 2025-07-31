@@ -30,6 +30,7 @@ import libcore.util.NativeAllocationRegistry;
 
 import java.io.FileDescriptor;
 import java.lang.ref.WeakReference;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -611,6 +612,7 @@ public final class BinderProxy implements IBinder {
     /**
      * Native implementation of transact() for proxies
      */
+    // frameworks\base\core\jni\android_util_Binder.cpp
     public native boolean transactNative(int code, Parcel data, Parcel reply,
             int flags) throws RemoteException;
     /**

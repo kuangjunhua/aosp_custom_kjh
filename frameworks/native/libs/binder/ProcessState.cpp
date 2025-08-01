@@ -141,7 +141,7 @@ sp<ProcessState> ProcessState::init(const char *driver, bool requireDefault)
         LOG_ALWAYS_FATAL_IF(ret != 0, "pthread_atfork error %s", strerror(ret));
 
         std::lock_guard<std::mutex> l(gProcessMutex);
-        // 智能指针，调用ProcessState的构造函数530行
+        // 智能指针，调用ProcessState的构造函数542行
         gProcess = sp<ProcessState>::make(driver);
     });
 

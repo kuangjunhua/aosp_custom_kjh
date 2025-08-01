@@ -116,22 +116,23 @@ int main(int argc, char** argv) {
     if (argc > 2) {
         LOG(FATAL) << "usage: " << argv[0] << " [binder driver]";
     }
-
+    // 从servicemanager.rc中得知参数只有一个，就是程序本身
     const char* driver = argc == 2 ? argv[1] : "/dev/binder";
 
     LOG(INFO) << "Starting sm instance on " << driver;
-
+    // 打开驱动，创建了一个ProcessState对象
     sp<ProcessState> ps = ProcessState::initWithDriver(driver);
+    // 参数设置
     ps->setThreadPoolMaxThreadCount(0);
     ps->setCallRestriction(ProcessState::CallRestriction::FATAL_IF_NOT_ONEWAY);
-
+    // 禁止后台进程调度
     IPCThreadState::self()->disableBackgroundScheduling(true);
-
+    // 创建ServiceManager这个BBinder服务对象
     sp<ServiceManager> manager = sp<ServiceManager>::make(std::make_unique<Access>());
     if (!manager->addService("manager", manager, false /*allowIsolated*/, IServiceManager::DUMP_FLAG_PRIORITY_DEFAULT).isOk()) {
         LOG(ERROR) << "Could not self register servicemanager";
     }
-
+    // 向binder驱动注册自己成为上下文管理器，绑定驱动里面的handle 0
     IPCThreadState::self()->setTheContextObject(manager);
     ps->becomeContextManager();
 

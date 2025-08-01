@@ -95,6 +95,7 @@ static int load(const char *id,
         /* If the library is in system partition, no need to check
          * sphal namespace. Open it with dlopen.
          */
+        // 打开一个so动态库，拿到一个句柄
         handle = dlopen(path, RTLD_NOW);
     } else {
 #if defined(__ANDROID_RECOVERY__) || !defined(__ANDROID__)
@@ -112,7 +113,7 @@ static int load(const char *id,
 
     /* Get the address of the struct hal_module_info. */
     const char *sym = HAL_MODULE_INFO_SYM_AS_STR;
-    hmi = (struct hw_module_t *)dlsym(handle, sym);
+    hmi = (struct hw_module_t *)dlsym(handle, sym); // 找到了模块地址
     if (hmi == NULL) {
         ALOGE("load: couldn't find symbol %s", sym);
         status = -EINVAL;
@@ -120,12 +121,13 @@ static int load(const char *id,
     }
 
     /* Check that the id matches */
+    // 比较模块的id和传入的id是否一致
     if (strcmp(id, hmi->id) != 0) {
         ALOGE("load: id=%s != hmi->id=%s", id, hmi->id);
         status = -EINVAL;
         goto done;
     }
-
+    // 将句柄保存在模块的dso里面
     hmi->dso = handle;
 
     /* success */
@@ -142,7 +144,7 @@ static int load(const char *id,
         ALOGV("loaded HAL id=%s path=%s hmi=%p handle=%p",
                 id, path, hmi, handle);
     }
-
+    // 将模块指针赋值回去
     *pHmi = hmi;
 
     return status;
@@ -152,6 +154,7 @@ static int load(const char *id,
  * If path is in in_path.
  */
 static bool path_in_path(const char *path, const char *in_path) {
+    // 对传递进来的path做规范化处理
     char real_path[PATH_MAX];
     if (realpath(path, real_path) == NULL) return false;
 
@@ -174,6 +177,7 @@ static bool path_in_path(const char *path, const char *in_path) {
 static int hw_module_exists(char *path, size_t path_len, const char *name,
                             const char *subname)
 {
+    // path = /odm/lib64/hw/模块ID.默认default.so
     snprintf(path, path_len, "%s/%s.%s.so",
              HAL_LIBRARY_PATH3, name, subname);
     if (path_in_path(path, HAL_LIBRARY_PATH3) && access(path, R_OK) == 0)
@@ -210,7 +214,7 @@ int hw_get_module_by_class(const char *class_id, const char *inst,
     else
         strlcpy(name, class_id, PATH_MAX);
 #else
-    else
+    else // 将模块ID拷贝到name里面
         snprintf(name, PATH_MAX, "%s", class_id);
 #endif
 
@@ -222,8 +226,11 @@ int hw_get_module_by_class(const char *class_id, const char *inst,
      */
 
     /* First try a property specific to the class and possibly instance */
+    // 将name拼接上ro.hardware拷贝到prop_name中
     snprintf(prop_name, sizeof(prop_name), "ro.hardware.%s", name);
+    // 查找键为prop_name的属性值有没有,有的话存放在prop中
     if (property_get(prop_name, prop, NULL) > 0) {
+        // 如果有则判断这个模块是否存在，存在则直接去加载这个模块
         if (hw_module_exists(path, sizeof(path), name, prop) == 0) {
             goto found;
         }

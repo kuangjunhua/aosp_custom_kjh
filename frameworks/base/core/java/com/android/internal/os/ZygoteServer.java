@@ -150,10 +150,13 @@ class ZygoteServer {
      * @param isPrimaryZygote  If this is the primary Zygote or not.
      */
     ZygoteServer(boolean isPrimaryZygote) {
+        // 得到文件描述符
         mUsapPoolEventFD = Zygote.getUsapPoolEventFD();
 
         if (isPrimaryZygote) {
+            // 监听SystemServer发来的消息的socket
             mZygoteSocket = Zygote.createManagedSocketFromInitSocket(Zygote.PRIMARY_SOCKET_NAME);
+            // 监听 usap 池的socket
             mUsapPoolSocket =
                     Zygote.createManagedSocketFromInitSocket(
                             Zygote.USAP_POOL_PRIMARY_SOCKET_NAME);
@@ -411,7 +414,9 @@ class ZygoteServer {
             // the state of the USAP pool for this Zygote (could be a
             // regular Zygote, a WebView Zygote, or an AppZygote).
             if (mUsapPoolEnabled) {
+                // 每一个usap池子是一个进程，需要与Zygote通信，通过管道通信，取到管道数量
                 usapPipeFDs = Zygote.getUsapPipeFDs();
+                // 放要监听的文件描述符的
                 pollFDs = new StructPollfd[socketFDs.size() + 1 + usapPipeFDs.length];
             } else {
                 pollFDs = new StructPollfd[socketFDs.size()];

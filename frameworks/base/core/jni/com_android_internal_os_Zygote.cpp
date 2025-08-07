@@ -1836,6 +1836,7 @@ static void SpecializeCommon(JNIEnv* env, uid_t uid, gid_t gid, jintArray gids, 
         // allow a tie-down of the proper system server selinux domain.
         // We don't prefetch when the system server is being profiled to avoid
         // loading AOT code.
+        // 调用ZygoteInit.java中的ZygoteInit类中的getOrCreateSystemServerClassLoader方法，下同
         env->CallStaticObjectMethod(gZygoteInitClass, gGetOrCreateSystemServerClassLoader);
         if (env->ExceptionCheck()) {
             // Be robust here. The Java code will attempt to create the classloader
@@ -2165,9 +2166,9 @@ static bool RemoveUsapTableEntry(pid_t usap_pid) {
  * @return A vector of the read pipe FDs for each of the active USAPs.
  */
 std::vector<int> MakeUsapPipeReadFDVector() {
-  std::vector<int> fd_vec;
+  std::vector<int> fd_vec; // 预先分配100空间
   fd_vec.reserve(gUsapTable.size());
-
+  // 只要有效的
   for (UsapTableEntry& entry : gUsapTable) {
     auto entry_values = entry.GetValues();
 
@@ -2321,9 +2322,11 @@ pid_t zygote::ForkCommon(JNIEnv* env, bool is_system_server,
 #endif
 
     // The child process.
+    // 标记这是Zygote创建的子进程
     PreApplicationInit();
 
     // Clean up any descriptors which must be closed immediately
+    // 清除文件描述符
     DetachDescriptors(env, fds_to_close, fail_fn);
 
     // Invalidate the entries in the USAP table.
@@ -2417,7 +2420,7 @@ static jint com_android_internal_os_Zygote_nativeForkSystemServer(
   std::vector<int> fds_to_close(MakeUsapPipeReadFDVector()),
                    fds_to_ignore(fds_to_close);
 
-  fds_to_close.push_back(gUsapPoolSocketFD);
+  fds_to_close.push_back(gUsapPoolSocketFD);//子进程不需要这个文件描述符
 
   if (gUsapPoolEventFD != -1) {
     fds_to_close.push_back(gUsapPoolEventFD);
@@ -2428,20 +2431,23 @@ static jint com_android_internal_os_Zygote_nativeForkSystemServer(
       fds_to_close.push_back(gSystemServerSocketFd);
       fds_to_ignore.push_back(gSystemServerSocketFd);
   }
-
+  // 调用系统调用fork一个子进程，对子进程做一些标记，清理文件描述符
   pid_t pid = zygote::ForkCommon(env, true,
                                  fds_to_close,
                                  fds_to_ignore,
                                  true);
   if (pid == 0) {
+    // 子进程
       // System server prcoess does not need data isolation so no need to
       // know pkg_data_info_list.
+      // 对进程做定制化处理
       SpecializeCommon(env, uid, gid, gids, runtime_flags, rlimits, permitted_capabilities,
                        effective_capabilities, MOUNT_EXTERNAL_DEFAULT, nullptr, nullptr, true,
                        false, nullptr, nullptr, /* is_top_app= */ false,
                        /* pkg_data_info_list */ nullptr,
                        /* allowlisted_data_info_list */ nullptr, false, false);
   } else if (pid > 0) {
+    // 父进程（Zygote进程）
       // The zygote process checks whether the child process has died or not.
       ALOGI("System server process %d has been created", pid);
       gSystemServerPid = pid;
@@ -2615,7 +2621,7 @@ static void com_android_internal_os_Zygote_nativeInitNativeState(JNIEnv* env, jc
   /*
    * Obtain file descriptors created by init from the environment.
    */
-
+  // Zygote进程用于接收客户端的通信请求（服务端 AMS）
   gZygoteSocketFD =
       android_get_control_socket(is_primary ? "zygote" : "zygote_secondary");
   if (gZygoteSocketFD >= 0) {
@@ -2623,7 +2629,7 @@ static void com_android_internal_os_Zygote_nativeInitNativeState(JNIEnv* env, jc
   } else {
     ALOGE("Unable to fetch Zygote socket file descriptor");
   }
-
+  // Zygote进程用它来创建与管理 非特殊化usap池
   gUsapPoolSocketFD =
       android_get_control_socket(is_primary ? "usap_pool_primary" : "usap_pool_secondary");
   if (gUsapPoolSocketFD >= 0) {
@@ -2631,7 +2637,9 @@ static void com_android_internal_os_Zygote_nativeInitNativeState(JNIEnv* env, jc
   } else {
     ALOGE("Unable to fetch USAP pool socket file descriptor");
   }
-
+  
+  // gSystemServerSocketFd
+  // Zygote作为客户端给SystemServer发信息
   initUnsolSocketToSystemServer();
 
   /*

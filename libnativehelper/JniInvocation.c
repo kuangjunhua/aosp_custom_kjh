@@ -174,7 +174,9 @@ bool JniInvocationInit(struct JniInvocationImpl* instance, const char* library_n
 #else
   char* buffer = NULL;
 #endif
+  // library_name = "libart.so"
   library_name = JniInvocationGetLibrary(library_name, buffer);
+  // 得到DlLibrary对象
   DlLibrary library = DlOpenLibrary(library_name);
   if (library == NULL) {
     if (strcmp(library_name, kDefaultJniInvocationLibrary) == 0) {
@@ -196,22 +198,22 @@ bool JniInvocationInit(struct JniInvocationImpl* instance, const char* library_n
       return false;
     }
   }
-
+  // 从DlLibrary对象中得到一个方法
   DlSymbol JNI_GetDefaultJavaVMInitArgs_ = FindSymbol(library, "JNI_GetDefaultJavaVMInitArgs");
   if (JNI_GetDefaultJavaVMInitArgs_ == NULL) {
     return false;
   }
-
+  // 从DlLibrary对象中得到一个方法
   DlSymbol JNI_CreateJavaVM_ = FindSymbol(library, "JNI_CreateJavaVM");
   if (JNI_CreateJavaVM_ == NULL) {
     return false;
   }
-
+  // 从DlLibrary对象中得到一个方法
   DlSymbol JNI_GetCreatedJavaVMs_ = FindSymbol(library, "JNI_GetCreatedJavaVMs");
   if (JNI_GetCreatedJavaVMs_ == NULL) {
     return false;
   }
-
+  // 将拿到的方法放到全局对象中，后续可以使用这三个方法
   instance->jni_provider_library_name = library_name;
   instance->jni_provider_library = library;
   instance->JNI_GetDefaultJavaVMInitArgs = (jint (*)(void *)) JNI_GetDefaultJavaVMInitArgs_;

@@ -1518,6 +1518,9 @@ status_t IPCThreadState::executeCommand(int32_t cmd)
         break;
 
     case BR_SPAWN_LOOPER:
+        // 当有多个进程都要与某个进程(appX)进行通信时，本身(appX)的一个线程忙不过来，binder给appX发送一个命令，再分配一个线程（第2，3，4，...个线程，最大15个线程）
+        // 设计目的：减少资源浪费，按需创建线程，不可能一来就把全部15个线程创建出来，有可能用不到
+        // 此时创建非主线程参数为false
         mProcess->spawnPooledThread(false);
         break;
 

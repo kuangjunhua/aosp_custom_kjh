@@ -1233,7 +1233,7 @@ void AndroidRuntime::start(const char* className, const Vector<String8>& options
     //const char* kernelHack = getenv("LD_ASSUME_KERNEL");
     //ALOGD("Found LD_ASSUME_KERNEL='%s'\n", kernelHack);
 
-    /* start the virtual machine, 启动Jni的一些环境 */ 
+    /* start the virtual machine, 帮助JVM启动Jni的一些环境 */ 
     JniInvocation jni_invocation; 
     jni_invocation.Init(NULL); // 帮助JVM启动接口，一些初始化的动作：1.寻找libart.so(Java虚拟机需要的一些库)并加载进来. 2. 在so里面拿到几个重要的API，把这些API赋给jni_invocation，后续jni_invocation可以使用这些API（函数）
     JNIEnv* env;
@@ -1258,13 +1258,17 @@ void AndroidRuntime::start(const char* className, const Vector<String8>& options
     jclass stringClass;
     jobjectArray strArray;
     jstring classNameStr;
-
+    // 拿到Java的String类
     stringClass = env->FindClass("java/lang/String");
     assert(stringClass != NULL);
+    // 创建一个数组，大小为参数个数+1，并把字符串格式的Java的String类放进去
     strArray = env->NewObjectArray(options.size() + 1, stringClass, NULL);
     assert(strArray != NULL);
+    // 拿到 runtime.start("com.android.internal.os.ZygoteInit", args, zygote)传
+    // 进来的参数 com.android.internal.os.ZygoteInit 这个参数对应的ZygoteInit类
     classNameStr = env->NewStringUTF(className);
     assert(classNameStr != NULL);
+    // 把上面拿到的参数对应的Java类放到数组中
     env->SetObjectArrayElement(strArray, 0, classNameStr);
     // 用Jni的一些接口把C++的参数转换成Java参数
     for (size_t i = 0; i < options.size(); ++i) {
@@ -1486,6 +1490,7 @@ typedef void (*RegJAMProc)();
 static int register_jni_procs(const RegJNIRec array[], size_t count, JNIEnv* env)
 {
     for (size_t i = 0; i < count; i++) {
+        // 调用每一个方法，实现函数注册
         if (array[i].mProc(env) < 0) {
 #ifndef NDEBUG
             ALOGD("----------!!! %s failed to load\n", array[i].mName);
@@ -1684,8 +1689,9 @@ static const RegJNIRec gRegJNI[] = {
      * started the VM yet, they're all getting stored in the base frame
      * and never released.  Use Push/Pop to manage the storage.
      */
+    // 创建一个局部引用表
     env->PushLocalFrame(200);
-    // 注册Jni的一些处理函数
+    // 注册Jni的一些处理函数，实现在Java层调用native方法何以调用到Jni里面的方法，实现java层和C++层的互通
     if (register_jni_procs(gRegJNI, NELEM(gRegJNI), env) < 0) {
         env->PopLocalFrame(NULL);
         return -1;

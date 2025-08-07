@@ -850,6 +850,7 @@ public final class SystemServer implements Dumpable {
 
             // Within the system server, any incoming Bundles should be defused
             // to avoid throwing BadParcelableException.
+            // 设置反序列化时不要直接抛出异常
             BaseBundle.setShouldDefuse(true);
 
             // Within the system server, when parceling exceptions, include the stack trace
@@ -859,7 +860,8 @@ public final class SystemServer implements Dumpable {
             BinderInternal.disableBackgroundScheduling(true);
 
             // Increase the number of binder threads in system_server
-            BinderInternal.setMaxThreads(sMaxBinderThreads);//Binder内部的线程最大31个
+            //Binder内部的线程最大31个
+            BinderInternal.setMaxThreads(sMaxBinderThreads);
 
             // Prepare the main looper thread (this thread).
             android.os.Process.setThreadPriority(

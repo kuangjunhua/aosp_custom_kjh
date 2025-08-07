@@ -302,11 +302,13 @@ public class RuntimeInit {
      * @param argv Argument vector for main()
      * @param classLoader the classLoader to load {@className} with
      */
+    // 采用反射机制
     protected static Runnable findStaticMain(String className, String[] argv,
             ClassLoader classLoader) {
         Class<?> cl;
 
         try {
+            // 加载类
             cl = Class.forName(className, true, classLoader);
         } catch (ClassNotFoundException ex) {
             throw new RuntimeException(
@@ -316,6 +318,7 @@ public class RuntimeInit {
 
         Method m;
         try {
+            // 拿到main方法
             m = cl.getMethod("main", new Class[] { String[].class });
         } catch (NoSuchMethodException ex) {
             throw new RuntimeException(
@@ -326,6 +329,7 @@ public class RuntimeInit {
         }
 
         int modifiers = m.getModifiers();
+        // 判断方法是不是static类型，是不是public类型
         if (! (Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers))) {
             throw new RuntimeException(
                     "Main method is not public and static on " + className);
@@ -337,6 +341,7 @@ public class RuntimeInit {
          * clears up all the stack frames that were required in setting
          * up the process.
          */
+        // 创建对象
         return new MethodAndArgsCaller(m, argv);
     }
 
@@ -549,6 +554,7 @@ public class RuntimeInit {
 
         public void run() {
             try {
+                // 对于SystemServer进程来说，调用它的main方法（反射调用）
                 mMethod.invoke(null, new Object[] { mArgs });
             } catch (IllegalAccessException ex) {
                 throw new RuntimeException(ex);

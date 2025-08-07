@@ -487,6 +487,7 @@ public final class Zygote {
      */
     static int forkSystemServer(int uid, int gid, int[] gids, int runtimeFlags,
             int[][] rlimits, long permittedCapabilities, long effectiveCapabilities) {
+        // 做fork之前的一些前置工作，在JVM里面做一些操作
         ZygoteHooks.preFork();
 
         int pid = nativeForkSystemServer(
@@ -758,6 +759,7 @@ public final class Zygote {
             while (true) {
                 ZygoteCommandBuffer tmpArgBuffer = null;
                 try {
+                    // 等待AMS发过来的消息
                     sessionSocket = usapPoolSocket.accept();
                     // Block SIGTERM so we won't be killed if the Zygote flushes the USAP pool.
                     // This is safe from a race condition because the pool is only flushed after

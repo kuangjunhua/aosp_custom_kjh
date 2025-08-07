@@ -127,7 +127,7 @@ public final class ServiceManager {
 
         // Find the service manager
         // BinderInternal.getContextObject 返回一个BinderProxy 对象，这是一个Java对象
-        sServiceManager = ServiceManagerNative
+        sServiceManager = ServiceManagerNative 
                 .asInterface(Binder.allowBlocking(BinderInternal.getContextObject()));
         return sServiceManager;
     }

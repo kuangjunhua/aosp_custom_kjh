@@ -205,6 +205,7 @@ void ProcessState::startThreadPool()
                   "*startThreadPool when zero threads are requested.");
         }
         mThreadPoolStarted = true;
+        // 主线程创建时参数为true
         spawnPooledThread(true);
     }
 }

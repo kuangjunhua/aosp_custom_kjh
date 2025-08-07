@@ -140,26 +140,29 @@ public class ZygoteInit {
         beginPreload();
         bootTimingsTraceLog.traceEnd(); // BeginPreload
         bootTimingsTraceLog.traceBegin("PreloadClasses");
+        // 从文件/system/etc/preloaded-classes中逐行读取内容(是带完整包名的类名)，然后使用Class.forName加载类
         preloadClasses();
         bootTimingsTraceLog.traceEnd(); // PreloadClasses
         bootTimingsTraceLog.traceBegin("CacheNonBootClasspathClassLoaders");
         cacheNonBootClasspathClassLoaders();
         bootTimingsTraceLog.traceEnd(); // CacheNonBootClasspathClassLoaders
         bootTimingsTraceLog.traceBegin("PreloadResources");
-        preloadResources();
+        preloadResources(); // 加载图片、颜色等资源
         bootTimingsTraceLog.traceEnd(); // PreloadResources
         Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadAppProcessHALs");
         nativePreloadAppProcessHALs();
         Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
         Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadGraphicsDriver");
-        maybePreloadGraphicsDriver();
+        maybePreloadGraphicsDriver(); //加载图形驱动
         Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
-        preloadSharedLibraries();
-        preloadTextResources();
+        preloadSharedLibraries(); // 加载共享库
+        preloadTextResources(); // 加载字体库等
         // Ask the WebViewFactory to do any initialization that must run in the zygote process,
         // for memory sharing purposes.
+        // WebView准备工作：加载、初始化
         WebViewFactory.prepareWebViewInZygote();
         endPreload();
+        // 
         warmUpJcaProviders();
         Log.d(TAG, "end preload");
 
@@ -438,16 +441,20 @@ public class ZygoteInit {
      * These tend to be a few Kbytes, but are frequently in the 20-40K range, and occasionally even
      * larger.
      */
+    // 把常用的图片、xml等资源加载进内容
     private static void preloadResources() {
         try {
+            // 获取系统的资源管理器，负责加载安卓系统的所有资源文件
             mResources = Resources.getSystem();
             mResources.startPreloading();
             if (PRELOAD_RESOURCES) {
                 Log.i(TAG, "Preloading resources...");
 
                 long startTime = SystemClock.uptimeMillis();
+                // 数组
                 TypedArray ar = mResources.obtainTypedArray(
-                        com.android.internal.R.array.preloaded_drawables);
+                        com.android.internal.R.array.preloaded_drawables); // 图片
+                // N是大小
                 int N = preloadDrawables(ar);
                 ar.recycle();
                 Log.i(TAG, "...preloaded " + N + " resources in "
@@ -455,14 +462,16 @@ public class ZygoteInit {
 
                 startTime = SystemClock.uptimeMillis();
                 ar = mResources.obtainTypedArray(
-                        com.android.internal.R.array.preloaded_color_state_lists);
+                        com.android.internal.R.array.preloaded_color_state_lists); // 颜色
                 N = preloadColorStateLists(ar);
+                // 处理完之后资源回收，避免内存泄漏
                 ar.recycle();
                 Log.i(TAG, "...preloaded " + N + " resources in "
                         + (SystemClock.uptimeMillis() - startTime) + "ms.");
 
                 if (mResources.getBoolean(
                         com.android.internal.R.bool.config_freeformWindowManagement)) {
+                    // 加载一些特殊资源（多窗口等资源）        
                     startTime = SystemClock.uptimeMillis();
                     ar = mResources.obtainTypedArray(
                             com.android.internal.R.array.preloaded_freeform_multi_window_drawables);
@@ -818,7 +827,7 @@ public class ZygoteInit {
             if (hasSecondZygote(abiList)) {
                 waitForSecondaryZygote(socketName);
             }
-
+            // 子进程不需要，关闭
             zygoteServer.closeServerSocket();
             return handleSystemServerProcess(parsedArgs);
         }
@@ -957,7 +966,7 @@ public class ZygoteInit {
 
             // The select loop returns early in the child process after a fork and
             // loops forever in the zygote.
-            caller = zygoteServer.runSelectLoop(abiList);
+            caller = zygoteServer.runSelectLoop(Lisabit);
         } catch (Throwable ex) {
             Log.e(TAG, "System zygote died with fatal exception", ex);
             throw ex;

@@ -330,7 +330,7 @@ sp<IBinder> ProcessState::getStrongProxyForHandle(int32_t handle)
 
     if (handle == 0 && the_context_object != nullptr) return the_context_object;
 
-    handle_entry* e = lookupHandleLocked(handle);
+    handle_entry* e = lookupHandleLocked(handle); // 拿到0对应的handle_entry
 
     if (e != nullptr) {
         // We need to create a new BpBinder if there isn't currently one, OR we
@@ -341,7 +341,7 @@ sp<IBinder> ProcessState::getStrongProxyForHandle(int32_t handle)
         // releasing a reference on this BpBinder, and a new reference on its handle
         // arriving from the driver.
         IBinder* b = e->binder;
-        if (b == nullptr || !e->refs->attemptIncWeak(this)) {
+        if (b == nullptr || !e->refs->attemptIncWeak(this)) { // e->binder刚开始肯定为空的
             if (handle == 0) {
                 // Special case for context manager...
                 // The context manager is the only object for which we create
@@ -357,6 +357,7 @@ sp<IBinder> ProcessState::getStrongProxyForHandle(int32_t handle)
                 // Note that this is not race-free if the context manager
                 // dies while this code runs.
 
+                // 创建一个和底层通信的线程实例
                 IPCThreadState* ipc = IPCThreadState::self(); // 跟底层Binder通信的一个线程实例
 
                 CallRestriction originalCallRestriction = ipc->getCallRestriction();

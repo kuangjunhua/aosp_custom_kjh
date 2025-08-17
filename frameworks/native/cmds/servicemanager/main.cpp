@@ -120,7 +120,7 @@ int main(int argc, char** argv) {
     const char* driver = argc == 2 ? argv[1] : "/dev/binder";
 
     LOG(INFO) << "Starting sm instance on " << driver;
-    // 打开驱动，创建了一个ProcessState对象
+    // 打开驱动，内存映射，创建了一个ProcessState对象
     sp<ProcessState> ps = ProcessState::initWithDriver(driver);
     // 参数设置
     ps->setThreadPoolMaxThreadCount(0);

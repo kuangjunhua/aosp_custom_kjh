@@ -271,6 +271,7 @@ import com.android.server.am.BaseErrorDialog;
 import com.android.server.am.PendingIntentController;
 import com.android.server.am.PendingIntentRecord;
 import com.android.server.am.UserState;
+import com.android.server.dreams.DreamManagerService;
 import com.android.server.firewall.IntentFirewall;
 import com.android.server.pm.UserManagerService;
 import com.android.server.policy.PermissionPolicyInternal;
@@ -846,17 +847,28 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
     @VisibleForTesting(visibility = VisibleForTesting.Visibility.PACKAGE)
     public ActivityTaskManagerService(Context context) {
         mContext = context;
+        // 获取设备当前的工厂测试模式（如 FACTORY_TEST_OFF/LOW_LEVEL/HIGH_LEVEL），影响后续行为（例如是否允许运行非预装应用）
         mFactoryTest = FactoryTest.getMode();
+        // 获取当前进程的主线程（ActivityThread），即系统服务器的 UI 线程
         mSystemThread = ActivityThread.currentActivityThread();
+        // 获取系统 UI 的上下文（SystemUiContext），用于加载与系统 UI 相关的资源
         mUiContext = mSystemThread.getSystemUiContext();
+        // 管理客户端（如 Activity）的生命周期事务的调度和执行（例如 onStart、onResume 的跨进程调用）
         mLifecycleManager = new ClientLifecycleManager();
+        // 跟踪当前可见 Activity 所在的进程，用于优化内存管理（如避免杀死有可见 Activity 的进程）
         mVisibleActivityProcessTracker = new VisibleActivityProcessTracker(this);
+        // 注册 ATMS 的内部 API（通过 LocalService 暴露给系统其他组件，如 WindowManagerService），避免直接访问 ATMS 实例
         mInternal = new LocalService();
+        // 从系统属性 ro.opengles.version 读取 OpenGL ES 版本号，用于图形渲染兼容性判断（例如决定是否启用某些图形特性）
         GL_ES_VERSION = SystemProperties.getInt("ro.opengles.version", GL_ES_VERSION_UNDEFINED);
+        // 管理窗口层级和组织的核心类，处理多窗口模式（如分屏、自由窗口）的布局逻辑
         mWindowOrganizerController = new WindowOrganizerController(this);
+        // 专门管理任务（Task）的组织（如任务栈的创建、移动、销毁）
         mTaskOrganizerController = mWindowOrganizerController.mTaskOrganizerController;
+        // 管理 TaskFragment（任务片段，用于多 Activity 共享同一窗口容器，如 Jetpack Navigation）
         mTaskFragmentOrganizerController =
                 mWindowOrganizerController.mTaskFragmentOrganizerController;
+        // 处理返回键导航逻辑（Android 13+ 引入的预测性返回手势相关功能），协调 Activity、TaskFragment 之间的返回行为
         mBackNavigationController = new BackNavigationController();
     }
 
@@ -875,6 +887,11 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
         }
     }
 
+    // 监听电源状态：通过 PowerManagerInternal 注册回调，监听设备休眠/唤醒事件
+    // 控制 Activity 生命周期
+    //      当设备进入休眠时，暂停所有非关键 Activity（例如调用 onPause()）
+    //      当设备唤醒时，恢复前台 Activity（例如触发 onResume()）
+    // 优化任务栈处理：在低电量模式下，可能禁止后台 Activity 启动（通过 mPowerManagerInternal.setPowerState() 交互）
     public void onInitPowerManagement() {
         synchronized (mGlobalLock) {
             mTaskSupervisor.initPowerManagement();
@@ -1251,6 +1268,7 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
         final SafeActivityOptions opts = SafeActivityOptions.fromBundle(bOptions);
 
         assertPackageMatchesCallingUid(callingPackage);
+        // 确保调用者不是隔离进程
         enforceNotIsolatedCaller("startActivityAsUser");
 
         if (intent != null && intent.isSandboxActivity(mContext)) {
@@ -1524,6 +1542,7 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
             Bundle bOptions, int userId) {
         assertPackageMatchesCallingUid(callingPackage);
         final WaitResult res = new WaitResult();
+         // 确保调用者不是隔离进程
         enforceNotIsolatedCaller("startActivityAndWait");
         userId = handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(),
                 userId, "startActivityAndWait");

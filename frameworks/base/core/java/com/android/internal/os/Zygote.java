@@ -487,7 +487,7 @@ public final class Zygote {
      */
     static int forkSystemServer(int uid, int gid, int[] gids, int runtimeFlags,
             int[][] rlimits, long permittedCapabilities, long effectiveCapabilities) {
-        // 做fork之前的一些前置工作，在JVM里面做一些操作
+        // 做fork之前的一些前置工作，调用运行时里面的接口，在JVM里面做一些操作
         ZygoteHooks.preFork();
 
         int pid = nativeForkSystemServer(

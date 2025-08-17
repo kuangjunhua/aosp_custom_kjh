@@ -1860,6 +1860,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         t.traceBegin("createSubComponents");
 
         // Expose private service for system components to use.
+        // 封装到LocalServices中方便相同进程的其他服务（模块）去获取
         LocalServices.addService(PackageManagerInternal.class, new PackageManagerInternalImpl());
         LocalManagerRegistry.addManager(PackageManagerLocal.class,
                 new PackageManagerLocalImpl(this));
@@ -1867,6 +1868,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         mTestUtilityService = LocalServices.getService(TestUtilityService.class);
         mUserManager = injector.getUserManagerService();
         mUserNeedsBadging = new UserNeedsBadgingCache(mUserManager);
+        // 此处调用get方法才会真正生成子模块，延迟加载
         mComponentResolver = injector.getComponentResolver();
         mPermissionManager = injector.getPermissionManagerServiceInternal();
         mSettings = injector.getSettings();
@@ -1890,6 +1892,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         t.traceEnd();
 
         t.traceBegin("addSharedUsers");
+        // 预定义注册一组系统共享的uid，分配给特定的系统组件和服务，具有相同uid的apk可以以某种特权的身份运行和共享某些资源
         mSettings.addSharedUserLPw("android.uid.system", Process.SYSTEM_UID,
                 ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);
         mSettings.addSharedUserLPw("android.uid.phone", RADIO_UID,
@@ -2032,6 +2035,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
             t.traceEnd();
 
             t.traceBegin("read user settings");
+            // settings读取
             mFirstBoot = !mSettings.readLPw(computer,
                     mInjector.getUserManagerInternal().getUsers(
                     /* excludePartial= */ true,
@@ -2128,6 +2132,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
 
             final int[] userIds = mUserManager.getUserIds();
             PackageParser2 packageParser = mInjector.getScanningCachingPackageParser();
+            // 扫描系统预装的应用
             mOverlayConfig = mInitAppsHelper.initSystemApps(packageParser, packageSettings, userIds,
                     startTime);
             mInitAppsHelper.initNonSystemApps(packageParser, userIds, startTime);

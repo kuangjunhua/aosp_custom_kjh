@@ -150,6 +150,7 @@ public class ZygoteInit {
         preloadResources(); // 加载图片、颜色等资源
         bootTimingsTraceLog.traceEnd(); // PreloadResources
         Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadAppProcessHALs");
+        // 加载多个版本的图形分配器，兼容不同的设备
         nativePreloadAppProcessHALs();
         Trace.traceEnd(Trace.TRACE_TAG_DALVIK);
         Trace.traceBegin(Trace.TRACE_TAG_DALVIK, "PreloadGraphicsDriver");

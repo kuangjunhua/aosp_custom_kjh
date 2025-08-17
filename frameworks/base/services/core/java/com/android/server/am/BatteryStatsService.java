@@ -606,6 +606,10 @@ public final class BatteryStatsService extends IBatteryStats.Stub
      * At the time when the constructor runs, the power manager has not yet been
      * initialized.  So we initialize the low power observer later.
      */
+    // 初始化电源统计模块
+    // 跟踪功耗事件：记录 CPU 唤醒锁（WakeLock）、屏幕状态（开/关）、设备休眠等事件的耗电量
+    // 关联进程状态：将进程的 OOM 优先级（如前台/后台）与电源消耗关联，用于统计各进程的功耗占比
+    // 低电量优化：在电池电量低时，通过 BatteryStatsImpl 触发 AMS 的进程清理策略（如杀死后台进程）
     public void initPowerManagement() {
         final PowerManagerInternal powerMgr = LocalServices.getService(PowerManagerInternal.class);
         powerMgr.registerLowPowerModeObserver(this);

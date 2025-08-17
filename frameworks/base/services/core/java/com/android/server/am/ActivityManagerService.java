@@ -449,6 +449,7 @@ import com.android.server.UserspaceRebootLogger;
 import com.android.server.Watchdog;
 import com.android.server.am.ComponentAliasResolver.Resolution;
 import com.android.server.am.LowMemDetector.MemFactor;
+import com.android.server.am.ProcessList.ProcStartHandler;
 import com.android.server.appop.AppOpsService;
 import com.android.server.compat.PlatformCompat;
 import com.android.server.contentcapture.ContentCaptureManagerInternal;
@@ -2009,23 +2010,36 @@ public class ActivityManagerService extends IActivityManager.Stub
 
     public void setSystemProcess() {
         try {
+            // 1. 注册系统服务到 ServiceManager
+            // 将 AMS 及相关服务注册为 Binder 服务，供其他进程调用
+            // 注册 AMS 自身为 activity 服务，允许应用通过 getSystemService(Context.ACTIVITY_SERVICE) 访问。allowIsolated=true：允许隔离进程（如 WebView 沙盒）调用。DUMP_FLAG_*：定义服务在 dumpsys 命令中的输出优先级
             ServiceManager.addService(Context.ACTIVITY_SERVICE, this, /* allowIsolated= */ true,
                     DUMP_FLAG_PRIORITY_CRITICAL | DUMP_FLAG_PRIORITY_NORMAL | DUMP_FLAG_PROTO);
+            // 进程统计服务（procstats），记录进程内存和CPU历史数据
             ServiceManager.addService(ProcessStats.SERVICE_NAME, mProcessStats);
+            // 内存信息 binder 服务（MemBinder），提供 dumpsys meminfo 数据
             ServiceManager.addService("meminfo", new MemBinder(this), /* allowIsolated= */ false,
                     DUMP_FLAG_PRIORITY_HIGH);
+            // 图形性能 binder 服务，用于 GPU 使用统计
             ServiceManager.addService("gfxinfo", new GraphicsBinder(this));
             ServiceManager.addService("dbinfo", new DbBinder(this));
             mAppProfiler.setCpuInfoService();
+            // 权限控制服务（PermissionController），管理运行时权限
             ServiceManager.addService("permission", new PermissionController(this));
+            // 进程信息服务，提供进程状态查询
             ServiceManager.addService("processinfo", new ProcessInfoService(this));
             ServiceManager.addService("cacheinfo", new CacheBinder(this));
 
+            // 2. 设置系统应用信息
+            // 获取系统包信息：从包管理器读取 android 包（即 framework-res.apk）的 ApplicationInfo
             ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(
                     "android", STOCK_PM_FLAGS | MATCH_SYSTEM_ONLY);
+            // 安装到系统进程：将系统应用的资源、ClassLoader 绑定到当前进程（system_server），使系统服务能访问 Android 框架资源
             mSystemThread.installSystemApplicationInfo(info, getClass().getClassLoader());
 
             synchronized (this) {
+                // 3. 创建并注册系统进程的 ProcessRecord
+                // 创建进程记录：为 system_server 生成一个 ProcessRecord（进程管理的数据结构）
                 ProcessRecord app = mProcessList.newProcessRecordLocked(info, info.processName,
                         false,
                         0,
@@ -2033,13 +2047,22 @@ public class ActivityManagerService extends IActivityManager.Stub
                         0,
                         null,
                         new HostingRecord(HostingRecord.HOSTING_TYPE_SYSTEM));
+                // 标记为持久进程（不会被杀死）
                 app.setPersistent(true);
+                // 绑定当前进程的 PID
                 app.setPid(MY_PID);
+                // 设置 OOM 调整值为 -900（系统级优先级，避免被 LMK 杀死）
                 app.mState.setMaxAdj(ProcessList.SYSTEM_ADJ);
+                // 关联 ApplicationThread（用于跨进程通信）和进程统计
                 app.makeActive(mSystemThread.getApplicationThread(), mProcessStats);
                 app.mProfile.addHostingComponentType(HOSTING_COMPONENT_TYPE_SYSTEM);
+
+                // 4. 更新进程优先级与 LRU 列表
+                // 将 PID 映射到 ProcessRecord
                 addPidLocked(app);
+                // 加入 LRU 列表（但系统进程实际不受 LRU 影响）
                 updateLruProcessLocked(app, false, null);
+                // 强制更新 OOM 优先级
                 updateOomAdjLocked(OOM_ADJ_REASON_SYSTEM_INIT);
             }
         } catch (PackageManager.NameNotFoundException e) {
@@ -2048,6 +2071,8 @@ public class ActivityManagerService extends IActivityManager.Stub
         }
 
         // Start watching app ops after we and the package manager are up and running.
+        // 5. 监控后台运行与摄像头权限
+        // 5.1 后台运行限制监控。监听 OP_RUN_IN_BACKGROUND 权限变更。当应用被禁止后台运行时，触发 runInBackgroundDisabled(uid) 杀死其后台进程
         mAppOpsService.startWatchingMode(AppOpsManager.OP_RUN_IN_BACKGROUND, null,
                 new IAppOpsCallback.Stub() {
                     @Override public void opChanged(int op, int uid, String packageName) {
@@ -2061,6 +2086,8 @@ public class ActivityManagerService extends IActivityManager.Stub
                 });
 
         final int[] cameraOp = {AppOpsManager.OP_CAMERA};
+        // 5.2 摄像头使用状态监控
+        // 当摄像头被激活/停用时，通过 cameraActiveChanged(uid, active) 通知 AMS，可能触发：调整进程优先级（如摄像头使用中提升优先级）、更新电源管理策略（防止休眠）
         mAppOpsService.startWatchingActive(cameraOp, new IAppOpsActiveCallback.Stub() {
             @Override
             public void opActiveChanged(int op, int uid, String packageName, String attributionTag,
@@ -2083,6 +2110,7 @@ public class ActivityManagerService extends IActivityManager.Stub
      * @param usageStatsManager shouldn't be null
      */
     public void setUsageStatsManager(@NonNull UsageStatsManagerInternal usageStatsManager) {
+        // AMS服务内部保存该服务的引用。用于记录应用生命周期事件和统计进程运行时间
         mUsageStatsService = usageStatsManager;
         mActivityTaskManager.setUsageStatsManager(usageStatsManager);
     }
@@ -2492,36 +2520,50 @@ public class ActivityManagerService extends IActivityManager.Stub
     // Note: This method is invoked on the main thread but may need to attach various
     // handlers to other threads.  So take care to be explicit about the looper.
     public ActivityManagerService(Context systemContext, ActivityTaskManagerService atm) {
+        // 1. 基础初始化：初始化基础环境，确保后续操作能访问正确的线程和资源
+        // 安装全局锁，防止死锁
         LockGuard.installLock(this, LockGuard.INDEX_ACTIVITY);
         mInjector = new Injector(systemContext);
+        // 保存系统上下文
         mContext = systemContext;
-
+        // 检测工厂测试模式
         mFactoryTest = FactoryTest.getMode();
+        // 获取系统主线程
         mSystemThread = ActivityThread.currentActivityThread();
+        // 获取系统UI上下文
         mUiContext = mSystemThread.getSystemUiContext();
 
         Slog.i(TAG, "Memory class: " + ActivityManager.staticGetMemoryClass());
 
+        // 2. 线程与消息队列：创建独立线程处理 AMS 的核心逻辑（如进程生命周期、广播分发），避免阻塞系统主线程
         mHandlerThread = new ServiceThread(TAG,
                 THREAD_PRIORITY_FOREGROUND, false /*allowIo*/);
+        // 启动AMS主线程
         mHandlerThread.start();
+        // 主Handler
         mHandler = new MainHandler(mHandlerThread.getLooper());
         mUiHandler = mInjector.getUiHandler(this);
-
+        // 进程启动专用线程
         mProcStartHandlerThread = new ServiceThread(TAG + ":procStart",
                 THREAD_PRIORITY_FOREGROUND, false /* allowIo */);
         mProcStartHandlerThread.start();
+        // 进程启动Handler
         mProcStartHandler = new ProcStartHandler(this, mProcStartHandlerThread.getLooper());
 
         mConstants = new ActivityManagerConstants(mContext, this, mHandler);
         final ActiveUids activeUids = new ActiveUids(this, true /* postChangesToAtm */);
         mPlatformCompat = (PlatformCompat) ServiceManager.getService(
                 Context.PLATFORM_COMPAT_SERVICE);
+        // 3. 核心服务组件
+        // 进程与内存管理：管理应用进程的生命周期、优先级调整和内存回收策略
         mProcessList = mInjector.getProcessList(this);
+        // 初始化进程列表
         mProcessList.init(this, activeUids, mPlatformCompat);
+        // 进程CPU/内存分析器
         mAppProfiler = new AppProfiler(this, BackgroundThread.getHandler().getLooper(),
                 new LowMemDetector(this));
         mPhantomProcessList = new PhantomProcessList(this);
+        // OOM（内存不足）调节器
         mOomAdjuster = new OomAdjuster(this, mProcessList, activeUids);
 
         // Broadcast policy parameters
@@ -2542,7 +2584,7 @@ public class ActivityManagerService extends IActivityManager.Stub
         mEnableOffloadQueue = SystemProperties.getBoolean(
                 "persist.device_config.activity_manager_native_boot.offload_queue_enabled", true);
         mEnableModernQueue = foreConstants.MODERN_QUEUE_ENABLED;
-
+        // 初始化广播队列：优化广播分发效率，区分不同优先级的广播（如前台广播优先处理）
         if (mEnableModernQueue) {
             mBroadcastQueues = new BroadcastQueue[1];
             mBroadcastQueues[0] = new BroadcastQueueModernImpl(this, mHandler,
@@ -2558,24 +2600,30 @@ public class ActivityManagerService extends IActivityManager.Stub
             mBroadcastQueues[BROADCAST_QUEUE_FG_OFFLOAD] = new BroadcastQueueImpl(this, mHandler,
                     "offload_fg", foreConstants, true, ProcessList.SCHED_GROUP_BACKGROUND);
         }
+        // 其他关键服务： 支撑 Android 核心组件的运行（如 Service、ContentProvider）和系统监控。
 
+
+        // Active服务管理
         mServices = new ActiveServices(this);
+        // ContentProvider管理
         mCpHelper = new ContentProviderHelper(this, true);
         mPackageWatchdog = PackageWatchdog.getInstance(mUiContext);
+        // 应用崩溃处理
         mAppErrors = new AppErrors(mUiContext, this, mPackageWatchdog);
         mUidObserverController = new UidObserverController(mUiHandler);
 
         final File systemDir = SystemServiceManager.ensureSystemDir();
 
         // TODO: Move creation of battery stats service outside of activity manager service.
+        // 电池统计服务
         mBatteryStatsService = BatteryStatsService.create(systemContext, systemDir,
                 BackgroundThread.getHandler(), this);
         mOnBattery = DEBUG_POWER ? true
                 : mBatteryStatsService.getActiveStatistics().getIsOnBattery();
         mOomAdjProfiler.batteryPowerChanged(mOnBattery);
-
+        // 进程统计服务
         mProcessStats = new ProcessStatsService(this, new File(systemDir, "procstats"));
-
+        // AppOps权限管理
         mAppOpsService = mInjector.getAppOpsService(new File(systemDir, "appops_accesses.xml"),
                 new File(systemDir, "appops.xml"), mHandler);
 
@@ -2592,23 +2640,32 @@ public class ActivityManagerService extends IActivityManager.Stub
         mUseFifoUiScheduling = SystemProperties.getInt("sys.use_fifo_ui", 0) != 0;
 
         mTrackingAssociations = "1".equals(SystemProperties.get("debug.track-associations"));
+        // Intent过滤防火墙
         mIntentFirewall = new IntentFirewall(new IntentFirewallInterface(), mHandler);
-
+        // 4. 与 ActivityTaskManagerService (ATMS) 的交互
+        // 双向依赖：AMS 需要通过 ATMS 查询 Activity 和任务栈状态（如判断进程是否包含前台 Activity）
+        // 职责分离：ATMS 负责 Activity 任务栈管理，AMS 负责进程生命周期，通过引用协作
+        // 保存ATMS实例
         mActivityTaskManager = atm;
+        // 初始化ATMS依赖项
         mActivityTaskManager.initialize(mIntentFirewall, mPendingIntentController,
                 DisplayThread.get().getLooper());
+        // 获取ATMS内部API
         mAtmInternal = LocalServices.getService(ActivityTaskManagerInternal.class);
-
+        // 隐藏API黑名单
         mHiddenApiBlacklist = new HiddenApiSettings(mHandler, mContext);
-
+        // 6.系统监控与调试： 确保系统稳定性，快速定位问题
+        // 注册Watchdog监控AMS是否死锁
         Watchdog.getInstance().addMonitor(this);
         Watchdog.getInstance().addThread(mHandler);
 
         // bind background threads to little cores
         // this is expected to fail inside of framework tests because apps can't touch cpusets directly
         // make sure we've already adjusted system_server's internal view of itself first
+        // 7. // 初始化进程优先级
         updateOomAdjLocked(OOM_ADJ_REASON_SYSTEM_INIT);
         try {
+            // // 绑定线程到小核（省电优化）
             Process.setThreadGroupAndCpuset(BackgroundThread.get().getThreadId(),
                     Process.THREAD_GROUP_SYSTEM);
             Process.setThreadGroupAndCpuset(
@@ -2619,7 +2676,9 @@ public class ActivityManagerService extends IActivityManager.Stub
         }
 
         mInternal = new LocalService();
+        // 跟踪Activity启动的UID
         mPendingStartActivityUids = new PendingStartActivityUids();
+        // 错误日志追踪
         mTraceErrorLogger = new TraceErrorLogger();
         mComponentAliasResolver = new ComponentAliasResolver(this);
     }
@@ -2645,10 +2704,21 @@ public class ActivityManagerService extends IActivityManager.Stub
         mAppProfiler.onActivityManagerInternalAdded();
         CriticalEventLog.init();
     }
-
+    // 建立 AMS 与电源管理相关的子系统（ATMS、电池统计、PowerManager）的协作链路，确保系统在电源事件（如休眠、唤醒）时能正确响应
     public void initPowerManagement() {
+        // 初始化ATMS的电源管理：监听设备休眠/唤醒事件，休眠时暂停所有非关键Activity、唤醒时恢复前台Activity，低电量模式下禁止后台Activity启动
         mActivityTaskManager.onInitPowerManagement();
+        // 初始化电池统计的电源管理
         mBatteryStatsService.initPowerManagement();
+        // 获取电源管理内部服务
+        // 获取 PowerManager 内部接口
+            // PowerManagerInternal 是系统内部用于控制电源策略的服务，提供以下能力：
+                // 强制设备进入/退出休眠（setPowerState()）。
+                // 管理唤醒锁（WakeLock）的优先级和超时。
+                // 监听电源状态变化（通过 registerLowPowerModeObserver()）
+        // 与 AMS 的协作
+        // AMS 通过此接口查询当前电源状态（如是否处于低电量模式）。
+        // 在系统即将休眠时，AMS 会通知 ATMS 暂停 Activity，并停止后台服务。
         mLocalPowerManager = LocalServices.getService(PowerManagerInternal.class);
     }
 
@@ -8041,8 +8111,7 @@ public class ActivityManagerService extends IActivityManager.Stub
 
     public final void enterSafeMode() {
         synchronized(this) {
-            // It only makes sense to do this before the system is ready
-            // and started launching other packages.
+            // 只有在系统准备就绪并开始启动其他包之前，才有意义执行此操作。
             if (!mSystemReady) {
                 try {
                     AppGlobals.getPackageManager().enterSafeMode();
@@ -9225,6 +9294,7 @@ public class ActivityManagerService extends IActivityManager.Stub
     /**
      * Schedule to handle any pending system_server WTFs.
      */
+    //  异步处理系统服务进程（system_server）中暂存的严重错误报告
     public void schedulePendingSystemServerWtfs(
             final LinkedList<Pair<String, ApplicationErrorReport.CrashInfo>> list) {
         mHandler.post(() -> handlePendingSystemServerWtfs(list));
@@ -19515,7 +19585,7 @@ public class ActivityManagerService extends IActivityManager.Stub
      */
     public void updateSystemUiContext() {
         final PackageManagerInternal packageManagerInternal = getPackageManagerInternal();
-
+        // 获取系统框架包的完整信息（包括资源路径、共享库路径等），这些信息用于构建 SystemUI 的上下文环境
         ApplicationInfo ai = packageManagerInternal.getApplicationInfo("android",
                 GET_SHARED_LIBRARY_FILES, Binder.getCallingUid(), UserHandle.USER_SYSTEM);
         ActivityThread.currentActivityThread().handleSystemApplicationInfoChanged(ai);

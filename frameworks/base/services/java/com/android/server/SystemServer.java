@@ -1119,6 +1119,7 @@ public final class SystemServer implements Dumpable {
         // Wait for installd to finish starting up so that it has a chance to
         // create critical directories such as /data/user with the appropriate
         // permissions.  We need this to complete before we initialize other services.
+        // 等待installd完成启动，以便它有机会创建具有适当权限的关键目录，如/data/user。我们需要在初始化其他服务之前完成此操作。
         t.traceBegin("StartInstaller");
         Installer installer = mSystemServiceManager.startService(Installer.class);
         t.traceEnd();
@@ -1199,8 +1200,8 @@ public final class SystemServer implements Dumpable {
         mSystemServiceManager.startService(HintManagerService.class);
         t.traceEnd();
 
-        // Now that the power manager has been started, let the activity manager
-        // initialize power management features.
+        // Now that the power manager has been started, let the activity manager initialize power management features.
+        // 初始化电源管理器
         t.traceBegin("InitPowerManagement");
         mActivityManagerService.initPowerManagement();
         t.traceEnd();
@@ -1312,7 +1313,7 @@ public final class SystemServer implements Dumpable {
         AttributeCache.init(mSystemContext);
         t.traceEnd();
 
-        // Set up the Application instance for the system process and get started.
+        // 为系统进程设置应用程序实例并开始。
         t.traceBegin("SetSystemProcess");
         mActivityManagerService.setSystemProcess();
         t.traceEnd();
@@ -1320,8 +1321,7 @@ public final class SystemServer implements Dumpable {
         // The package receiver depends on the activity service in order to get registered.
         platformCompat.registerPackageReceiver(mSystemContext);
 
-        // Complete the watchdog setup with an ActivityManager instance and listen for reboots
-        // Do this only after the ActivityManagerService is properly started as a system process
+        // 使用ActivityManager实例完成监视程序设置，并侦听重新启动。只有在ActivityManagerService作为系统进程正确启动后才能执行此操作
         t.traceBegin("InitWatchdog");
         watchdog.init(mSystemContext, mActivityManagerService);
         t.traceEnd();
@@ -1348,6 +1348,7 @@ public final class SystemServer implements Dumpable {
 
         if (SystemProperties.getInt("persist.sys.displayinset.top", 0) > 0) {
             // DisplayManager needs the overlay immediately.
+            // 更新系统 UI（SystemUI）进程的上下文信息，确保 SystemUI 能够正确访问框架资源和其他系统级功能
             mActivityManagerService.updateSystemUiContext();
             LocalServices.getService(DisplayManagerInternal.class).onOverlayChanged();
         }
@@ -1379,6 +1380,8 @@ public final class SystemServer implements Dumpable {
         // Tracks application usage stats.
         t.traceBegin("StartUsageService");
         mSystemServiceManager.startService(UsageStatsService.class);
+        // 作用是将 UsageStatsManagerInternal 服务实例注入到 AMS 和 ATMS 中，以便这两个核心服务能够统计和管理应用的使用行为数据
+        // 核心作用是为 AMS 和 ATMS 绑定应用使用统计功能。AMS 能上报 进程级 使用数据（如启动/停止）。ATMS 能上报 Activity 级 行为数据（如界面切换）
         mActivityManagerService.setUsageStatsManager(
                 LocalServices.getService(UsageStatsManagerInternal.class));
         t.traceEnd();
@@ -1563,6 +1566,7 @@ public final class SystemServer implements Dumpable {
             t.traceEnd();
 
             t.traceBegin("InstallSystemProviders");
+            // 安装系统提供的ContentProvidres。为系统进程（system_server）安装系统级 ContentProvider 并初始化相关的系统配置和观察者
             mActivityManagerService.getContentProviderHelper().installSystemProviders();
             // Device configuration used to be part of System providers
             mSystemServiceManager.startService(UPDATABLE_DEVICE_CONFIG_SERVICE_CLASS);
@@ -2791,6 +2795,8 @@ public final class SystemServer implements Dumpable {
         }
 
         if (safeMode) {
+            // 如果处于安全模式，显示安全模式覆盖层
+            // 在安全模式（Safe Mode）下显示一个系统级悬浮窗，用于向用户直观提示当前设备处于安全模式状态
             mActivityManagerService.showSafeModeOverlay();
         }
 
@@ -2913,12 +2919,15 @@ public final class SystemServer implements Dumpable {
         mActivityManagerService.systemReady(() -> {
             Slog.i(TAG, "Making services ready");
             t.traceBegin("StartActivityManagerReadyPhase");
+            // 启动ssm的下一个阶段
             mSystemServiceManager.startBootPhase(t, SystemService.PHASE_ACTIVITY_MANAGER_READY);
             t.traceEnd();
             t.traceBegin("StartObservingNativeCrashes");
             try {
+                // 开始监控本地崩溃
                 mActivityManagerService.startObservingNativeCrashes();
             } catch (Throwable e) {
+                // 报告错误
                 reportWtf("observing native crashes", e);
             }
             t.traceEnd();

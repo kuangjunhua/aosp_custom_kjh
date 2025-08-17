@@ -126,6 +126,7 @@ public final class ServiceManager {
         }
 
         // Find the service manager
+        // 先拿到servicemanager的IBinder对象(C++)
         // BinderInternal.getContextObject 返回一个BinderProxy 对象，这是一个Java对象
         sServiceManager = ServiceManagerNative 
                 .asInterface(Binder.allowBlocking(BinderInternal.getContextObject()));
@@ -213,6 +214,7 @@ public final class ServiceManager {
     public static void addService(String name, IBinder service, boolean allowIsolated,
             int dumpPriority) {
         try {
+            // getIServiceManager() 返回的是 ServiceManagerProxy
             // 调用的是ServiceManagerProxy的addService
             getIServiceManager().addService(name, service, allowIsolated, dumpPriority);
         } catch (RemoteException e) {

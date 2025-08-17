@@ -3703,7 +3703,9 @@ final class InstallPackageHelper {
     public void installPackagesFromDir(File scanDir, int parseFlags,
             int scanFlags, PackageParser2 packageParser, ExecutorService executorService,
             @Nullable ApexManager.ActiveApexInfo apexInfo) {
+        // 获取目录下的文件
         final File[] files = scanDir.listFiles();
+        // 文件为空直接返回
         if (ArrayUtils.isEmpty(files)) {
             Log.d(TAG, "No files in app dir " + scanDir);
             return;
@@ -3736,6 +3738,7 @@ final class InstallPackageHelper {
 
         // Process results one by one
         for (; fileCount > 0; fileCount--) {
+            // 拿到解析结果
             ParallelPackageParser.ParseResult parseResult = parallelPackageParser.take();
             Throwable throwable = parseResult.throwable;
             int errorCode = PackageManager.INSTALL_SUCCEEDED;
@@ -3897,7 +3900,7 @@ final class InstallPackageHelper {
                 disabledPkgSetting.setApexModuleName(activeApexInfo.apexModuleName);
             }
         }
-
+        // 扫描系统包，拿到包信息
         final Pair<ScanResult, Boolean> scanResultPair = scanSystemPackageLI(
                 parsedPackage, parseFlags, scanFlags, user);
         final ScanResult scanResult = scanResultPair.first;
@@ -4242,6 +4245,7 @@ final class InstallPackageHelper {
         // 1) when scanning system, force re-collect only if system is upgrading.
         // 2) when scanning /data, force re-collect only if the app is privileged (updated from
         // preinstall, or treated as privileged, e.g. due to shared user ID).
+        // 是否强制去处理
         final boolean forceCollect = scanSystemPartition ? isUpgrade
                 : PackageManagerServiceUtils.isApkVerificationForced(pkgSetting);
         if (DEBUG_VERIFY && forceCollect) {

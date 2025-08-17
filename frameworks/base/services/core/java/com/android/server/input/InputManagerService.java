@@ -442,37 +442,49 @@ public class InputManagerService extends IInputManager.Stub
 
     @VisibleForTesting
     InputManagerService(Injector injector) {
-        // The static association map is accessed by both java and native code, so it must be
-        // initialized before initializing the native service.
+        // The static association map is accessed by both java and native code, so it must be initialized before initializing the native service.
+        // 1. 加载预定义的输入设备端口静态映射关系，这些配置会被Java层和Native层共用
         mStaticAssociations = loadStaticInputPortAssociations();
-
+        // 2. 初始化核心依赖组件
+        // 通过Injector获取上下文Context和消息循环Looper
         mContext = injector.getContext();
+        // 创建专属的InputManagerHandler用于处理消息
         mHandler = new InputManagerHandler(injector.getLooper());
+        // 获取Native层服务实例mNative（核心桥梁）
         mNative = injector.getNativeService(this);
+
+        // 3. 构建关键功能模块
+        // 输入设置观察者：InputSettingsObserver监听系统设置变化（如手势开关等）
         mSettingsObserver = new InputSettingsObserver(mContext, mHandler, this, mNative);
+        // 键盘布局管理：KeyboardLayoutManager处理物理键盘布局配置
         mKeyboardLayoutManager = new KeyboardLayoutManager(mContext, mNative, mDataStore,
                 injector.getLooper());
+        // 电池状态管理：BatteryController监控输入设备（如蓝牙设备）电量
         mBatteryController = new BatteryController(mContext, mNative, injector.getLooper(),
                 injector.getUEventManager());
+        // 键盘背光控制：根据功能开关决定是否初始化KeyboardBacklightController
         mKeyboardBacklightController = InputFeatureFlagProvider.isKeyboardBacklightControlEnabled()
                 ? new KeyboardBacklightController(mContext, mNative, mDataStore,
                         injector.getLooper(), injector.getUEventManager())
                 : new KeyboardBacklightControllerInterface() {};
+        // 按键重映射：KeyRemapper实现按键自定义功能
         mKeyRemapper = new KeyRemapper(mContext, mNative, mDataStore, injector.getLooper());
-
+        // 4. 读取系统配置项
+        // 检查是否使用输入事件处理音频插孔事件（config_useDevInputEventForAudioJack）
         mUseDevInputEventForAudioJack =
                 mContext.getResources().getBoolean(R.bool.config_useDevInputEventForAudioJack);
         Slog.i(TAG, "Initializing input manager, mUseDevInputEventForAudioJack="
                 + mUseDevInputEventForAudioJack);
-
+        // 获取双击手势的启用配置文件路径（config_doubleTouchGestureEnableFile）
         String doubleTouchGestureEnablePath = mContext.getResources().getString(
                 R.string.config_doubleTouchGestureEnableFile);
         mDoubleTouchGestureEnableFile = TextUtils.isEmpty(doubleTouchGestureEnablePath) ? null :
             new File(doubleTouchGestureEnablePath);
-
+        // 从DeviceConfig读取速度跟踪策略（VELOCITYTRACKER_STRATEGY）
         mVelocityTrackerStrategy = DeviceConfig.getProperty(
                 NAMESPACE_INPUT_NATIVE_BOOT, VELOCITYTRACKER_STRATEGY_PROPERTY);
-
+        // 5. 注册本地服务
+        // 通过Injector注册LocalService，暴露内部API给系统其他组件使用
         injector.registerLocalService(new LocalService());
     }
 

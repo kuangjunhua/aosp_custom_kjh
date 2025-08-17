@@ -1680,6 +1680,7 @@ static NativeInputManager* getNativeInputManager(JNIEnv* env, jobject clazz) {
 
 static jlong nativeInit(JNIEnv* env, jclass /* clazz */, jobject serviceObj,
                         jobject messageQueueObj) {
+    // 参数转换：Java层转为C++层
     sp<MessageQueue> messageQueue = android_os_MessageQueue_getMessageQueue(env, messageQueueObj);
     if (messageQueue == nullptr) {
         jniThrowRuntimeException(env, "MessageQueue is not initialized.");
@@ -1689,8 +1690,7 @@ static jlong nativeInit(JNIEnv* env, jclass /* clazz */, jobject serviceObj,
     static std::once_flag nativeInitialize;
     NativeInputManager* im = nullptr;
     std::call_once(nativeInitialize, [&]() {
-        // Create the NativeInputManager, which should not be destroyed or deallocated for the
-        // lifetime of the process.
+        // 创建NativeInputManager，在进程的生命周期内不应销毁或释放它。
         im = new NativeInputManager(serviceObj, messageQueue->getLooper());
     });
     LOG_ALWAYS_FATAL_IF(im == nullptr, "NativeInputManager was already initialized.");

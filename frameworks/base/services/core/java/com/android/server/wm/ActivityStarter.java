@@ -689,7 +689,6 @@ class ActivityStarter {
             if (mRequest.intent != null && mRequest.intent.hasFileDescriptors()) {
                 throw new IllegalArgumentException("File descriptors passed in Intent");
             }
-
             final LaunchingState launchingState;
             synchronized (mService.mGlobalLock) {
                 final ActivityRecord caller = ActivityRecord.forTokenLocked(mRequest.resultTo);
@@ -703,6 +702,7 @@ class ActivityStarter {
             // to do so here. If the caller is already holding the WM lock here,
             // and we need to check dynamic Uri permissions, then we're forced
             // to assume those permissions are denied to avoid deadlocking.
+            // 解析Intent
             if (mRequest.activityInfo == null) {
                 mRequest.resolveActivity(mSupervisor);
             }

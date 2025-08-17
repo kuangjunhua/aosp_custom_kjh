@@ -172,9 +172,10 @@ final class InitAppsHelper {
             int[] userIds, long startTime) {
         // Prepare apex package info before scanning APKs, this information is needed when
         // scanning apk in apex.
+        // 扫描apex包
         final List<ApexManager.ScanResult> apexScanResults = scanApexPackagesTraced(packageParser);
         mApexManager.notifyScanResult(apexScanResults);
-
+        // 扫描system dir
         scanSystemDirs(packageParser, mExecutorService);
         // Parse overlay configuration files to set default enable state, mutability, and
         // priority of system overlays.
@@ -313,12 +314,14 @@ final class InitAppsHelper {
      */
     @GuardedBy({"mPm.mInstallLock", "mPm.mLock"})
     private void scanSystemDirs(PackageParser2 packageParser, ExecutorService executorService) {
+        //                      搜索  /system/framework 目录
         File frameworkDir = new File(Environment.getRootDirectory(), "framework");
 
         // Collect vendor/product/system_ext overlay packages. (Do this before scanning
         // any apps.)
         // For security and version matching reason, only consider overlay packages if they
         // reside in the right directory.
+        // 判断system目录下有没有名叫overlay的目录，有的话就扫描这个目录
         for (int i = mDirsToScanAsSystem.size() - 1; i >= 0; i--) {
             final ScanPartition partition = mDirsToScanAsSystem.get(i);
             if (partition.getOverlayFolder() == null) {
@@ -328,7 +331,7 @@ final class InitAppsHelper {
                     mSystemParseFlags, mSystemScanFlags | partition.scanFlag,
                     packageParser, executorService, partition.apexInfo);
         }
-
+        // 扫描/system/framework目录
         scanDirTracedLI(frameworkDir,
                 mSystemParseFlags, mSystemScanFlags | SCAN_NO_DEX | SCAN_AS_PRIVILEGED,
                 packageParser, executorService, null);
@@ -336,9 +339,10 @@ final class InitAppsHelper {
             throw new IllegalStateException(
                     "Failed to load frameworks package; check log for warnings");
         }
-
+        // 扫描  /system/priv-app  目录 不止扫system分区，还会扫其他分区
         for (int i = 0, size = mDirsToScanAsSystem.size(); i < size; i++) {
             final ScanPartition partition = mDirsToScanAsSystem.get(i);
+            // 扫描 /system/app目录
             if (partition.getPrivAppFolder() != null) {
                 scanDirTracedLI(partition.getPrivAppFolder(),
                         mSystemParseFlags,

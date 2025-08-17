@@ -771,6 +771,7 @@ jobject javaObjectForIBinder(JNIEnv* env, const sp<IBinder>& val)
     nativeData->mOrgue = new DeathRecipientList;
     nativeData->mObject = val; // BpBinder
     // BinderProxy.java->getInstance(nativeData, BpBinder) 创建了一个BinderProxy对象
+    // frameworks\base\core\java\android\os\BinderProxy.java -> getInstance方法
     jobject object = env->CallStaticObjectMethod(gBinderProxyOffsets.mClass,
             gBinderProxyOffsets.mGetInstance, (jlong) nativeData, (jlong) val.get());
     if (env->ExceptionCheck()) {

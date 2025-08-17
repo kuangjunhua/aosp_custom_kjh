@@ -1316,9 +1316,13 @@ public class ContentProviderHelper {
 
     public final void installSystemProviders() {
         List<ProviderInfo> providers;
+        // 1. 获取系统进程的 ProviderInfo 列表
+        // 从包管理器中查询系统进程（system_server）声明的所有 ContentProvider 信息（ProviderInfo）
         synchronized (mService) {
+            // 获取进程名为 "system"、UID 为 SYSTEM_UID（通常为 1000）的 ProcessRecord
             ProcessRecord app = mService.mProcessList
                     .getProcessNamesLOSP().get("system", SYSTEM_UID);
+            // 生成该系统进程的 ProviderInfo 列表，过滤非系统 Provider（通过 FLAG_SYSTEM 标志校验）
             providers = generateApplicationProvidersLocked(app);
             if (providers != null) {
                 for (int i = providers.size() - 1; i >= 0; i--) {
@@ -1333,19 +1337,28 @@ public class ContentProviderHelper {
         }
 
         if (providers != null) {
+            // 2. 安装系统Provider到系统进程
+            // 通过 ActivityThread（系统进程的主线程）将 Provider 安装到 system_server 的上下文中
             mService.mSystemThread.installSystemProviders(providers);
         }
         synchronized (this) {
+            // 3. 标记系统Provider安装完成，防止重复安装
             mSystemProvidersInstalled = true;
         }
-
+        // 4. 初始化系统配置和观察者
+        // 启动 AMS 常量配置。从 Settings.Global 中读取 AMS 的动态配置参数（如后台进程限制、ANR 超时时间等），并监听其变化
         mService.mConstants.start(mService.mContext.getContentResolver());
+        // 核心设置观察者。 监听系统核心设置（如字体大小、动画缩放）的变化，并同步到所有应用进程
         mService.mCoreSettingsObserver = new CoreSettingsObserver(mService);
+        // ATMS 的系统 Provider 安装。 ATMS 可能需要安装自己的 Provider（如任务栈状态管理）
         mService.mActivityTaskManager.installSystemProviders();
+        // 开发者设置观察者。监控开发者选项（如 GPU 渲染、调试模式）的开关状态
         new DevelopmentSettingsObserver(); // init to observe developer settings enable/disable
+        // 设置到属性映射。将系统设置（如 Settings.Global.DEBUG_VIEW_ATTRIBUTES）映射到 Android 属性（persist.sys.ui.debug），供原生代码读取
         SettingsToPropertiesMapper.start(mService.mContext.getContentResolver());
+        // OOM 调节器配置初始化。根据设备配置（如内存大小）初始化进程优先级调整策略
         mService.mOomAdjuster.initSettings();
-
+        // 5. 触发救援机制。当系统设置 Provider 就绪后，检查是否存在因设置错误导致的启动问题（如循环崩溃），必要时回滚配置
         // Now that the settings provider is published we can consider sending in a rescue party.
         RescueParty.onSettingsProviderPublished(mService.mContext);
     }

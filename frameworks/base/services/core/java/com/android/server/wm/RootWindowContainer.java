@@ -1372,12 +1372,15 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
     ActivityRecord getDefaultDisplayHomeActivityForUser(int userId) {
         return getDefaultTaskDisplayArea().getHomeActivityForUser(userId);
     }
-
+    // 遍历所有Display(显示屏),即 RootWindowContainer 的所有子节点（每个子节点是一个 DisplayContent，代表一个物理或虚拟显示屏）
     boolean startHomeOnAllDisplays(int userId, String reason) {
         boolean homeStarted = false;
         for (int i = getChildCount() - 1; i >= 0; i--) {
             final int displayId = getChildAt(i).mDisplayId;
+            // 尝试在每个显示屏上启动 Home Activity
+            // 用|=运算符收集所有显示屏上是否由成功启动的Home Activity（只要有一个成功就返回true）
             homeStarted |= startHomeOnDisplay(userId, reason, displayId);
+            // 在指定 displayId 上启动 Home Activity，内部会进一步判断是否允许启动、选择合适的 Home 组件等
         }
         return homeStarted;
     }
@@ -1400,12 +1403,15 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
     boolean startHomeOnDisplay(int userId, String reason, int displayId, boolean allowInstrumenting,
             boolean fromHomeKey) {
         // Fallback to top focused display or default display if the displayId is invalid.
+        // 1.如果
         if (displayId == INVALID_DISPLAY) {
             final Task rootTask = getTopDisplayFocusedRootTask();
             displayId = rootTask != null ? rootTask.getDisplayId() : DEFAULT_DISPLAY;
         }
-
+        // 2.获取指定displayId的DisplayContent（显示内容对象）
         final DisplayContent display = getDisplayContent(displayId);
+        // 3. 遍历该 Display 上的所有 TaskDisplayArea，尝试启动 Home Activity
+    //    reduceOnAllTaskDisplayAreas 会遍历所有 TaskDisplayArea，并将每次启动结果用“或”运算合并
         return display.reduceOnAllTaskDisplayAreas((taskDisplayArea, result) ->
                         result | startHomeOnTaskDisplayArea(userId, reason, taskDisplayArea,
                                 allowInstrumenting, fromHomeKey),
@@ -1426,6 +1432,7 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
     boolean startHomeOnTaskDisplayArea(int userId, String reason, TaskDisplayArea taskDisplayArea,
             boolean allowInstrumenting, boolean fromHomeKey) {
         // Fallback to top focused display area if the provided one is invalid.
+        // 如果传入的 taskDisplayArea 为空，则优先用当前焦点任务的显示区域，否则用默认的 TaskDisplayArea
         if (taskDisplayArea == null) {
             final Task rootTask = getTopDisplayFocusedRootTask();
             taskDisplayArea = rootTask != null ? rootTask.getDisplayArea()
@@ -1434,30 +1441,34 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
 
         Intent homeIntent = null;
         ActivityInfo aInfo = null;
+        // 如果是主显示区域或需要放置主 Home，则用主 Home Intent 和 ActivityInfo
         if (taskDisplayArea == getDefaultTaskDisplayArea()
                 || mWmService.shouldPlacePrimaryHomeOnDisplay(
                         taskDisplayArea.getDisplayId(), userId)) {
             homeIntent = mService.getHomeIntent();
             aInfo = resolveHomeActivity(userId, homeIntent);
         } else if (shouldPlaceSecondaryHomeOnDisplayArea(taskDisplayArea)) {
+            // 如果是副显示区域且允许放置副 Home，则用副 Home 的 Intent 和 ActivityInfo
             Pair<ActivityInfo, Intent> info = resolveSecondaryHomeActivity(userId, taskDisplayArea);
             aInfo = info.first;
             homeIntent = info.second;
         }
+        // 如果都找不到，直接返回 false
         if (aInfo == null || homeIntent == null) {
             return false;
         }
-
+        // 检查是否允许在该区域启动 Home
         if (!canStartHomeOnDisplayArea(aInfo, taskDisplayArea, allowInstrumenting)) {
             return false;
         }
-
+        // 检查是否允许在该区域启动 Home
         if (!mService.mAmInternal.isThemeOverlayReady(userId)) {
             Slog.d(TAG, "ThemeHomeDelay: Home launch was deferred.");
             return false;
         }
 
         // Updates the home component of the intent.
+        // 设置启动的组件、Flag、附加参数（如是否由 Home 键触发、启动原因等）
         homeIntent.setComponent(new ComponentName(aInfo.applicationInfo.packageName, aInfo.name));
         homeIntent.setFlags(homeIntent.getFlags() | FLAG_ACTIVITY_NEW_TASK);
         // Updates the extra information of the intent.
@@ -1473,6 +1484,7 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
         // actually launched.
         final String myReason = reason + ":" + userId + ":" + UserHandle.getUserId(
                 aInfo.applicationInfo.uid) + ":" + taskDisplayArea.getDisplayId();
+        // 调用 ActivityStartController 启动 Home Activity
         mService.getActivityStartController().startHomeActivity(homeIntent, aInfo, myReason,
                 taskDisplayArea);
         return true;
@@ -1491,8 +1503,10 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
         try {
             if (comp != null) {
                 // Factory test.
+                // 直接通过组件名查找（如工厂测试场景）
                 aInfo = AppGlobals.getPackageManager().getActivityInfo(comp, flags, userId);
             } else {
+                // // 通过 Intent 解析
                 final String resolvedType =
                         homeIntent.resolveTypeIfNeeded(mService.mContext.getContentResolver());
                 final ResolveInfo info = mTaskSupervisor.resolveIntent(homeIntent, resolvedType,

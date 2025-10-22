@@ -2772,6 +2772,7 @@ public final class SystemServer implements Dumpable {
 
         t.traceBegin("MakeWindowManagerServiceReady");
         try {
+            // 调用完此方法后，WindowManagerService 就完全初始化完毕，系统将进入“SystemUI 启动”和“启动 Launcher”的阶段，准备迎接用户的第一次点击
             wm.systemReady();
         } catch (Throwable e) {
             reportWtf("making Window Manager Service ready", e);

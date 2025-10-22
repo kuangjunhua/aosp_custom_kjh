@@ -125,12 +125,12 @@ public final class ServiceManager {
             return sServiceManager;
         }
 
-        // Find the service manager
+        // Find the service manager 
         // 先拿到servicemanager的IBinder对象(C++)
         // BinderInternal.getContextObject 返回一个BinderProxy 对象，这是一个Java对象
-        sServiceManager = ServiceManagerNative 
+        sServiceManager = ServiceManagerNative
                 .asInterface(Binder.allowBlocking(BinderInternal.getContextObject()));
-        return sServiceManager;
+        return sServiceManager; 
     }
 
     /**

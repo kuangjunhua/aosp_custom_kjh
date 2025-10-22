@@ -5610,6 +5610,7 @@ public class Activity extends ContextThemeWrapper
     public void startActivityForResult(@RequiresPermission Intent intent, int requestCode,
             @Nullable Bundle options) {
         if (mParent == null) {
+            // 不是嵌套的Activity，常规使用时走到这个分支
             options = transferSpringboardActivityOptions(options);
             Instrumentation.ActivityResult ar =
                 mInstrumentation.execStartActivity(
@@ -6032,6 +6033,7 @@ public class Activity extends ContextThemeWrapper
      *
      * @see #startActivity(Intent, Bundle)
      * @see #startActivityForResult
+     * app层调用
      */
     @Override
     public void startActivity(Intent intent) {

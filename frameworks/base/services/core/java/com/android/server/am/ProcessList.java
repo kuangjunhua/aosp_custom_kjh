@@ -2494,23 +2494,22 @@ public final class ProcessList {
             String abiOverride, String entryPoint, String[] entryPointArgs, Runnable crashHandler) {
         long startTime = SystemClock.uptimeMillis();
         ProcessRecord app;
+        // 1. 检查是否已有 ProcessRecord（非 isolated）
+        // 如果不是隔离进程，先看系统里是否已经有这个进程的记录（ProcessRecord）
+        // ProcessRecord：AMS 里对一个应用进程的抽象，保存 uid、pid、thread binder、运行状态等
         if (!isolated) {
             app = getProcessRecordLocked(processName, info.uid);
             checkSlow(startTime, "startProcess: after getProcessRecord");
-
+            // 2. 检查 “坏进程” 状态
             if ((intentFlags & Intent.FLAG_FROM_BACKGROUND) != 0) {
-                // If we are in the background, then check to see if this process
-                // is bad.  If so, we will just silently fail.
+                // 后台启动：如果这个进程被标记为 bad process（例如频繁崩溃），直接拒绝启动
                 if (mService.mAppErrors.isBadProcess(processName, info.uid)) {
                     if (DEBUG_PROCESSES) Slog.v(TAG, "Bad process: " + info.uid
                             + "/" + processName);
                     return null;
                 }
             } else {
-                // When the user is explicitly starting a process, then clear its
-                // crash count so that we won't make it bad until they see at
-                // least one crash dialog again, and make the process good again
-                // if it had been bad.
+                // 前台启动：清除 bad 标记，允许再次启动
                 if (DEBUG_PROCESSES) Slog.v(TAG, "Clearing bad process: " + info.uid
                         + "/" + processName);
                 mService.mAppErrors.resetProcessCrashTime(processName, info.uid);
@@ -2540,6 +2539,7 @@ public final class ProcessList {
                 + " thread=" + (app != null ? app.getThread() : null)
                 + " pid=" + (app != null ? app.getPid() : -1));
         ProcessRecord predecessor = null;
+        // 3. 进程已存在的情况
         if (app != null && app.getPid() > 0) {
             if ((!knownToBeDead && !app.isKilled()) || app.getThread() == null) {
                 // We already have the app running, or are waiting for it to
@@ -2586,7 +2586,7 @@ public final class ProcessList {
                         + predecessor.getDyingPid());
             }
         }
-
+        // 4. 创建新的 ProcessRecord
         if (app == null) {
             checkSlow(startTime, "startProcess: creating new process record");
             app = newProcessRecordLocked(info, processName, isolated, isolatedUid, isSdkSandbox,
@@ -2610,8 +2610,7 @@ public final class ProcessList {
             checkSlow(startTime, "startProcess: added package to existing proc");
         }
 
-        // If the system is not ready yet, then hold off on starting this
-        // process until it is.
+        // 如果系统还没完全启动完成（mProcessesReady = false），且该 app 不允许在 boot 阶段运行，则把它挂到 mProcessesOnHold，暂时不启动
         if (!mService.mProcessesReady
                 && !mService.isAllowedWhileBooting(info)
                 && !allowWhileBooting) {
@@ -2625,6 +2624,7 @@ public final class ProcessList {
         }
 
         checkSlow(startTime, "startProcess: stepping in to startProcess");
+        // 真正启动进程
         final boolean success =
                 startProcessLocked(app, hostingRecord, zygotePolicyFlags, abiOverride);
         checkSlow(startTime, "startProcess: done starting proc!");

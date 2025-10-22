@@ -2557,9 +2557,12 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
                     child.parseApkAndExtractNativeLibraries();
                 }
             } else {
+                // 准备一些材料文件
                 prepareInheritedFiles();
+                // 解析apk提取出一些本地库
                 parseApkAndExtractNativeLibraries();
             }
+            // 做一些校验相关的事情,进入前置包校验流程
             verifyNonStaged();
         } catch (PackageManagerException e) {
             final String completeMsg = ExceptionUtils.getCompleteMessage(e);
@@ -2639,6 +2642,7 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
                                     new File(libDir, archDirPath));
                         }
                     }
+                    // 链接
                     linkFiles(tempPackageName, fromFiles, toDir, mInheritedFilesBase);
                 } else {
                     // TODO: this should delegate to DCS so the system process
@@ -2681,12 +2685,14 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
             Objects.requireNonNull(mSigningDetails);
             Objects.requireNonNull(mResolvedBaseFile);
             final PackageLite result;
+            // 正常安装不是apex包
             if (!isApexSession()) {
                 // For mode inherit existing, it would link/copy existing files to stage dir in
                 // prepareInheritedFiles(). Therefore, we need to parse the complete package in
                 // stage dir here.
                 // Besides, PackageLite may be null for staged sessions that don't complete
                 // pre-reboot verification.
+                // 提取一些轻量级的包信息
                 result = getOrParsePackageLiteLocked(stageDir, /* flags */ 0);
             } else {
                 result = getOrParsePackageLiteLocked(mResolvedBaseFile, /* flags */ 0);
@@ -2698,18 +2704,23 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
                         mInternalProgress = 0.5f;
                         computeProgressLocked(true);
                     }
+                    // 信息进一步处理
                     extractNativeLibraries(
                             mPackageLite, stageDir, params.abiOverride, mayInheritNativeLibs());
                 }
             }
         }
     }
-
+    // 前置包校验流程
+    // 发送一个广播：发给一些注册了特定事件的系统app，系统app收到后会对该apk做一些校验
     private void verifyNonStaged()
             throws PackageManagerException {
         synchronized (mLock) {
             markStageDirInUseLocked();
         }
+        // mSessionProvider是 PackageSessionProvider 类型的
+        // 而 PackageSessionProvider 是一个接口，在 PackageInstallerService 中实现的
+        // getSessionVerifier() 返回一个 PackageSessionVerifier 的实例
         mSessionProvider.getSessionVerifier().verify(this, (error, msg) -> {
             mHandler.post(() -> {
                 if (dispatchPendingAbandonCallback()) {
@@ -2717,6 +2728,7 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
                     return;
                 }
                 if (error == INSTALL_SUCCEEDED) {
+                    // 验证完后回调执行到这里
                     onVerificationComplete();
                 } else {
                     onSessionVerificationFailure(error, msg);
@@ -2740,6 +2752,7 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
      *
      * @return a future that will be completed when the whole process is completed.
      */
+    // 正式的安装流程
     private CompletableFuture<Void> install() {
         List<CompletableFuture<InstallResult>> futures = installNonStaged();
         CompletableFuture<InstallResult>[] arr = new CompletableFuture[futures.size()];
@@ -3938,7 +3951,7 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
         }
         Slog.d(TAG, "Copied " + fromFiles.size() + " files into " + toDir);
     }
-
+    // 解压提取
     private void extractNativeLibraries(PackageLite packageLite, File packageDir,
             String abiOverride, boolean inherit)
             throws PackageManagerException {
@@ -3951,7 +3964,9 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
 
         NativeLibraryHelper.Handle handle = null;
         try {
+            // 创建一个handler
             handle = NativeLibraryHelper.Handle.create(packageLite);
+            // 把一些文件拷贝到临时目录中
             final int res = NativeLibraryHelper.copyNativeBinariesWithOverride(handle, libDir,
                     abiOverride, isIncrementalInstallation());
             if (res != INSTALL_SUCCEEDED) {

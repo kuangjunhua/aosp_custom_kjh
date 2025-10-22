@@ -1746,6 +1746,7 @@ public class PackageInstaller {
          */
         public void commit(@NonNull IntentSender statusReceiver) {
             try {
+                // mSession
                 mSession.commit(statusReceiver, false);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
@@ -3460,7 +3461,7 @@ public class PackageInstaller {
          */
         public float getProgress() {
             return progress;
-        }
+        } 
 
         /**
          * Return if this session is currently active.

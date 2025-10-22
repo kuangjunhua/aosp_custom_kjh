@@ -150,6 +150,7 @@ public class PackageManagerServiceInjector {
             Installer installer, Object installLock, PackageAbiHelper abiHelper,
             Handler backgroundHandler,
             List<ScanPartition> systemPartitions,
+            // 2. 【ComponentResolver】传到这里
             Producer<ComponentResolver> componentResolverProducer,
             Producer<PermissionManagerServiceInternal> permissionManagerServiceProducer,
             Producer<UserManagerService> userManagerProducer,
@@ -194,6 +195,7 @@ public class PackageManagerServiceInjector {
         mBackgroundHandler = backgroundHandler;
         mBackgroundExecutor = new HandlerExecutor(backgroundHandler);
         mSystemPartitions = systemPartitions;
+        // 3. 【ComponentResolver】创建单例实例，并将 Producer 保存到实例的 mProducer 中（还没创建对象，get时才创建），
         mComponentResolverProducer = new Singleton<>(
                 componentResolverProducer);
         mPermissionManagerServiceProducer = new Singleton<>(
@@ -286,7 +288,7 @@ public class PackageManagerServiceInjector {
     public Installer getInstaller() {
         return mInstaller;
     }
-
+    // 4. 【ComponentResolver】此时才真正创建对象
     public ComponentResolver getComponentResolver() {
         return mComponentResolverProducer.get(this, mPackageManager);
     }

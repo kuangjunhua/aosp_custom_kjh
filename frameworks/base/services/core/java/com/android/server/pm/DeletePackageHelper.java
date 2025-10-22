@@ -133,7 +133,7 @@ final class DeletePackageHelper {
 
         final int removeUser = (deleteFlags & PackageManager.DELETE_ALL_USERS) != 0
                 ? UserHandle.USER_ALL : userId;
-
+        // 检查用户是否有删除权限
         if (mPm.isPackageDeviceAdmin(packageName, removeUser)) {
             Slog.w(TAG, "Not removing package " + packageName + ": has active device admin");
             return PackageManager.DELETE_FAILED_DEVICE_POLICY_MANAGER;
@@ -182,7 +182,7 @@ final class DeletePackageHelper {
             // Static shared libs can be declared by any package, so let us not
             // allow removing a package if it provides a lib others depend on.
             pkg = mPm.mPackages.get(packageName);
-
+            // 检查并记录系统中所有用户是否都按照了该应用
             allUsers = mUserManagerInternal.getUserIds();
 
             if (pkg != null) {
@@ -240,6 +240,7 @@ final class DeletePackageHelper {
             if (DEBUG_REMOVE) Slog.d(TAG, "deletePackageX: pkg=" + packageName + " user=" + userId);
             try (PackageFreezer freezer = mPm.freezePackageForDelete(packageName, freezeUser,
                     deleteFlags, "deletePackageX", ApplicationExitInfo.REASON_OTHER)) {
+                // 核心：卸载应用
                 res = deletePackageLIF(packageName, UserHandle.of(removeUser), true, allUsers,
                         deleteFlags | PackageManager.DELETE_CHATTY, info, true);
             }
@@ -680,7 +681,7 @@ final class DeletePackageHelper {
 
         final String packageName = versionedPackage.getPackageName();
         final long versionCode = versionedPackage.getLongVersionCode();
-
+        // 数据是否是受保护的
         if (mPm.mProtectedPackages.isPackageDataProtected(userId, packageName)) {
             mPm.mHandler.post(() -> {
                 try {
@@ -777,6 +778,7 @@ final class DeletePackageHelper {
             }
             if (doDeletePackage) {
                 if (!deleteAllUsers) {
+                    // 卸载应用
                     returnCode = deletePackageX(internalPackageName, versionCode,
                             userId, deleteFlags, false /*removedBySystem*/);
 

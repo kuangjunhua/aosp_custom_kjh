@@ -754,6 +754,7 @@ final class InstallRequest {
 
     public void onPrepareStarted() {
         if (mPackageMetrics != null) {
+            // 记录当前走到安装的那一步了
             mPackageMetrics.onStepStarted(PackageMetrics.STEP_PREPARE);
         }
     }

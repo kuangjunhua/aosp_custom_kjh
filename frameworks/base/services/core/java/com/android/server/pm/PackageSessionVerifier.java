@@ -94,6 +94,7 @@ final class PackageSessionVerifier {
     public void verify(PackageInstallerSession session, Callback callback) {
         mHandler.post(() -> {
             try {
+                // 保存 session
                 storeSession(session.mStagedSession);
                 if (session.isMultiPackage()) {
                     for (PackageInstallerSession child : session.getChildSessions()) {
@@ -106,6 +107,7 @@ final class PackageSessionVerifier {
                     checkRebootlessApex(session);
                     checkApexSignature(session);
                 }
+                // 验证 apk
                 verifyAPK(session, callback);
             } catch (PackageManagerException e) {
                 String errorMessage = PackageManager.installStatusToString(e.error, e.getMessage());
@@ -162,6 +164,7 @@ final class PackageSessionVerifier {
      */
     private void verifyAPK(PackageInstallerSession session, Callback callback)
             throws PackageManagerException {
+        // Binder 的服务端， 实现了一些 Binder 服务的接口
         final IPackageInstallObserver2 observer = new IPackageInstallObserver2.Stub() {
             @Override
             public void onUserActionRequired(Intent intent) {
@@ -185,6 +188,7 @@ final class PackageSessionVerifier {
                 }
             }
         };
+        // 创建 
         final VerifyingSession verifyingSession = createVerifyingSession(session, observer);
         if (session.isMultiPackage()) {
             final List<PackageInstallerSession> childSessions = session.getChildSessions();

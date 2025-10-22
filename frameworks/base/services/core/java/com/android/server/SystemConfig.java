@@ -561,6 +561,7 @@ public class SystemConfig {
         TimingsTraceLog log = new TimingsTraceLog(TAG, Trace.TRACE_TAG_SYSTEM_SERVER);
         log.traceBegin("readAllPermissions");
         try {
+            // 读取所有权限
             readAllPermissions();
             readPublicNativeLibrariesList();
         } finally {

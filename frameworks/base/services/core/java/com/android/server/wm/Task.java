@@ -5115,10 +5115,12 @@ class Task extends TaskFragment {
             // Last activity in task had been removed or ActivityManagerService is reusing task.
             // Insert or replace.
             // Might not even be in.
+            // 如果是新的Task或者需要将Activity移动到前面，会调用此方法，把Activity所在的Task放到Task栈顶
             positionChildAtTop(rTask);
         }
         Task task = null;
         if (!newTask && isOrhasTask && !r.shouldBeVisible()) {
+            // 如果不是新Task，并且Activity不可见，则直接中止启动
             ActivityOptions.abort(options);
             return;
         }
@@ -5153,7 +5155,7 @@ class Task extends TaskFragment {
             ActivityOptions.abort(options);
             return;
         }
-
+        // 动画和启动窗口准备
         final DisplayContent dc = mDisplayContent;
         if (DEBUG_TRANSITION) Slog.v(TAG_TRANSITION,
                 "Prepare open transition: starting " + r);

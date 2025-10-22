@@ -1282,6 +1282,7 @@ public class Binder implements IBinder {
     }
 
     // Entry point from android_util_Binder.cpp's onTransact.
+    // frameworks\native\libs\binder\Binder.cpp
     @UnsupportedAppUsage
     private boolean execTransact(int code, long dataObj, long replyObj,
             int flags) {

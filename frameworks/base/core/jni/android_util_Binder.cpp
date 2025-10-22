@@ -409,6 +409,7 @@ protected:
         //printf("Transact from %p to Java code sending: ", this);
         //data.print();
         //printf("\n");
+        // 调用Binder.java中的execTransact方法
         jboolean res = env->CallBooleanMethod(mObject, gBinderOffsets.mExecTransact,
             code, reinterpret_cast<jlong>(&data), reinterpret_cast<jlong>(reply), flags);
 
@@ -771,8 +772,9 @@ jobject javaObjectForIBinder(JNIEnv* env, const sp<IBinder>& val)
     nativeData->mOrgue = new DeathRecipientList;
     nativeData->mObject = val; // BpBinder
     // BinderProxy.java->getInstance(nativeData, BpBinder) 创建了一个BinderProxy对象
-    // frameworks\base\core\java\android\os\BinderProxy.java -> getInstance方法
-    jobject object = env->CallStaticObjectMethod(gBinderProxyOffsets.mClass,
+    // frameworks\base\core\java\android\os\BinderProxy.java -> getInstance方法 => BinderProxy对象
+    jobject object = env->CallStaticObjectMethod(gBinderProxyOffsets.mClass, // android/os/BinderProxy
+            // getInstance方法   后面两个是传给这个方法的参数
             gBinderProxyOffsets.mGetInstance, (jlong) nativeData, (jlong) val.get());
     if (env->ExceptionCheck()) {
         // In the exception case, getInstance still took ownership of nativeData.
@@ -807,14 +809,20 @@ sp<IBinder> ibinderForJavaObject(JNIEnv* env, jobject obj)
     // Instance of Binder?
     if (env->IsInstanceOf(obj, gBinderOffsets.mClass)) {
         // 拿到Java层的对象转换成C++层对象
+        // 从obj对象中拿到mObject字段，这个字段是一个long类型的值,就是android.os.Binder类中的mObject字段
+        // 这个long值其实是一个JavaBBinderHolder对象的指针
+        // 在android.os.Binder类中mObject字段是调用getNativeBBinderHolder()方法返回的
+        // getNativeBBinderHolder()方法是在本文件中定义的 android_os_Binder_getNativeBBinderHolder 方法
+        // 这个方法返回的是一个 JavaBBinderHolder 对象
         JavaBBinderHolder* jbh = (JavaBBinderHolder*)
             env->GetLongField(obj, gBinderOffsets.mObject);
+            // 获取long类型的字段
 
         if (jbh == nullptr) {
             ALOGE("JavaBBinderHolder null on binder");
             return nullptr;
         }
-
+        // new 了一个 JavaBBinder 对象并返回， obj就是要添加到servicemanager的IBinder
         return jbh->get(env, obj);
     }
 
@@ -1166,9 +1174,10 @@ jint android_os_Debug_getDeathObjectCount(JNIEnv* env, jobject clazz)
 
 static jobject android_os_BinderInternal_getContextObject(JNIEnv* env, jobject clazz)
 {
+    // 拿到的 b 是一个BpBinder对象(servicemanager的IBinder对象)
     sp<IBinder> b = ProcessState::self()->getContextObject(NULL);
-    // 将Jni层的IBinder对象封装成一个Java对象（BinderProxy）
-    return javaObjectForIBinder(env, b);
+    // 将Jni层的IBinder对象封装成一个Java对象（BinderProxy对象）
+    return javaObjectForIBinder(env, b); 
 }
 
 static void android_os_BinderInternal_joinThreadPool(JNIEnv* env, jobject clazz)

@@ -829,7 +829,7 @@ public final class ActiveServices {
         } else {
             callerFg = true;
         }
-
+        // 创建ServiceLookupResult对象
         ServiceLookupResult res = retrieveServiceLocked(service, instanceName, isSdkSandboxService,
                 sdkSandboxClientAppUid, sdkSandboxClientAppPackage, resolvedType, callingPackage,
                 callingPid, callingUid, userId, true, callerFg, false, false, null, false);
@@ -840,7 +840,7 @@ public final class ActiveServices {
             return new ComponentName("!", res.permission != null
                     ? res.permission : "private to package");
         }
-
+        // 获取ServiceRecord对象
         ServiceRecord r = res.record;
 
         traceInstant("startService(): ", r);
@@ -1037,7 +1037,8 @@ public final class ActiveServices {
             return realResult;
         }
     }
-
+    // 是 ActiveServices 类中的一个私有方法，负责在 AMS（ActivityManagerService）锁保护下，真正执行服务的启动流程。
+    // 它的主要职责是将 ServiceRecord 对象加入启动队列、处理延迟启动逻辑、更新相关状态，并最终调用 bringUpServiceLocked 启动服务进程。
     private ComponentName startServiceInnerLocked(ServiceRecord r, Intent service,
             int callingUid, int callingPid, String callingProcessName,
             int callingProcessState, boolean fgRequired, boolean callerFg,
@@ -1053,19 +1054,17 @@ public final class ActiveServices {
         r.startRequested = true;
         r.delayedStop = false;
         r.fgRequired = fgRequired;
+        // 将启动请求添加到 pendingStarts 列表中
         r.pendingStarts.add(new ServiceRecord.StartItem(r, false, r.makeNextStartId(),
                 service, neededGrants, callingUid, callingProcessName, callingPackage,
                 callingProcessState));
 
-        // We want to allow scheduling user-initiated jobs when the app is running a
-        // foreground service that was started in the same conditions that allows for scheduling
-        // UI jobs. More explicitly, we want to allow scheduling UI jobs when the app is running
-        // an FGS that started when the app was in the TOP or a BAL-approved state.
+        // 我们希望允许在应用程序运行前台服务时调度用户发起的作业，该前台服务是在允许调度UI作业的相同条件下启动的。
+        // 更明确地说，我们希望允许在应用程序运行FGS时调度UI作业，FGS是在应用程序处于TOP或BAL批准状态时启动的。
         final boolean isFgs = r.isForeground || r.fgRequired;
         if (isFgs) {
-            // As of Android UDC, the conditions required for the while-in-use permissions
-            // are the same conditions that we want, so we piggyback on that logic.
-            // Use that as a shortcut if possible to avoid having to recheck all the conditions.
+            // 从Android UDC开始，使用时权限所需的条件与我们想要的条件相同，因此我们采用了这种逻辑。
+            // 如果可能的话，将其用作快捷方式，以避免重新检查所有条件。
             final boolean whileInUseAllowsUiJobScheduling =
                     ActivityManagerService.doesReasonCodeAllowSchedulingUserInitiatedJobs(
                             r.getFgsAllowWIU());
@@ -1076,7 +1075,7 @@ public final class ActiveServices {
         }
 
         if (fgRequired) {
-            // We are now effectively running a foreground service.
+            // 我们现在正在有效地运行前台服务。
             synchronized (mAm.mProcessStats.mLock) {
                 final ServiceState stracker = r.getTracker();
                 if (stracker != null) {
@@ -1096,21 +1095,14 @@ public final class ActiveServices {
                 && mAm.mUserController.hasStartedUserState(r.userId)) {
             ProcessRecord proc = mAm.getProcessRecordLocked(r.processName, r.appInfo.uid);
             if (proc == null || proc.mState.getCurProcState() > PROCESS_STATE_RECEIVER) {
-                // If this is not coming from a foreground caller, then we may want
-                // to delay the start if there are already other background services
-                // that are starting.  This is to avoid process start spam when lots
-                // of applications are all handling things like connectivity broadcasts.
-                // We only do this for cached processes, because otherwise an application
-                // can have assumptions about calling startService() for a service to run
-                // in its own process, and for that process to not be killed before the
-                // service is started.  This is especially the case for receivers, which
-                // may start a service in onReceive() to do some additional work and have
-                // initialized some global state as part of that.
+                // 如果这不是来自前台调用者，那么如果已经有其他后台服务正在启动，我们可能希望延迟启动。
+                // 这是为了避免在许多应用程序都在处理连接广播等事情时出现进程启动垃圾邮件。
+                // 我们只对缓存的进程这样做，因为否则应用程序可能会假设调用startService（）以使服务在其自己的进程中运行，并且在服务启动之前不会杀死该进程。
+                // 对于接收器来说尤其如此，它可能会在onReceive（）中启动一个服务来做一些额外的工作，并初始化一些全局状态作为其中的一部分。
                 if (DEBUG_DELAYED_SERVICE) Slog.v(TAG_SERVICE, "Potential start delay of "
                         + r + " in " + proc);
                 if (r.delayed) {
-                    // This service is already scheduled for a delayed start; just leave
-                    // it still waiting.
+                    // 此服务已安排延迟启动；就让它等着吧。
                     if (DEBUG_DELAYED_STARTS) Slog.v(TAG_SERVICE, "Continuing to delay: " + r);
                     return r.name;
                 }
@@ -1124,9 +1116,7 @@ public final class ActiveServices {
                 if (DEBUG_DELAYED_STARTS) Slog.v(TAG_SERVICE, "Not delaying: " + r);
                 addToStarting = true;
             } else if (proc.mState.getCurProcState() >= ActivityManager.PROCESS_STATE_SERVICE) {
-                // We slightly loosen when we will enqueue this new service as a background
-                // starting service we are waiting for, to also include processes that are
-                // currently running other services or receivers.
+                // 当我们将此新服务作为我们正在等待的后台启动服务排队时，我们会稍微放松，以包括当前正在运行其他服务或接收器的进程。
                 addToStarting = true;
                 if (DEBUG_DELAYED_STARTS) Slog.v(TAG_SERVICE,
                         "Not delaying, but counting as bg: " + r);
@@ -1358,6 +1348,8 @@ public final class ActiveServices {
             boolean callerFg, boolean addToStarting, int callingUid, String callingProcessName,
             int callingProcessState, boolean wasStartRequested, String callingPackage)
             throws TransactionTooLargeException {
+        // 1. 更新 Service 的统计状态
+        // 获取ServiceState追踪器，标记Service已经启动；记录当前时间（用于统计和性能分析）
         synchronized (mAm.mProcessStats.mLock) {
             final ServiceState stracker = r.getTracker();
             if (stracker != null) {
@@ -1365,26 +1357,41 @@ public final class ActiveServices {
                         SystemClock.uptimeMillis()); // Use current time, not lastActivity.
             }
         }
+        // 2. 标记 callStart 并写入日志
+        // 表示这个 Service 的 start 请求已经在处理
         r.callStart = false;
 
         final int uid = r.appInfo.uid;
         final String packageName = r.name.getPackageName();
         final String serviceName = r.name.getClassName();
+        // 向 FrameworkStatsLog 写日志，用于系统统计和调试
         FrameworkStatsLog.write(FrameworkStatsLog.SERVICE_STATE_CHANGED, uid, packageName,
                 serviceName, FrameworkStatsLog.SERVICE_STATE_CHANGED__STATE__START);
+        // 通知 BatteryStatsService：有一个 service 开始运行（会影响耗电统计）
         mAm.mBatteryStatsService.noteServiceStartRunning(uid, packageName, serviceName);
+
+        // 3. 真正启动 Service（关键步骤）
         String error = bringUpServiceLocked(r, service.getFlags(), callerFg,
                 false /* whileRestarting */,
                 false /* permissionsReviewRequired */,
                 false /* packageFrozen */,
                 true /* enqueueOomAdj */);
         /* Will be a no-op if nothing pending */
+        // 更新 OOMAdj（进程优先级调整），保证前台/后台服务能正确调度
         mAm.updateOomAdjPendingTargetsLocked(OOM_ADJ_REASON_START_SERVICE);
         if (error != null) {
             return new ComponentName("!!", error);
         }
-
+        // 4. 上报服务请求事件（埋点统计）
         final boolean wasStopped = (r.appInfo.flags & ApplicationInfo.FLAG_STOPPED) != 0;
+        /**
+         *  判断 Service 所在 App 是否是 STOPPED 状态（比如新安装/被强制停止的情况）。
+            上报一个 “Service 请求事件” 到日志系统，记录：
+                - 请求类型（START）
+                - 启动类型（Cold/Hot/Warm）
+                - 调用方进程信息
+                - 包名、调用方包名、进程状态
+         */
         final int packageState = wasStopped
                 ? SERVICE_REQUEST_EVENT_REPORTED__PACKAGE_STOPPED_STATE__PACKAGE_STATE_STOPPED
                 : SERVICE_REQUEST_EVENT_REPORTED__PACKAGE_STOPPED_STATE__PACKAGE_STATE_NORMAL;
@@ -1403,7 +1410,14 @@ public final class ActiveServices {
                 callingPackage,
                 callingProcessState,
                 r.mProcessStateOnRequest);
-
+        // 5. 处理后台启动逻辑
+        /*
+         * 如果 Service 是 后台启动 且 addToStarting == true：
+            - 放入 mStartingBackground 队列，表示等待延迟启动。
+            - 设置超时时间（BG_START_TIMEOUT，比如 10s）。
+            - 如果是第一个后台 service，调度 rescheduleDelayedStartsLocked()，触发延迟机制。
+            - 如果调用者是前台进程，或者 Service 本身需要前台（fgRequired），则从后台队列移除，直接启动
+         */
         if (r.startRequested && addToStarting) {
             boolean first = smap.mStartingBackground.size() == 0;
             smap.mStartingBackground.add(r);
@@ -5128,11 +5142,13 @@ public final class ActiveServices {
             boolean whileRestarting, boolean permissionsReviewRequired, boolean packageFrozen,
             boolean enqueueOomAdj)
             throws TransactionTooLargeException {
+        // 如果 Service 已经绑定了一个有效的进程（r.app 非空，且 ApplicationThread 已就绪），就直接通过 sendServiceArgsLocked 发送启动参数，而不是重新拉起进程
+        // 说明：服务已经存在了，只需要传参数即可
         if (r.app != null && r.app.isThreadReady()) {
             sendServiceArgsLocked(r, execInFg, false);
             return null;
         }
-
+        // 如果服务正在重启队列里（mRestartingServices），则不用再拉起。
         if (!whileRestarting && mRestartingServices.contains(r)) {
             // If waiting for a restart, then do nothing.
             return null;
@@ -5144,19 +5160,19 @@ public final class ActiveServices {
 
         // We are now bringing the service up, so no longer in the
         // restarting state.
+        // 把 Service 从重启队列和延迟队列里移除，确保真正开始启动
         if (mRestartingServices.remove(r)) {
             clearRestartingIfNeededLocked(r);
         }
-
-        // Make sure this service is no longer considered delayed, we are starting it now.
         if (r.delayed) {
             if (DEBUG_DELAYED_STARTS) Slog.v(TAG_SERVICE, "REM FR DELAY LIST (bring up): " + r);
             getServiceMapLocked(r.userId).mDelayedStartList.remove(r);
             r.delayed = false;
         }
 
-        // Make sure that the user who owns this service is started.  If not,
-        // we don't want to allow it to run.
+        // 检查用户是否处于“已启动”状态
+        // 如果用户空间没启动（例如切换用户后，这个用户被 stop 了），则不能启动 Service
+        // 系统级隔离：只有当前活跃用户的服务才允许运行
         if (!mAm.mUserController.hasStartedUserState(r.userId)) {
             String msg = "Unable to launch app "
                     + r.appInfo.packageName + "/"
@@ -5169,6 +5185,7 @@ public final class ActiveServices {
 
         // Report usage if binding is from a different package except for explicitly exempted
         // bindings
+        // 如果服务的调用者不是自己，且不在豁免名单，就上报 UsageStats 统计事件
         if (!r.appInfo.packageName.equals(r.mRecentCallingPackage)
                 && !r.isNotAppComponentUsage) {
             mAm.mUsageStatsService.reportEvent(
@@ -5176,6 +5193,7 @@ public final class ActiveServices {
         }
 
         // Service is now being launched, its package can't be stopped.
+        // 解除 packageStopped 状态：确保包不处于“stopped state”（即用户强行停止过的状态）。
         try {
             mAm.mPackageManagerInt.setPackageStoppedState(
                     r.packageName, false, r.userId);
@@ -5193,6 +5211,8 @@ public final class ActiveServices {
         ProcessRecord app;
 
         if (!isolated) {
+            // 找到或创建目标进程
+            // 这里是整个方法的 核心
             app = mAm.getProcessRecordLocked(procName, r.appInfo.uid);
             if (DEBUG_MU) Slog.v(TAG_MU, "bringUpServiceLocked: appInfo.uid=" + r.appInfo.uid
                         + " app=" + app);
@@ -5201,6 +5221,8 @@ public final class ActiveServices {
                 final int pid = app.getPid();
                 final UidRecord uidRecord = app.getUidRecord();
                 if (app.isThreadReady()) {
+                    // 非隔离进程（普通情况）
+                    // 如果进程已经存在并且线程就绪，直接调用 realStartServiceLocked 启动 Service
                     try {
                         if (Trace.isTagEnabled(Trace.TRACE_TAG_ACTIVITY_MANAGER)) {
                             Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER,
@@ -5224,6 +5246,7 @@ public final class ActiveServices {
                 }
             }
         } else {
+            // 隔离进程（FLAG_ISOLATED_PROCESS）
             if (r.inSharedIsolatedProcess) {
                 app = mAm.mProcessList.getSharedIsolatedProcess(procName, r.appInfo.uid,
                         r.appInfo.packageName);
@@ -5285,6 +5308,7 @@ public final class ActiveServices {
                         hostingRecord, ZYGOTE_POLICY_FLAG_EMPTY, uid, r.sdkSandboxClientAppPackage);
                 r.isolationHostProc = app;
             } else {
+                // 新建进程
                 app = mAm.startProcessLocked(procName, r.appInfo, true, intentFlags,
                         hostingRecord, ZYGOTE_POLICY_FLAG_EMPTY, false, isolated);
             }
@@ -5396,6 +5420,8 @@ public final class ActiveServices {
             mAm.mBatteryStatsService.noteServiceStartLaunch(uid, packageName, serviceName);
             mAm.notifyPackageUse(r.serviceInfo.packageName,
                                  PackageManager.NOTIFY_PACKAGE_USE_SERVICE);
+            // thread 是 ApplicationThread (Binder 通道)，它运行在 目标应用进程 中
+            // 调用 ApplicationThread.scheduleCreateService()，跨进程回调到应用端
             thread.scheduleCreateService(r, r.serviceInfo,
                     null /* compatInfo (unused but need to keep method signature) */,
                     app.mState.getReportedProcState());

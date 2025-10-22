@@ -178,6 +178,7 @@ final class VerifyingSession {
     }
 
     public void handleStartVerify() {
+        // 包信息拿出来做一些逻辑判断
         PackageInfoLite pkgLite = PackageManagerServiceUtils.getMinimalPackageInfo(mPm.mContext,
                 mPackageLite, mOriginInfo.mResolvedPath, mInstallFlags, mPackageAbiOverride);
 
@@ -190,9 +191,12 @@ final class VerifyingSession {
 
         // Perform package verification and enable rollback (unless we are simply moving the
         // package).
-        if (!mOriginInfo.mExisting) {
+        if (!mOriginInfo.mExisting) { // 包信息不存在（新包）
             if (!isApex()) {
                 // TODO(b/182426975): treat APEX as APK when APK verification is concerned
+                // 发送一个APK包的验证请求
+                // 在 SystemServer 进程的 PMS 服务中发送一个广播给某个系统 APK（不一定有）
+                // 系统 APK 接收到消息后会处理，并返回处理结果
                 sendApkVerificationRequest(pkgLite);
             }
             if ((mInstallFlags & PackageManager.INSTALL_ENABLE_ROLLBACK) != 0) {
@@ -207,7 +211,7 @@ final class VerifyingSession {
         PackageVerificationState verificationState =
                 new PackageVerificationState(this);
         mPm.mPendingVerification.append(verificationId, verificationState);
-
+        // 发送一个完整的验证请求
         sendIntegrityVerificationRequest(verificationId, pkgLite, verificationState);
         sendPackageVerificationRequest(
                 verificationId, pkgLite, verificationState);

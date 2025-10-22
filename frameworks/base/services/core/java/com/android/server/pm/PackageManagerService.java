@@ -1529,17 +1529,20 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         t.traceBegin("create package manager");
         final PackageManagerTracedLock lock = new PackageManagerTracedLock();
         final Object installLock = new Object();
-
+        // 创建服务线程
         HandlerThread backgroundThread = new ServiceThread("PackageManagerBg",
                 Process.THREAD_PRIORITY_BACKGROUND, true /*allowIo*/);
+        // 启动服务线程
         backgroundThread.start();
+        // 创建服务线程对应的Handler(消息处理的方法)
         Handler backgroundHandler = new Handler(backgroundThread.getLooper(),
                 BACKGROUND_HANDLER_CALLBACK);
-
+        // 创建injector对象，PackageManagerService的注入，在PMS服务进程中使用injector来管理子模块
         PackageManagerServiceInjector injector = new PackageManagerServiceInjector(
                 context, lock, installer, installLock, new PackageAbiHelperImpl(),
                 backgroundHandler,
                 SYSTEM_PARTITIONS,
+                // 1. 【ComponentResolver】创建该对象的 Producer 并传递进去
                 (i, pm) -> new ComponentResolver(i.getUserManagerService(), pm.mUserNeedsBadging),
                 (i, pm) -> PermissionManagerService.create(context,
                         i.getSystemConfig().getAvailableFeatures()),
@@ -1614,7 +1617,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         if (Build.VERSION.SDK_INT <= 0) {
             Slog.w(TAG, "**** ro.build.version.sdk not set!");
         }
-
+        // 创建 PMS 实例
         PackageManagerService m = new PackageManagerService(injector, factoryTest,
                 PackagePartitions.FINGERPRINT, Build.IS_ENG, Build.IS_USERDEBUG,
                 Build.VERSION.SDK_INT, Build.VERSION.INCREMENTAL);
@@ -1657,8 +1660,13 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
                 selinuxChangeListener);
 
         m.installAllowlistedSystemPackages();
+        // iPackageManager的本质就是 IBinder 的服务端，以package为包名存放到 servicemanager 进程中
+        // IPackageManagerImpl 实现了PKMS的Binder服务端service接口
+        // 实现IPackageManager.aidl接口的地方
+        // frameworks/base/core/java/android/content/pm/IPackageManager.aidl
         IPackageManagerImpl iPackageManager = m.new IPackageManagerImpl();
         ServiceManager.addService("package", iPackageManager);
+
         final PackageManagerNative pmn = new PackageManagerNative(m);
         ServiceManager.addService("package_native", pmn);
         return m;
@@ -1827,10 +1835,11 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         registerObservers(false);
         invalidatePackageInfoCache();
     }
-
+    // 构造函数基本上是初始化各种模块
     public PackageManagerService(PackageManagerServiceInjector injector, boolean factoryTest,
             final String partitionsFingerprint, final boolean isEngBuild,
             final boolean isUserDebugBuild, final int sdkVersion, final String incrementalVersion) {
+        // 1. 基础初始化阶段：初始化关键容器和内部数组对象(mPackages, mSettings)
         mIsEngBuild = isEngBuild;
         mIsUserDebugBuild = isUserDebugBuild;
         mSdkVersion = sdkVersion;
@@ -1868,8 +1877,9 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         mTestUtilityService = LocalServices.getService(TestUtilityService.class);
         mUserManager = injector.getUserManagerService();
         mUserNeedsBadging = new UserNeedsBadgingCache(mUserManager);
-        // 此处调用get方法才会真正生成子模块，延迟加载
+        // 5. 【ComponentResolver】此处调用get方法才会真正生成子模块，延迟加载
         mComponentResolver = injector.getComponentResolver();
+        // 权限管理模块
         mPermissionManager = injector.getPermissionManagerServiceInternal();
         mSettings = injector.getSettings();
         mIncrementalManager = mInjector.getIncrementalManager();
@@ -2003,7 +2013,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
             mHandler = injector.getHandler();
             mProcessLoggingHandler = new ProcessLoggingHandler();
             Watchdog.getInstance().addThread(mHandler, WATCHDOG_TIMEOUT);
-
+            // 读取配置
             ArrayMap<String, SystemConfig.SharedLibraryEntry> libConfig
                     = systemConfig.getSharedLibraries();
             final int builtInLibCount = libConfig.size();
@@ -6400,6 +6410,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         public void onShellCommand(FileDescriptor in, FileDescriptor out,
                 FileDescriptor err, String[] args, ShellCallback callback,
                 ResultReceiver resultReceiver) {
+                    Slog.i(TAG, "Package Manager Shell Command:", new Exception()); // 打印线程执行接口的堆栈信息
             (new PackageManagerShellCommand(this, mContext,
                     mDomainVerificationManager.getShell()))
                     .exec(this, in, out, err, args, callback, resultReceiver);

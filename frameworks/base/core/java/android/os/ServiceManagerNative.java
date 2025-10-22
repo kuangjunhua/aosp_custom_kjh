@@ -55,6 +55,7 @@ class ServiceManagerProxy implements IServiceManager {
         // IServiceManager.Stub.Proxy(obj)
         // mServiceManager是客户端调用的Proxy对象（asInterface中封装成的Proxy对象）
         // 在 IServiceManager.Stub.asInterface 内部又封装成了Proxy对象 IServiceManager.Stub.Proxy(remote)
+        // mServiceManager = IServiceManager.Stub.Proxy(remote);
         mServiceManager = IServiceManager.Stub.asInterface(remote);
     }
 
@@ -75,7 +76,8 @@ class ServiceManagerProxy implements IServiceManager {
     public void addService(String name, IBinder service, boolean allowIsolated, int dumpPriority)
             throws RemoteException {
         // 调用Proxy的addService方法
-        // 内部会调用mRemote.transcat方法（mRemote就是BinderProxy）
+        // 会调用Proxy对象的addService方法
+        // 内部会调用mRemote.transact方法（mRemote就是BinderProxy,就是调BinderProxy的transact）
         mServiceManager.addService(name, service, allowIsolated, dumpPriority);
     }
 

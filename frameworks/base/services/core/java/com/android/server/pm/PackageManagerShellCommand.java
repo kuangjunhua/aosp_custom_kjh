@@ -112,6 +112,7 @@ import com.android.internal.util.IndentingPrintWriter;
 import com.android.internal.util.Preconditions;
 import com.android.server.FgThread;
 import com.android.server.LocalManagerRegistry;
+import com.android.server.LocalManagerRegistry.ManagerNotFoundException;
 import com.android.server.LocalServices;
 import com.android.server.SystemConfig;
 import com.android.server.art.ArtManagerLocal;
@@ -199,7 +200,7 @@ class PackageManagerShellCommand extends ShellCommand {
 
     PackageManagerShellCommand(@NonNull IPackageManager packageManager,
             @NonNull Context context, @NonNull DomainVerificationShell domainVerificationShell) {
-        mInterface = packageManager;
+        mInterface = packageManager; // 外面传的this 就是PMS
         mPm = LocalServices.getService(PackageManagerInternal.class);
         mLegacyPermissionManager = LocalServices.getService(LegacyPermissionManagerInternal.class);
         mPermissionManager = context.getSystemService(PermissionManager.class);
@@ -1557,7 +1558,7 @@ class PackageManagerShellCommand extends ShellCommand {
                 setParamsSize(params, args);
             }
         }
-
+        // 创建会话，得到会话ID
         final int sessionId = doCreateSession(params.sessionParams,
                 params.installerPackageName, params.userId);
         boolean abandonSession = true;
@@ -1573,6 +1574,7 @@ class PackageManagerShellCommand extends ShellCommand {
                     return 1;
                 }
             }
+            // 提交会话ID
             if (doCommitSession(sessionId, false /*logSuccess*/)
                     != PackageInstaller.STATUS_SUCCESS) {
                 return 1;
@@ -1588,6 +1590,7 @@ class PackageManagerShellCommand extends ShellCommand {
         } finally {
             if (abandonSession) {
                 try {
+                    // 释放session
                     doAbandonSession(sessionId, false /*logSuccess*/);
                 } catch (Exception ignore) {
                 }
@@ -2301,8 +2304,9 @@ class PackageManagerShellCommand extends ShellCommand {
         if (!splitNames.isEmpty()) {
             return runRemoveSplits(packageName, splitNames);
         }
-
+        // 参数与错误处理
         if (userId == UserHandle.USER_ALL) {
+            // 卸载所有用户的应用
             flags |= PackageManager.DELETE_ALL_USERS;
         }
         final int translatedUserId =
@@ -2316,6 +2320,7 @@ class PackageManagerShellCommand extends ShellCommand {
                     packageName, versionCode, translatedUserId, receiver.getIntentSender(), flags);
         } else {
             if ((flags & PackageManager.DELETE_ALL_USERS) == 0) {
+                // 拿到 package 信息
                 final PackageInfo info = mInterface.getPackageInfo(packageName,
                         PackageManager.MATCH_STATIC_SHARED_AND_SDK_LIBRARIES, translatedUserId);
                 if (info == null) {
@@ -2331,6 +2336,7 @@ class PackageManagerShellCommand extends ShellCommand {
                     flags |= PackageManager.DELETE_SYSTEM_APP;
                 }
             }
+            // 拿到 PackageInstaller 类的实例对象， 最终会调用到 调用PackageInstallerService的uninstall方法来处理
             mInterface.getPackageInstaller().uninstall(new VersionedPackage(packageName,
                             versionCode), null /*callerPackageName*/, flags,
                     receiver.getIntentSender(), translatedUserId);
@@ -3687,10 +3693,12 @@ class PackageManagerShellCommand extends ShellCommand {
         }
         final int translatedUserId =
                 translateUserId(userId, UserHandle.USER_SYSTEM, "doCreateSession");
+        // mInterface 是 new 实例化时传进来的参数， 在PMS中new时传的this
+        // 所以 getPackageInstaller() 实际上是调用的 PMS 的 getPackageInstaller() 方法
         final int sessionId = mInterface.getPackageInstaller()
                 .createSession(params, installerPackageName, null /*installerAttributionTag*/,
                         translatedUserId);
-        return sessionId;
+        return sessionId; 
     }
 
     private int doAddFiles(int sessionId, ArrayList<String> args, long sessionSizeBytes,
@@ -3960,9 +3968,12 @@ class PackageManagerShellCommand extends ShellCommand {
                 } catch (IllegalStateException | IOException e) {
                     pw.println(
                             "Warning [Could not validate the dex paths: " + e.getMessage() + "]");
-                }
+                } 
             }
             final LocalIntentReceiver receiver = new LocalIntentReceiver();
+            // frameworks\base\services\core\java\com\android\server\pm\PackageInstallerSession.java
+            // 这里会调用PackageInstaller.Session实例的commit方法
+            // 其方法内部会调用mSession.commit, mSession是IPackageInstallerSession
             session.commit(receiver.getIntentSender());
             if (!session.isStaged()) {
                 final Intent result = receiver.getResult();

@@ -630,7 +630,7 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
             throw ExceptionUtils.wrap(e);
         }
     }
-
+ 
     private int createSessionInternal(SessionParams params, String installerPackageName,
             String installerAttributionTag, int userId)
             throws IOException {
@@ -1054,7 +1054,7 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
             if (!checkOpenSessionAccess(session)) {
                 throw new SecurityException("Caller has no access to session " + sessionId);
             }
-            session.open();
+            session.open(); 
             return session;
         }
     }
@@ -1266,6 +1266,7 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
         } else if (canSilentlyInstallPackage) {
             // Allow the device owner and affiliated profile owner to silently delete packages
             // Need to clear the calling identity to get DELETE_PACKAGES permission
+            
             final long ident = Binder.clearCallingIdentity();
             try {
                 mPm.deletePackageVersioned(versionedPackage, adapter.getBinder(), userId, flags);

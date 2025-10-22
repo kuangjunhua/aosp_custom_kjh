@@ -325,6 +325,7 @@ import com.android.server.FgThread;
 import com.android.server.LocalServices;
 import com.android.server.UiThread;
 import com.android.server.Watchdog;
+import com.android.server.am.ActivityManagerService;
 import com.android.server.input.InputManagerService;
 import com.android.server.inputmethod.InputMethodManagerInternal;
 import com.android.server.pm.UserManagerInternal;
@@ -332,6 +333,7 @@ import com.android.server.policy.WindowManagerPolicy;
 import com.android.server.policy.WindowManagerPolicy.ScreenOffListener;
 import com.android.server.power.ShutdownThread;
 import com.android.server.utils.PriorityDump;
+import com.android.server.wm.TaskOrganizerController.DeathRecipient;
 
 import dalvik.annotation.optimization.NeverCompile;
 
@@ -1144,12 +1146,18 @@ public class WindowManagerService extends IWindowManager.Stub
             DisplayWindowSettingsProvider displayWindowSettingsProvider,
             Supplier<SurfaceControl.Transaction> transactionFactory,
             Function<SurfaceSession, SurfaceControl.Builder> surfaceControlFactory) {
+        // 1. 并发模型与全局对象
+        // 建立全局大锁（与ATM共享）作为WMS的一致性边界；后续多出用到synchronized(mGlobalLock)
         installLock(this, INDEX_WINDOW);
         mGlobalLock = atm.getGlobalLock();
+        // 保存关键引用：mAtmService、mContext、mIsPc、mAllowBootMessages等
         mAtmService = atm;
         mContext = context;
         mIsPc = mContext.getPackageManager().hasSystemFeature(FEATURE_PC);
         mAllowBootMessages = showBootMsgs;
+        // 读取资源开关mLimitedAlphaCompositing、mHasPermanentDpad、mDrawLockTimeoutMillis、mAllowAnimationsInLowPowerMode、
+        // mMaxUiWidth、mDisableTransitionAnimation、mPerDisplayFocusEnabled、mAssistantOnTopOfDream、mSkipActivityRelaunchWhenDocking
+        // 这决定窗口合成的能力限制、输入设备特性、动画/过渡是否可用、焦点策略、Dock/助手与Dream的层级关系等。
         mLimitedAlphaCompositing = context.getResources().getBoolean(
                 com.android.internal.R.bool.config_sf_limitedAlpha);
         mHasPermanentDpad = context.getResources().getBoolean(
@@ -1168,43 +1176,55 @@ public class WindowManagerService extends IWindowManager.Stub
                 com.android.internal.R.bool.config_assistantOnTopOfDream);
         mSkipActivityRelaunchWhenDocking = context.getResources()
                 .getBoolean(R.bool.config_skipActivityRelaunchWhenDocking);
-
+        // 2. Letterbox/颜色环境
+        // 用SysUI的Context以拿到壁纸提取的material色板，影响letterbox外观
         mLetterboxConfiguration = new LetterboxConfiguration(
                 // Using SysUI context to have access to Material colors extracted from Wallpaper.
                 ActivityThread.currentActivityThread().getSystemUiContext());
-
-        mInputManager = inputManager; // Must be before createDisplayContentLocked.
+        // 3. 显示与Surface基础
+        mInputManager = inputManager; // 必须早于创建display content，保证输入链路已就绪
+        // 为后续 显示创建/模式选择做准备
         mDisplayManagerInternal = LocalServices.getService(DisplayManagerInternal.class);
         mPossibleDisplayInfoMapper = new PossibleDisplayInfoMapper(mDisplayManagerInternal);
-
+        // Surface/事务工厂：统一由工厂产出SurfaceControl.Builder与SurfaceControl.Transaction,便于测试与替换
         mSurfaceControlFactory = surfaceControlFactory;
         mTransactionFactory = transactionFactory;
         mTransaction = mTransactionFactory.get();
-
+        // 4. 策略/层级/动画主干
+        // 注入WindowManagerPolicy(系统条/导航栏/按键拦截/布局边界的最终裁定者)
         mPolicy = policy;
+        // 窗口动画调度器
         mAnimator = new WindowAnimator(this);
+        // 全局根层级（所有Display/Task/Window的根）
         mRoot = new RootWindowContainer(this);
 
         final ContentResolver resolver = context.getContentResolver();
+        // 5. BLAST与同步
+        // 是否通过BLAST(Buffer Layer Asynchronous Surface Transport)提交缓冲
         mUseBLAST = Settings.Global.getInt(resolver,
             Settings.Global.DEVELOPMENT_USE_BLAST_ADAPTER_VR, 1) == 1;
-
+        // 进行 事务同步/合桢，保证跨 窗口/任务 的过渡一致性
         mSyncEngine = new BLASTSyncEngine(this);
-
+        // 6. 布局与快照
+        // 布局与提交的关键协调器（计算Z序、relayout、合并事务）
         mWindowPlacerLocked = new WindowSurfacePlacer(this);
+        // Recent/重启 机位图快照生成与管理
         mSnapshotController = new SnapshotController(this);
         mTaskSnapshotController = mSnapshotController.mTaskSnapshotController;
-
+        // 7. Trace/可观测性
+        // 7.1 开启 窗口层级/事务Trace(绑到主choreographer)
         mWindowTracing = WindowTracing.createDefaultAndStartLooper(this,
                 Choreographer.getInstance());
+        // 7.2 过渡阶段的追踪
         mTransitionTracer = new TransitionTracer();
-
+        // 8. 注册本地服务/获取系统服务
+        // 发布策略供系统内其他组件使用
         LocalServices.addService(WindowManagerPolicy.class, mPolicy);
-
+        // 公共Display服务
         mDisplayManager = (DisplayManager)context.getSystemService(Context.DISPLAY_SERVICE);
-
+        // 与策略配合，允许/禁止锁屏
         mKeyguardDisableHandler = KeyguardDisableHandler.create(mContext, mPolicy, mH);
-
+        // 注册省电模式监听， 当batterySaverEnabled变化且不允许低电动画时切到mAnimationDisabled并dispatchNewAnimatorScaleLocked
         mPowerManager = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
         mPowerManagerInternal = LocalServices.getService(PowerManagerInternal.class);
 
@@ -1230,14 +1250,19 @@ public class WindowManagerService extends IWindowManager.Stub
             mAnimationsDisabled = mPowerManagerInternal
                     .getLowPowerState(ServiceType.ANIMATION).batterySaverEnabled;
         }
+        // 在冻结屏幕期间防止设备休眠
         mScreenFrozenLock = mPowerManager.newWakeLock(
                 PowerManager.PARTIAL_WAKE_LOCK, "SCREEN_FROZEN");
         mScreenFrozenLock.setReferenceCounted(false);
-
+        // 9. 旋转/显示/系统栏 监听
+        // 外部注册者可监听旋转变化
         mRotationWatcherController = new RotationWatcherController(this);
+        // 显示/窗口相关事件分发
         mDisplayNotificationController = new DisplayWindowListenerController(this);
+        // 任务与系统栏（状态/导航）可见性协调
         mTaskSystemBarsListenerController = new TaskSystemBarsListenerController();
-
+        // 10. 进程/用户/权限与AppOps观察
+        // 与AMS、用户管理交互
         mActivityManager = ActivityManager.getService();
         mAmInternal = LocalServices.getService(ActivityManagerInternal.class);
         mUmInternal = LocalServices.getService(UserManagerInternal.class);
@@ -1248,12 +1273,16 @@ public class WindowManagerService extends IWindowManager.Stub
                         updateAppOpsState();
                     }
                 };
+        // 监听悬浮窗
         mAppOps.startWatchingMode(OP_SYSTEM_ALERT_WINDOW, null, opListener);
+        // 监听 一旦变更触发updateAppOpsState(), 以立即收紧/放宽窗口能力
         mAppOps.startWatchingMode(AppOpsManager.OP_TOAST_WINDOW, null, opListener);
 
         mPmInternal = LocalServices.getService(PackageManagerInternal.class);
         mTestUtilityService = LocalServices.getService(TestUtilityService.class);
         final IntentFilter suspendPackagesFilter = new IntentFilter();
+        // 11. 包挂起广播
+        // 监听 ACTION_PACKAGES_SUSPENDED、ACTION_PACKAGES_UNSUSPENDED，对受影响的包updateHiddenWhileSuspendedState(),使其窗口 隐藏/恢复
         suspendPackagesFilter.addAction(Intent.ACTION_PACKAGES_SUSPENDED);
         suspendPackagesFilter.addAction(Intent.ACTION_PACKAGES_UNSUSPENDED);
         context.registerReceiverAsUser(new BroadcastReceiver() {
@@ -1267,13 +1296,14 @@ public class WindowManagerService extends IWindowManager.Stub
                         suspended);
             }
         }, UserHandle.ALL, suspendPackagesFilter, null, null);
-
-        // Get persisted window scale setting
+        // 12. 动画比例设置（持久化）
+        // 读取并应用 mWindowAnimationScaleSetting、mTransitionAnimationScaleSetting，生效系统级动画时长倍率（开发者选项）
         mWindowAnimationScaleSetting = getWindowAnimationScaleSetting();
         mTransitionAnimationScaleSetting = getTransitionAnimationScaleSetting();
 
         setAnimatorDurationScale(getAnimatorDurationScaleSetting());
-
+        // 13. 开发者开关与显示设置
+        // 外接显示强制桌面模式
         mForceDesktopModeOnExternalDisplays = Settings.Global.getInt(resolver,
                 DEVELOPMENT_FORCE_DESKTOP_MODE_ON_EXTERNAL_DISPLAYS, 0) != 0;
 
@@ -1287,42 +1317,54 @@ public class WindowManagerService extends IWindowManager.Stub
 
         IntentFilter filter = new IntentFilter();
         // Track changes to DevicePolicyManager state so we can enable/disable keyguard.
+        // 14. 设备策略变化。监听 ACTION_DEVICE_POLICY_MANAGER_STATE_CHANGED：如设备被管控，可能影响锁屏/窗口限制
         filter.addAction(ACTION_DEVICE_POLICY_MANAGER_STATE_CHANGED);
         mContext.registerReceiverAsUser(mBroadcastReceiver, UserHandle.ALL, filter, null, null);
-
+        // 7.3 关键交互延迟统计 
         mLatencyTracker = LatencyTracker.getInstance(context);
-
+        // 15. Settings观察 & 动画运行器
+        // 集中处理Settings变化（尤其动画倍率等）
         mSettingsObserver = new SettingsObserver();
-
+        // 统一运行Surface动画，与电源状态协同
         mSurfaceAnimationRunner = new SurfaceAnimationRunner(mTransactionFactory,
                 mPowerManagerInternal);
-
+        // 16. 其他行为开关与控制器
+        // 剧院模式下是否运行布局唤醒
         mAllowTheaterModeWakeFromLayout = context.getResources().getBoolean(
                 com.android.internal.R.bool.config_allowTheaterModeWakeFromWindowLayout);
-
+        // 分屏/自由窗口 任务定位 交互（托到边缘分屏等）
         mTaskPositioningController = new TaskPositioningController(this);
+        // 系统级 拖放 管理
         mDragDropController = new DragDropController(this, mH.getLooper());
-
+        // 高刷黑名单，对特定app/场景降帧， 避免兼容/功耗问题
         mHighRefreshRateDenylist = HighRefreshRateDenylist.create(context.getResources());
-
+        
         mConstants = new WindowManagerConstants(this, DeviceConfigInterface.REAL);
+        // 挂到DeviceConfig，在线下发WMS行为常量（无需刷机即可调参） 
         mConstants.start(new HandlerExecutor(mH));
-
+        // 对系统内部暴露WMS能力
         LocalServices.addService(WindowManagerInternal.class, new LocalService());
+        // 输入法目标可见性策略
         LocalServices.addService(
                 ImeTargetVisibilityPolicy.class, new ImeTargetVisibilityPolicyImpl());
+        // 嵌入式窗口（如SDK sandbox / SDK 扩展等）        
         mEmbeddedWindowController = new EmbeddedWindowController(mAtmService);
-
+        // 装载显示区域策略（DA层级/分区规则，决定系统栏、IME、应用层的分区与Z序边界）
         mDisplayAreaPolicyProvider = DisplayAreaPolicy.Provider.fromResources(
                 mContext.getResources());
-
+        // 显示哈希（防欺诈/内容校验相关）
         mDisplayHashController = new DisplayHashController(mContext);
+        // 统一窗口阴影参数
         setGlobalShadowSettings();
+        // 窗口相关ANR处置
         mAnrController = new AnrController(this);
+        // 启动窗/启动图管理（加快启动感知）
         mStartingSurfaceController = new StartingSurfaceController(this);
-
+        // 模糊效果控制（与功耗/性能协同）
         mBlurController = new BlurController(mContext, mPowerManager);
+        // 任务FPS回调（供性能/自适应刷新用）
         mTaskFpsCallbackController = new TaskFpsCallbackController(mContext);
+        // 无障碍相关窗口/高亮/放大等
         mAccessibilityController = new AccessibilityController(this);
     }
 
@@ -5183,31 +5225,51 @@ public class WindowManagerService extends IWindowManager.Stub
     public void displayReady() {
         synchronized (mGlobalLock) {
             if (mMaxUiWidth > 0) {
+                // 遍历所有当前已连接的物理或虚拟显示,对每个显示，调用 displayContent.setMaxUiWidth(mMaxUiWidth) 来设置此限制。后续所有窗口布局和测量都会遵守这个限制
                 mRoot.forAllDisplays(displayContent -> displayContent.setMaxUiWidth(mMaxUiWidth));
             }
+            // 为默认显示（通常是主屏幕）应用强制属性
             applyForcedPropertiesForDefaultDisplay();
+            // 启动窗口动画系统
+            // mAnimator 是 WindowAnimator 的实例，负责管理所有窗口动画（如应用打开/关闭、Activity 切换、窗口移动缩放等）的执行
+            // ready() 方法会启动动画线程，并开始处理动画帧。在此之前，动画系统是暂停或未完全初始化的
+            // 调用此方法后，系统的窗口动画（如点击应用图标后的放大效果）才能正常显示
             mAnimator.ready();
+            // 设置一个标志位，表明显示系统已准备就绪
             mDisplayReady = true;
             // Reconfigure all displays to make sure that forced properties and
             // DisplayWindowSettings are applied.
+            // 重新配置所有显示器，以确保所有设置生效
+            // 遍历所有 DisplayContent 并调用 reconfigureDisplayLocked
             mRoot.forAllDisplays(DisplayContent::reconfigureDisplayLocked);
+            //  检测并记录设备的输入特性
+            // 设备是否具有真实的触摸屏
             mIsTouchDevice = mContext.getPackageManager().hasSystemFeature(
                     PackageManager.FEATURE_TOUCHSCREEN);
+            // 设备是否支持模拟触摸（例如通过鼠标、触摸板、遥控器方向键来模拟触摸事件）
             mIsFakeTouchDevice = mContext.getPackageManager().hasSystemFeature(
                     PackageManager.FEATURE_FAKETOUCH);
         }
-
+        // 通知 ActivityTaskManagerService 配置可能已更改，需要更新并广播
         mAtmService.updateConfiguration(null /* request to compute config */);
     }
 
     public void systemReady() {
+        // 设置内部状态标志。这表明 WMS 自身以及整个系统已经进入了 system-ready 状态。WMS 内部的其他方法可以检查这个标志位来决定是否执行某些依赖于全局系统状态的操作
         mSystemReady = true;
+        // 通知窗口管理策略（通常是 PhoneWindowManager）系统已就绪
         mPolicy.systemReady();
+        // 通知所有物理/虚拟显示的策略对象系统已就绪
         mRoot.forAllDisplayPolicies(DisplayPolicy::systemReady);
+        // 通知快照控制器（SnapshotController）系统已就绪
         mSnapshotController.systemReady();
+        // 检测并记录设备是否支持广色域（Wide Color Gamut）显示
         mHasWideColorGamutSupport = queryWideColorGamutSupport();
+        // 检测并记录设备是否支持高动态范围（HDR）显示
         mHasHdrSupport = queryHdrSupport();
+        // 在 UI 线程上异步加载持久化的窗口设置
         UiThread.getHandler().post(mSettingsObserver::loadSettings);
+        // 连接 VR 服务并注册 VR 模式状态监听器
         IVrManager vrManager = IVrManager.Stub.asInterface(
                 ServiceManager.getService(Context.VR_SERVICE));
         if (vrManager != null) {

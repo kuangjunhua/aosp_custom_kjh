@@ -8811,6 +8811,7 @@ public class ActivityManagerService extends IActivityManager.Stub
             // the headless-user start logic to UserManager-land.
             if (isBootingSystemUser && !UserManager.isHeadlessSystemUserMode()) {
                 t.traceBegin("startHomeOnAllDisplays");
+                // ATMS实例
                 mAtmInternal.startHomeOnAllDisplays(currentUserId, "systemReady");
                 t.traceEnd();
             }

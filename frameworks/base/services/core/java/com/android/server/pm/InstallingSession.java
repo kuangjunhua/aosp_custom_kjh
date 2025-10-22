@@ -227,6 +227,7 @@ class InstallingSession {
      * policy if needed and then create install arguments based
      * on the install location.
      */
+    // 获取包的信息和安装位置，创建安装参数
     private void handleStartCopy(InstallRequest request) {
         if ((mInstallFlags & PackageManager.INSTALL_APEX) != 0) {
             mRet = INSTALL_SUCCEEDED;
@@ -237,6 +238,7 @@ class InstallingSession {
 
         // For staged session, there is a delay between its verification and install. Device
         // state can change within this delay and hence we need to re-verify certain conditions.
+        // 是否暂存
         boolean isStaged = (mInstallFlags & INSTALL_STAGED) != 0;
         if (isStaged) {
             Pair<Integer, String> ret = mInstallPackageHelper.verifyReplacingVersionCode(
@@ -247,12 +249,12 @@ class InstallingSession {
                 return;
             }
         }
-
+        // 是否即时安装（类似小程序）
         final boolean ephemeral = (mInstallFlags & PackageManager.INSTALL_INSTANT_APP) != 0;
         if (DEBUG_INSTANT && ephemeral) {
             Slog.v(TAG, "pkgLite for install: " + pkgLite);
         }
-
+        // 推荐的安装位置是否空间不足
         if (!mOriginInfo.mStaged && pkgLite.recommendedInstallLocation
                 == InstallLocationUtils.RECOMMEND_FAILED_INSUFFICIENT_STORAGE) {
             // If we are not staged and have too little free space, try to free cache
@@ -261,6 +263,7 @@ class InstallingSession {
                     pkgLite.recommendedInstallLocation, mPackageLite,
                     mOriginInfo.mResolvedPath, mPackageAbiOverride, mInstallFlags);
         }
+        // 覆盖安装位置
         mRet = overrideInstallLocation(pkgLite.packageName, pkgLite.recommendedInstallLocation,
                 pkgLite.installLocation);
         if (mRet != INSTALL_SUCCEEDED) {
@@ -273,10 +276,12 @@ class InstallingSession {
     }
 
     private void processPendingInstall(InstallRequest installRequest) {
+        // 前一步是否成功
         if (mRet == PackageManager.INSTALL_SUCCEEDED) {
             mRet = copyApk(installRequest);
         }
         if (mRet == PackageManager.INSTALL_SUCCEEDED) {
+            // 前一步成功，释放资源（空间）
             F2fsUtils.releaseCompressedBlocks(
                     mPm.mContext.getContentResolver(), new File(installRequest.getCodePath()));
         }
@@ -290,7 +295,7 @@ class InstallingSession {
                     Collections.singletonList(installRequest)));
         }
     }
-
+    // 拷贝文件
     private int copyApk(InstallRequest request) {
         if (mMoveInfo == null) {
             return copyApkForFileInstall(request);
@@ -533,22 +538,26 @@ class InstallingSession {
         if (!success) {
             for (InstallRequest request : installRequests) {
                 if (request.getReturnCode() != PackageManager.INSTALL_SUCCEEDED) {
+                    // 前一步失败，则清理
                     cleanUpForFailedInstall(request);
                 }
             }
         } else {
+            // 初始化安装对象（重要步骤，安装在里面发生）
             mInstallPackageHelper.installPackagesTraced(installRequests);
-
+            // 遍历安装请求，
             for (InstallRequest request : installRequests) {
                 request.onInstallCompleted();
+                // 清理工作
                 doPostInstall(request);
             }
         }
         for (InstallRequest request : installRequests) {
+            // 恢复、发送一些安装相关的消息
             mInstallPackageHelper.restoreAndPostInstall(request);
         }
     }
-
+    // 清理安装数据
     private void doPostInstall(InstallRequest request) {
         if (mMoveInfo != null) {
             if (request.getReturnCode() == PackageManager.INSTALL_SUCCEEDED) {

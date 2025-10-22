@@ -683,6 +683,7 @@ class ActivityStarter {
      */
     int execute() {
         try {
+            // 1. 标记启动流程已开始  mInExecution = true
             onExecutionStarted();
 
             // Refuse possible leaked file descriptors
@@ -698,10 +699,6 @@ class ActivityStarter {
                         mRequest.intent, caller, callingUid);
             }
 
-            // If the caller hasn't already resolved the activity, we're willing
-            // to do so here. If the caller is already holding the WM lock here,
-            // and we need to check dynamic Uri permissions, then we're forced
-            // to assume those permissions are denied to avoid deadlocking.
             // 解析Intent
             if (mRequest.activityInfo == null) {
                 mRequest.resolveActivity(mSupervisor);
@@ -739,6 +736,7 @@ class ActivityStarter {
                 }
 
                 try {
+                    // 构建ActivityRecord，实际启动Activity的关键步骤
                     res = executeRequest(mRequest);
                 } finally {
                     mRequest.logMessage.append(" result code=").append(res);
@@ -761,7 +759,7 @@ class ActivityStarter {
                     }
                     ProtoLog.v(WM_DEBUG_CONFIGURATION,
                                 "Updating to new configuration after starting activity.");
-
+                    // 更新系统配置
                     mService.updateConfigurationLocked(mRequest.globalConfig, null, false);
                 }
 
@@ -786,6 +784,7 @@ class ActivityStarter {
                 return getExternalResult(res);
             }
         } finally {
+            // 通知控制器流程结束
             onExecutionComplete();
         }
     }
@@ -1310,7 +1309,7 @@ class ActivityStarter {
         if (balCode != BAL_BLOCK && !isHomeProcess) {
             mService.resumeAppSwitches();
         }
-
+        // 
         mLastStartActivityResult = startActivityUnchecked(r, sourceRecord, voiceSession,
                 request.voiceInteractor, startFlags, checkedOptions,
                 inTask, inTaskFragment, balCode, intentGrants, realCallingUid);
@@ -1625,12 +1624,16 @@ class ActivityStarter {
      * Note: This method should only be called from {@link #startActivityUnchecked}.
      */
     // TODO(b/152429287): Make it easier to exercise code paths through startActivityInner
+    // 设置初始状态，计算 Task 和 Launch 参数
+    // 选择目标 Task，决定是否新建 Task 或复用 Task。
+    // 调用 mTargetRootTask.startActivityLocked(...)，将 Activity 加入 Task 并准备启动
     @VisibleForTesting
     int startActivityInner(final ActivityRecord r, ActivityRecord sourceRecord,
             IVoiceInteractionSession voiceSession, IVoiceInteractor voiceInteractor,
             int startFlags, ActivityOptions options, Task inTask,
             TaskFragment inTaskFragment, @BalCode int balCode,
             NeededUriGrants intentGrants, int realCallingUid) {
+
         setInitialState(r, options, inTask, inTaskFragment, startFlags, sourceRecord,
                 voiceSession, voiceInteractor, balCode, realCallingUid);
 
@@ -1786,6 +1789,7 @@ class ActivityStarter {
                 false /* forceSend */, mStartActivity);
 
         final boolean isTaskSwitch = startedTask != prevTopTask;
+        // 将Activity加入Task并准备启动
         mTargetRootTask.startActivityLocked(mStartActivity, topRootTask, newTask, isTaskSwitch,
                 mOptions, sourceRecord);
         if (mDoResume) {
@@ -1816,6 +1820,7 @@ class ActivityStarter {
                         && !mRootWindowContainer.isTopDisplayFocusedRootTask(mTargetRootTask)) {
                     mTargetRootTask.moveToFront("startActivityInner");
                 }
+                // 启动 Activity
                 mRootWindowContainer.resumeFocusedTasksTopActivities(
                         mTargetRootTask, mStartActivity, mOptions, mTransientLaunch);
             }

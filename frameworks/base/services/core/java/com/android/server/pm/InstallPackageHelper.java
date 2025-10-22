@@ -475,6 +475,7 @@ final class InstallPackageHelper {
 
         final int userId = request.getUserId();
         // Modify state for the given package setting
+        // 提交包的设置，把所有信息都注册到PMS中
         commitPackageSettings(pkg, pkgSetting, oldPkgSetting, reconciledPkg);
         if (pkgSetting.getInstantApp(userId)) {
             mPm.mInstantAppRegistry.addInstantApp(userId, pkgSetting.getAppId());
@@ -504,6 +505,7 @@ final class InstallPackageHelper {
      * Adds a scanned package to the system. When this method is finished, the package will
      * be available for query, resolution, etc...
      */
+    // 经过这一步包才真正注册到PMS中
     private void commitPackageSettings(@NonNull AndroidPackage pkg,
             @NonNull PackageSetting pkgSetting, @Nullable PackageSetting oldPkgSetting,
             ReconciledPackage reconciledPkg) {
@@ -582,6 +584,7 @@ final class InstallPackageHelper {
             mPm.mComponentResolver.addAllComponents(pkg, chatty, mPm.mSetupWizardPackage, snapshot);
             mPm.mAppsFilter.addPackage(snapshot, pkgSetting, isReplace,
                     (scanFlags & SCAN_DONT_KILL_APP) != 0 /* retainImplicitGrantOnReplace */);
+            // 添加到PMS
             mPm.addAllPackageProperties(pkg);
 
             if (oldPkgSetting == null || oldPkgSetting.getPkg() == null) {
@@ -774,8 +777,9 @@ final class InstallPackageHelper {
         } catch (IntentSender.SendIntentException ignored) {
         }
     }
-
+    // 恢复用户之前的数据（更新APP）
     public void restoreAndPostInstall(InstallRequest request) {
+        // 拿到安装请求的用户ID（那个用户在安装）
         final int userId = request.getUserId();
         if (DEBUG_INSTALL) {
             Log.v(TAG,
@@ -784,7 +788,9 @@ final class InstallPackageHelper {
 
         // A restore should be requested at this point if (a) the install
         // succeeded, (b) the operation is not an update.
+        // 判断是否更新
         final boolean update = request.isUpdate();
+        // 没有更新并且包不为空（新安装的）
         boolean doRestore = !update && request.getPkg() != null;
 
         // Set up the post-install work request bookkeeping.  This will be used
@@ -803,6 +809,7 @@ final class InstallPackageHelper {
             // Package Manager to run the post-install observer callbacks
             // and broadcasts.
             request.closeFreezer();
+            // 执行数据恢复
             doRestore = performBackupManagerRestore(userId, token, request);
         }
 
@@ -949,10 +956,12 @@ final class InstallPackageHelper {
         boolean success = false;
         try {
             Trace.traceBegin(TRACE_TAG_PACKAGE_MANAGER, "installPackagesLI");
+            // 遍历安装请求列表
             for (InstallRequest request : requests) {
                 try {
                     Trace.traceBegin(TRACE_TAG_PACKAGE_MANAGER, "preparePackage");
                     request.onPrepareStarted();
+                    // 准备包的LI
                     preparePackageLI(request);
                 } catch (PrepareFailure prepareFailure) {
                     request.setError(prepareFailure.error,
@@ -961,6 +970,7 @@ final class InstallPackageHelper {
                     request.setOriginPermission(prepareFailure.mConflictingPermission);
                     return;
                 } finally {
+                    // 将阶段标记设置为finish状态
                     request.onPrepareFinished();
                     Trace.traceEnd(TRACE_TAG_PACKAGE_MANAGER);
                 }
@@ -974,6 +984,7 @@ final class InstallPackageHelper {
                 request.setReturnCode(PackageManager.INSTALL_SUCCEEDED);
                 final String packageName = packageToScan.getPackageName();
                 try {
+                    // 扫描开始
                     request.onScanStarted();
                     final ScanResult scanResult = scanPackageTracedLI(request.getParsedPackage(),
                             request.getParseFlags(), request.getScanFlags(),
@@ -1012,11 +1023,12 @@ final class InstallPackageHelper {
                     return;
                 }
             }
-
+            // 对包进行梳理，防止产生冲突，
             List<ReconciledPackage> reconciledPackages;
             synchronized (mPm.mLock) {
                 try {
                     Trace.traceBegin(TRACE_TAG_PACKAGE_MANAGER, "reconcilePackages");
+                    // 拿到协调后的包
                     reconciledPackages = ReconcilePackageUtils.reconcilePackages(
                             requests, Collections.unmodifiableMap(mPm.mPackages),
                             versionInfos, mSharedLibraries, mPm.mSettings.getKeySetManagerService(),
@@ -1031,12 +1043,14 @@ final class InstallPackageHelper {
                 }
                 try {
                     Trace.traceBegin(TRACE_TAG_PACKAGE_MANAGER, "commitPackages");
+                    // 提交阶段
                     commitPackagesLocked(reconciledPackages, mPm.mUserManager.getUserIds());
                     success = true;
                 } finally {
                     Trace.traceEnd(TRACE_TAG_PACKAGE_MANAGER);
                 }
             }
+            // 
             executePostCommitStepsLIF(reconciledPackages);
         } finally {
             if (success) {
@@ -1096,12 +1110,24 @@ final class InstallPackageHelper {
         return newProp != null && newProp.getBoolean();
     }
 
+    // 核心步骤
+    // 1. 参数的解析和提取
+    // 2. 包的解析和验证
+    // 3. 签名和权限的验证
+    // 4. 系统应用更新的限制
+    // 5. 安装位置、即时应用的验证
+    // 6. 包的替换逻辑
+    // 7. 安装冻结
     @GuardedBy("mPm.mInstallLock")
     private void preparePackageLI(InstallRequest request) throws PrepareFailure {
+        // 安装标志位，后续判断安装类型
         final int installFlags = request.getInstallFlags();
+        // 判断是否安装在外部存储器，比如SD卡，用于后续存储位置的校验
         final boolean onExternal = request.getVolumeUuid() != null;
+        // 是否是即时应用
         final boolean instantApp = ((installFlags & PackageManager.INSTALL_INSTANT_APP) != 0);
         final boolean fullApp = ((installFlags & PackageManager.INSTALL_FULL_APP) != 0);
+        // 虚拟的预加载应用
         final boolean virtualPreload =
                 ((installFlags & PackageManager.INSTALL_VIRTUAL_PRELOAD) != 0);
         final boolean isApex = ((installFlags & PackageManager.INSTALL_APEX) != 0);
@@ -1163,11 +1189,13 @@ final class InstallPackageHelper {
 
         // Skip enforcement when the testOnly flag is set
         if (!bypassLowTargetSdkBlock && parsedPackage.isTestOnly()) {
+            // 是否绕过低版本
             bypassLowTargetSdkBlock = true;
         }
 
         // Enforce the low target sdk install block except when
         // the --bypass-low-target-sdk-block is set for the install
+        // 强制安装低版本
         if (!bypassLowTargetSdkBlock
                 && parsedPackage.getTargetSdkVersion() < MIN_INSTALLABLE_TARGET_SDK) {
             Slog.w(TAG, "App " + parsedPackage.getPackageName()
@@ -1179,7 +1207,9 @@ final class InstallPackageHelper {
         }
 
         // Instant apps have several additional install-time checks.
+        // 即时应用检查
         if (instantApp) {
+            // 版本小于多少不支持，直接退出
             if (parsedPackage.getTargetSdkVersion() < Build.VERSION_CODES.O) {
                 Slog.w(TAG, "Instant app package " + parsedPackage.getPackageName()
                         + " does not target at least O");
@@ -1193,7 +1223,7 @@ final class InstallPackageHelper {
                         "Instant app package may not declare a sharedUserId");
             }
         }
-
+        // 静态共享库相关
         if (parsedPackage.isStaticSharedLibrary()) {
             // Static shared libraries have synthetic package names
             PackageManagerService.renameStaticSharedLibraryPackage(parsedPackage);
@@ -1205,7 +1235,7 @@ final class InstallPackageHelper {
                         "Static shared libs can only be installed on internal storage.");
             }
         }
-
+        // 获取包名放到安装请求里面
         String pkgName = parsedPackage.getPackageName();
         request.setName(pkgName);
         if (parsedPackage.isTestOnly()) {
@@ -1216,6 +1246,7 @@ final class InstallPackageHelper {
         }
 
         // either use what we've been given or parse directly from the APK
+        // 请求参数获取签名信息、验签
         if (request.getSigningDetails() != SigningDetails.UNKNOWN) {
             parsedPackage.setSigningDetails(request.getSigningDetails());
         } else {
@@ -4093,6 +4124,7 @@ final class InstallPackageHelper {
             @PackageManagerService.ScanFlags int scanFlags, long currentTime,
             @Nullable UserHandle user, String cpuAbiOverride)
             throws PackageManagerException {
+        // 拿到(封装)扫描请求
         final ScanRequest initialScanRequest = prepareInitialScanRequest(parsedPackage, parseFlags,
                 scanFlags, user, cpuAbiOverride);
         final PackageSetting installedPkgSetting = initialScanRequest.mPkgSetting;
@@ -4104,7 +4136,7 @@ final class InstallPackageHelper {
         } else {
             isUpdatedSystemApp = disabledPkgSetting != null;
         }
-
+        // 调整扫描请求
         final int newScanFlags = adjustScanFlags(scanFlags, installedPkgSetting, disabledPkgSetting,
                 user, parsedPackage);
         ScanPackageUtils.applyPolicy(parsedPackage, newScanFlags,
@@ -4780,6 +4812,7 @@ final class InstallPackageHelper {
             @Nullable PackageSetting existingPkgSetting,
             @Nullable PackageSetting disabledPkgSetting, UserHandle user,
             @NonNull AndroidPackage pkg) {
+        // 
         scanFlags = ScanPackageUtils.adjustScanFlagsWithPackageSetting(scanFlags, existingPkgSetting,
                 disabledPkgSetting, user);
 

@@ -5284,6 +5284,7 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
     }
 
     Intent getHomeIntent() {
+        // Intent.ACTION_MAIN
         Intent intent = new Intent(mTopAction, mTopData != null ? Uri.parse(mTopData) : null);
         intent.setComponent(mTopComponent);
         intent.addFlags(Intent.FLAG_DEBUG_TRIAGED_MISSING);
@@ -6308,6 +6309,7 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
         @Override
         public boolean startHomeOnAllDisplays(int userId, String reason) {
             synchronized (mGlobalLock) {
+                // mWindowManagerService.mRoot
                 return mRootWindowContainer.startHomeOnAllDisplays(userId, reason);
             }
         }

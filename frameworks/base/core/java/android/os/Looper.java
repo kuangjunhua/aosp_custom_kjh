@@ -68,6 +68,7 @@ public final class Looper {
     private static final String TAG = "Looper";
 
     // sThreadLocal.get() will return null unless you've called prepare().
+    // 使用 ThreadLocal 确保每个线程有且仅有一个 Looper
     @UnsupportedAppUsage
     static final ThreadLocal<Looper> sThreadLocal = new ThreadLocal<Looper>();
     @UnsupportedAppUsage
@@ -110,9 +111,11 @@ public final class Looper {
     }
 
     private static void prepare(boolean quitAllowed) {
+        // 检测当前线程是否已有 Looper，避免重复创建
         if (sThreadLocal.get() != null) {
             throw new RuntimeException("Only one Looper may be created per thread");
         }
+        // 创建新的 Looper 并存入当前线程的 ThreadLocal
         sThreadLocal.set(new Looper(quitAllowed));
     }
 

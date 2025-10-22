@@ -5248,6 +5248,7 @@ public class ActivityManager {
             new Singleton<IActivityManager>() {
                 @Override
                 protected IActivityManager create() {
+                    // 拿到AMS的IBinder对象
                     final IBinder b = ServiceManager.getService(Context.ACTIVITY_SERVICE);
                     final IActivityManager am = IActivityManager.Stub.asInterface(b);
                     return am;

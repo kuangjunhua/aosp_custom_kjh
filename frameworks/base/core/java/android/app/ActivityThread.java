@@ -1112,7 +1112,9 @@ public final class ActivityThread extends ClientTransactionHandler
 
             sendMessage(H.DESTROY_BACKUP_AGENT, d);
         }
-
+        // -> frameworks\base\services\core\java\com\android\server\am\ActiveServices.java
+        // -> realStartServiceLocked
+        // -> thread.scheduleCreateService()
         public final void scheduleCreateService(IBinder token,
                 ServiceInfo info, CompatibilityInfo compatInfo, int processState) {
             updateProcessState(processState, false);
@@ -4658,11 +4660,13 @@ public final class ActivityThread extends ClientTransactionHandler
             Application app = packageInfo.makeApplicationInner(false, mInstrumentation);
 
             final java.lang.ClassLoader cl;
+            // 获取类
             if (data.info.splitName != null) {
                 cl = packageInfo.getSplitClassLoader(data.info.splitName);
             } else {
                 cl = packageInfo.getClassLoader();
             }
+            // 通过反射机制获取类实例
             service = packageInfo.getAppFactory()
                     .instantiateService(cl, data.info.name, data.intent);
             ContextImpl context = ContextImpl.getImpl(service
@@ -4680,6 +4684,7 @@ public final class ActivityThread extends ClientTransactionHandler
                     app.getResources().getLoaders().toArray(new ResourcesLoader[0]));
 
             context.setOuterContext(service);
+            // 调用 attach() 建立与 Context/AMS 的关系
             service.attach(context, this, data.info.name, data.token, app,
                     ActivityManager.getService());
             if (!service.isUiContext()) { // WindowProviderService is a UI Context.
@@ -4689,6 +4694,7 @@ public final class ActivityThread extends ClientTransactionHandler
                     service.updateDeviceId(mLastReportedDeviceId);
                 }
             }
+            // 回调 Service.onCreate()（应用真正感知 Service 启动）
             service.onCreate();
             mServicesData.put(data.token, data);
             mServices.put(data.token, service);

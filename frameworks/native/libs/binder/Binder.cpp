@@ -121,6 +121,7 @@ status_t IBinder::shellCommand(const sp<IBinder>& target, int in, int out, int e
     }
     send.writeStrongBinder(callback != nullptr ? IInterface::asBinder(callback) : nullptr);
     send.writeStrongBinder(resultReceiver != nullptr ? IInterface::asBinder(resultReceiver) : nullptr);
+    // 进入 frameworks\base\core\java\android\os\Binder.java
     return target->transact(SHELL_COMMAND_TRANSACTION, send, &reply);
 }
 
@@ -389,6 +390,8 @@ status_t BBinder::transact(
             break;
         }
         default:
+            // 调用子类的onTransact方法
+            // frameworks\base\core\jni\android_util_Binder.cpp
             err = onTransact(code, data, reply, flags);
             break;
     }

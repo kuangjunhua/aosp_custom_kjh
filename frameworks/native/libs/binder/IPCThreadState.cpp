@@ -1004,7 +1004,7 @@ status_t IPCThreadState::sendReply(const Parcel& reply, uint32_t flags)
 
     return waitForResponse(nullptr, nullptr);
 }
-
+ 
 status_t IPCThreadState::waitForResponse(Parcel *reply, status_t *acquireResult)
 {
     uint32_t cmd;
@@ -1060,9 +1060,9 @@ status_t IPCThreadState::waitForResponse(Parcel *reply, status_t *acquireResult)
             }
             goto finish;
 
-        case BR_REPLY:
+        case BR_REPLY: // 读
             {
-                binder_transaction_data tr;
+                binder_transaction_data tr;// binder_write_read -> mIn(Parcel) -> binder_transaction_data
                 err = mIn.read(&tr, sizeof(tr));
                 ALOG_ASSERT(err == NO_ERROR, "Not enough command data for brREPLY");
                 if (err != NO_ERROR) goto finish;

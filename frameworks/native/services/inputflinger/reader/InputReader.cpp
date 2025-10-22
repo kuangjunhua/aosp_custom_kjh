@@ -117,59 +117,69 @@ void InputReader::loopOnce() {
     std::vector<InputDeviceInfo> inputDevices;
     std::list<NotifyArgs> notifyArgs;
     { // acquire lock
-        std::scoped_lock _l(mLock);
-
-        oldGeneration = mGeneration;
-        timeoutMillis = -1;
-
+        std::scoped_lock _l(mLock); // 加锁保证线程安全
+        // 设备状态版本号，若与后续检查不一致，说明设备列表已变化
+        oldGeneration = mGeneration; // 记录当前设备状态版本号
+        timeoutMillis = -1; // 默认无限等待
+        // 检查是否需要立即刷新配置（如屏幕旋转后键盘布局变化）
         auto changes = mConfigurationChangesToRefresh;
         if (changes.any()) {
             mConfigurationChangesToRefresh.clear();
-            timeoutMillis = 0;
+            timeoutMillis = 0; // 立即处理，不阻塞
             refreshConfigurationLocked(changes);
-        } else if (mNextTimeout != LLONG_MAX) {
+        } else if (mNextTimeout != LLONG_MAX) { // 检查是否有待处理的超时任务（如长按事件超时）
             nsecs_t now = systemTime(SYSTEM_TIME_MONOTONIC);
             timeoutMillis = toMillisecondTimeoutDelay(now, mNextTimeout);
         }
     } // release lock
-
+    // 获取原始事件
+    // 内部使用 epoll 监听 /dev/input/eventX 设备节点
+    // 返回的 RawEvent 包含:设备ID(deviceId)、事件类型（type，如 EV_KEY、EV_ABS）、事件值（value）
+    // 关键点1 通过EventHub获取事件列表
     std::vector<RawEvent> events = mEventHub->getEvents(timeoutMillis);
 
     { // acquire lock
         std::scoped_lock _l(mLock);
+        // // 通知其他线程 InputReader 存活
         mReaderIsAliveCondition.notify_all();
-
+        // 处理获取到的事件
         if (!events.empty()) {
+            // 将 RawEvent 转换为 NotifyArgs（如 NotifyKeyArgs、NotifyMotionArgs），并处理设备状态变化
+            // 关键点2 对事件进行 加工处理
             mPendingArgs += processEventsLocked(events.data(), events.size());
         }
-
+        // 检查超时任务是否到期
         if (mNextTimeout != LLONG_MAX) {
             nsecs_t now = systemTime(SYSTEM_TIME_MONOTONIC);
             if (now >= mNextTimeout) {
                 if (debugRawEvents()) {
                     ALOGD("Timeout expired, latency=%0.3fms", (now - mNextTimeout) * 0.000001f);
                 }
-                mNextTimeout = LLONG_MAX;
-                mPendingArgs += timeoutExpiredLocked(now);
+                mNextTimeout = LLONG_MAX;// 重置超时
+                // 处理超时逻辑（如长按按键触发二次事件）
+                mPendingArgs += timeoutExpiredLocked(now);// 触发超时回调
             }
         }
-
+        // 检查设备状态是否变化（如热插拔）
         if (oldGeneration != mGeneration) {
             inputDevicesChanged = true;
-            inputDevices = getInputDevicesLocked();
+            // 返回当前所有输入设备的描述信息（InputDeviceInfo）
+            inputDevices = getInputDevicesLocked(); // 获取最新设备列表
             mPendingArgs.emplace_back(
                     NotifyInputDevicesChangedArgs{mContext.getNextId(), inputDevices});
         }
-
+        // 将待通知的事件转移到临时变量（减少锁持有时间）
         std::swap(notifyArgs, mPendingArgs);
     } // release lock
 
-    // Send out a message that the describes the changed input devices.
+    // 通知 WindowManagerService 设备列表变化
     if (inputDevicesChanged) {
         mPolicy->notifyInputDevicesChanged(inputDevices);
     }
 
     // Notify the policy of the start of every new stylus gesture outside the lock.
+    // 通知策略层触控笔手势开始
+    // mPolicy通常是 NativeInputManager，负责与 Java 层的 WindowManagerService 交互
     for (const auto& args : notifyArgs) {
         const auto* motionArgs = std::get_if<NotifyMotionArgs>(&args);
         if (motionArgs != nullptr && isStylusPointerGestureStart(*motionArgs)) {
@@ -184,6 +194,9 @@ void InputReader::loopOnce() {
     // resulting in a deadlock.  This situation is actually quite plausible because the
     // listener is actually the input dispatcher, which calls into the window manager,
     // which occasionally calls into the input reader.
+    // 传递事件给下游监听器
+    // mNextListener 通常是 InputDispatcher 或 UnwantedInteractionBlocker，通过 InputListenerInterface 接口接收事件
+    // 为何在锁外调用？避免死锁（下游可能回调 InputReader 方法，如 getScanCodeState）
     for (const NotifyArgs& args : notifyArgs) {
         mNextListener.notify(args);
     }

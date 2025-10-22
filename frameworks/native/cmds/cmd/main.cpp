@@ -24,6 +24,7 @@ int main(int argc, char* const argv[]) {
     std::vector<std::string_view> arguments;
     arguments.reserve(argc - 1);
     // 0th argument is a program name, skipping.
+    // 第一个参数是程序名称，跳过
     for (int i = 1; i < argc; ++i) {
         arguments.emplace_back(argv[i]);
     }

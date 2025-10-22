@@ -271,6 +271,8 @@ status_t Parcel::flattenBinder(const sp<IBinder>& binder) {
             }
             obj.hdr.type = BINDER_TYPE_BINDER;
             obj.binder = reinterpret_cast<uintptr_t>(local->getWeakRefs());
+            // 将 local 指针强制转换为 uintptr_t 类型，并赋值给 obj.cookie 成员变量 
+            // local 是JavaBBinder 对象的本地表示，cookie 用于在 Binder 传输中标识该对象
             obj.cookie = reinterpret_cast<uintptr_t>(local);
         }
     } else {

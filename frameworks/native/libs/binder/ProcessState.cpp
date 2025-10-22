@@ -160,7 +160,7 @@ sp<ProcessState> ProcessState::init(const char *driver, bool requireDefault)
 
 sp<IBinder> ProcessState::getContextObject(const sp<IBinder>& /*caller*/)
 {
-    // context就是一个BpBinder对象
+    // context就是一个BpBinder对象(servicemanager的BpBinder对象)
     sp<IBinder> context = getStrongProxyForHandle(0);
 
     if (context) {

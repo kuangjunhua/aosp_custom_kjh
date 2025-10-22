@@ -72,10 +72,12 @@ InputManager::InputManager(const sp<InputReaderPolicyInterface>& readerPolicy,
     if (ENABLE_INPUT_DEVICE_USAGE_METRICS) {
         mCollector = std::make_unique<InputDeviceMetricsCollector>(*mDispatcher);
     }
-
+    // 将 InputReader 的原始事件转换为结构化事件（如 KeyEvent、MotionEvent）
     mProcessor = ENABLE_INPUT_DEVICE_USAGE_METRICS ? std::make_unique<InputProcessor>(*mCollector)
                                                    : std::make_unique<InputProcessor>(*mDispatcher);
+    // 过滤恶意或误触输入（如防手掌误触、边缘抑制）
     mBlocker = std::make_unique<UnwantedInteractionBlocker>(*mProcessor);
+    // 创建 InputReader 从内核设备节点（如 /dev/input/eventX）读取原始输入事件
     mReader = createInputReader(readerPolicy, *mBlocker);
 }
 

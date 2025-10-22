@@ -166,6 +166,7 @@ public:
 
 int cmdMain(const std::vector<std::string_view>& argv, TextOutput& outputLog, TextOutput& errorLog,
             int in, int out, int err, RunMode runMode) {
+    // 准备好跨进程通信的支持
     sp<ProcessState> proc = ProcessState::self();
     proc->startThreadPool();
 
@@ -188,8 +189,8 @@ int cmdMain(const std::vector<std::string_view>& argv, TextOutput& outputLog, Te
         errorLog << "cmd: No service specified; use -l to list all running services. Use -w to start and wait for a service." << endl;
         return 20;
     }
-
-    if ((argc == 1) && (argv[0] == "-l")) {
+    // argv 是程序名称后面的参数，在上一步把指令第一个参数(程序名称)去掉了
+    if ((argc == 1) && (argv[0] == "-l")) { // pm -l
         Vector<String16> services = sm->listServices();
         services.sort(sort_func);
         outputLog << "Currently running services:" << endl;
@@ -202,17 +203,20 @@ int cmdMain(const std::vector<std::string_view>& argv, TextOutput& outputLog, Te
         }
         return 0;
     }
-
+    // cmd package install xxx.apk
+    // argv: ["package", "install", "xxx.apk"]
     bool waitForService = ((argc > 1) && (argv[0] == "-w"));
-    int serviceIdx = (waitForService) ? 1 : 0;
-    const auto cmd = argv[serviceIdx];
+    int serviceIdx = (waitForService) ? 1 : 0; // 0
+    const auto cmd = argv[serviceIdx]; // package 就是PMS注册到servicemanager的名字
 
     Vector<String16> args;
     String16 serviceName = String16(cmd.data(), cmd.size());
     for (int i = serviceIdx + 1; i < argc; i++) {
         args.add(String16(argv[i].data(), argv[i].size()));
     }
-    sp<IBinder> service;
+    // pm install xxx.apk
+    // cmd package xxx.apk
+    sp<IBinder> service; // PMS的IBinder, 在PMS初始化时添加的addService("package", xxx)
     if(waitForService) {
         service = sm->waitForService(serviceName);
     } else {

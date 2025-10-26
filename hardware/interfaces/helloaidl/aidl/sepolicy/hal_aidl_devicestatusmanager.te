@@ -1,0 +1,33 @@
+
+#auto generate hal_devicestatusmanager_client(Client attribute) and hal_devicestatusmanager_server(Server attribute)
+hal_attribute(devicestatusmanager);
+
+#定义HAL服务端的SELinux域（domain），并标记为受信任主体（mlstrustedsubject）
+type hal_devicestatusmanager_default, domain, mlstrustedsubject;
+
+#定义该域的可执行文件类型（exec_type），并关联到vendor分区
+type hal_devicestatusmanager_default_exec, exec_type, vendor_file_type, file_type;
+
+#将进程域 hal_devicestatusmanager_default 关联到HAL服务端属性 hal_devicestatusmanager，表明该进程域是HAL服务的实现者
+hal_server_domain(hal_devicestatusmanager_default, hal_devicestatusmanager);
+
+#system_server进程标记为devicestatusmanager HAL的客户端
+hal_client_domain(system_server, hal_devicestatusmanager)
+
+#允许init进程启动hal_devicestatusmanager_default域的进程，并自动切换安全上下文
+init_daemon_domain(hal_devicestatusmanager_default);
+
+#allow binder call from hal client(hal_devicestatusmanager_client) to server
+binder_call(hal_devicestatusmanager_client, hal_devicestatusmanager_default_exec)
+
+#定义普通服务类型（通过servicemanager注册）
+type hal_devicestatusmanager_service,  service_manager_type;
+#允许服务端域向servicemanager注册普通服务
+add_service(hal_devicestatusmanager_default, hal_devicestatusmanager_service)
+
+
+#允许服务端调用servicemanager的Binder接口
+allow hal_devicestatusmanager_default servicemanager:binder { call transfer };
+
+#允许platform_app和shell进程查找和调用HAL服务
+allow { platform_app shell } hal_devicestatusmanager:binder {call};

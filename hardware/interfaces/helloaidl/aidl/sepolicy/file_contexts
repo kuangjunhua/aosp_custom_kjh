@@ -1,0 +1,1 @@
+/(vendor|system/vendor)/bin/hw/android\.hardware\.helloaidl\.service   u:object_r:hal_devicestatusmanager_default_exec:s0

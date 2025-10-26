@@ -1,0 +1,18 @@
+
+cc_binary {
+        name: "teststableaidl",
+        
+        //vendor:true, //没有加类似这种标签，说明默认是在system侧
+        shared_libs: [
+                "android.hardware.helloaidl-V1-ndk", //重要
+                "liblog",
+                "libbase",
+                "libcutils",
+                "libbinder_ndk", //重要
+                "libutils",
+                
+        ],
+        srcs: [
+                "main.cpp",
+        ],
+}

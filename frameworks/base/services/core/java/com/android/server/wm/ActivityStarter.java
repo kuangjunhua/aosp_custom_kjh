@@ -564,7 +564,7 @@ class ActivityStarter {
                 // so it looks like a "normal" instant app launch.
                 intent.setComponent(null /* component */);
             }
-
+            // 拿到activity 的ResolveInfo
             resolveInfo = supervisor.resolveIntent(intent, resolvedType, userId,
                     0 /* matchFlags */,
                     computeResolveFilterUid(callingUid, realCallingUid, filterCallingUid),
@@ -956,7 +956,7 @@ class ActivityStarter {
                 request.logMessage.append(" (realCallingUid=").append(realCallingUid).append(")");
             }
         }
-
+        // 源Record：当下启动新activity的record
         ActivityRecord sourceRecord = null;
         ActivityRecord resultRecord = null;
         if (resultTo != null) {
@@ -975,6 +975,7 @@ class ActivityStarter {
         if ((launchFlags & Intent.FLAG_ACTIVITY_FORWARD_RESULT) != 0 && sourceRecord != null) {
             // Transfer the result target from the source activity to the new one being started,
             // including any failures.
+            // 需要拿到结果
             if (requestCode >= 0) {
                 SafeActivityOptions.abort(options);
                 return ActivityManager.START_FORWARD_AND_REQUEST_CONFLICT;
@@ -1776,6 +1777,7 @@ class ActivityStarter {
                     UserHandle.getAppId(mStartActivity.info.applicationInfo.uid) /*recipient*/,
                     r.launchedFromUid /*visible*/, true /*direct*/);
         }
+        // 先获取当前任务栈的顶部的Task，然后调用mTargetRootTask.startActivityLocked(...)，将Activity加入Task并准备启动
         final Task startedTask = mStartActivity.getTask();
         if (newTask) {
             EventLogTags.writeWmCreateTask(mStartActivity.mUserId, startedTask.mTaskId,

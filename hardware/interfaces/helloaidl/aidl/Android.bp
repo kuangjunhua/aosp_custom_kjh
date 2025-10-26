@@ -1,0 +1,25 @@
+aidl_interface {
+    name: "android.hardware.helloaidl",
+    vendor_available: true,
+    srcs: ["android/hardware/helloaidl/*.aidl"],
+    stability: "vintf",
+
+    backend: {
+        cpp: {
+            enabled: false,
+        },
+        java: {
+            sdk_version: "module_current",
+        },
+    },
+
+    owner: "jhk",
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+    ],
+    frozen: true,
+
+}

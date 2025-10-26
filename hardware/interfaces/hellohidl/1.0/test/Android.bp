@@ -1,0 +1,16 @@
+
+cc_test {
+    name: "HidlTestDemo",  //注意，此模块将运行在system分区
+    srcs: ["testdemo.cpp"],
+    include_dirs: ["system/libhidl/gtest_helper"], //GtestPrinter.h头文件
+    shared_libs: [
+        "libhidlbase",
+        "libhidltransport",
+        "libutils",
+        "liblog",
+        "libhardware",
+        "android.hardware.hellohidl@1.0",
+    ],
+    test_suites: ["device-tests"],
+    compile_multilib: "both",  
+}

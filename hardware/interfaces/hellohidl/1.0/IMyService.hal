@@ -1,0 +1,5 @@
+package android.hardware.hellohidl@1.0;
+
+interface IMyService {
+    exampleAdd(int32_t a, int32_t b) generates(int32_t sum, string descriptor);
+};

@@ -1,0 +1,21 @@
+cc_binary {
+    name: "android.hardware.ledaidl.service",
+    relative_install_path: "hw",
+    vendor: true,
+    shared_libs: [
+        "libbinder_ndk",
+        "liblog",
+        "libbase",
+        "libcutils",
+        "libutils",
+        "android.hardware.ledaidl-V1-ndk",
+    ],
+    vintf_fragments: [
+        "android.hardware.ledaidl.default.xml",
+    ],
+    srcs: [
+        "LedManagerImpl.cpp",
+        "main.cpp",
+    ],
+    init_rc: ["android.hardware.ledaidl.rc"],
+}

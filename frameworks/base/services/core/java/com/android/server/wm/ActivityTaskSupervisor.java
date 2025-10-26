@@ -763,6 +763,7 @@ public class ActivityTaskSupervisor implements RecentTasks.Callbacks {
             // (e.g. AMS.startActivityAsUser).
             final long token = Binder.clearCallingIdentity();
             try {
+                // mService 是 ActivityTaskManagerService
                 return mService.getPackageManagerInternalLocked().resolveIntentExported(
                         intent, resolvedType, modifiedFlags, privateResolveFlags, userId, true,
                         filterCallingUid, callingPid);

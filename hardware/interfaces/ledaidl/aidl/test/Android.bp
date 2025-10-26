@@ -1,0 +1,14 @@
+cc_binary {
+    name: "ledaidl-test",
+    srcs: [
+        "main.cpp",
+    ],
+    shared_libs: [
+        "android.hardware.ledaidl-V1-ndk",
+        "liblog",
+        "libcutils",
+        "libbase",
+        "libbinder_ndk",
+        "libutils",
+    ],
+}

@@ -1,0 +1,16 @@
+
+cc_test {
+    name: "LedHidlTest",  //注意，此模块将运行在system分区
+    srcs: ["ledhidltest.cpp"],
+    include_dirs: ["system/libhidl/gtest_helper"], //GtestPrinter.h头文件
+    shared_libs: [
+        "libhidlbase",
+        "libhidltransport",
+        "libutils",
+        "liblog",
+        "libhardware",
+        "android.hardware.ledhidl@1.0",
+    ],
+    test_suites: ["led-tests"],
+    compile_multilib: "both",  
+}

@@ -1,0 +1,5 @@
+service vendor.myservice-1.0 /vendor/bin/hw/android.hardware.hellohidl@1.0-service
+    class hal
+    user system
+    group system
+    seclabel u:r:hellohidl_dt:s0

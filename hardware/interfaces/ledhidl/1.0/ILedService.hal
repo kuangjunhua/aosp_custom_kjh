@@ -1,0 +1,6 @@
+package android.hardware.ledhidl@1.0;
+
+interface ILedService {
+    getStatus() generates(int32_t status);
+    operate(int32_t newStatus) generates(int32_t currentStatus, string msg);
+};

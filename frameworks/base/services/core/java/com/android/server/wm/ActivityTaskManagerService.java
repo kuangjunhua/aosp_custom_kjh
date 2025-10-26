@@ -1293,7 +1293,8 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
                 Binder.getCallingPid(), Binder.getCallingUid(), "startActivityAsUser");
 
         // TODO: Switch to user app stacks here.
-        return getActivityStartController().obtainStarter(intent, "startActivityAsUser")
+        // 拿到activityStarter对象，设置各种启动参数，最后调用execute方法真正启动Activity
+        return getActivityStartController().obtainStarter(intent, "startActivityAsUser") // 这里调用之后返回的是ActivityStarter对象
                 .setCaller(caller)
                 .setCallingPackage(callingPackage)
                 .setCallingFeatureId(callingFeatureId)

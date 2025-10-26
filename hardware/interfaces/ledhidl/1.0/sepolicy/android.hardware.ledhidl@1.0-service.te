@@ -1,0 +1,11 @@
+type ledhidl_dt, domain;
+type ledhidl_dt_exec, exec_type, vendor_file_type,file_type;
+type ledhidl_hwservice, hwservice_manager_type;
+hwbinder_use(ledhidl_dt);
+init_daemon_domain(ledhidl_dt)
+
+add_hwservice(ledhidl_dt, ledhidl_hwservice)
+
+domain_auto_trans(shell, ledhidl_dt_exec, ledhidl_dt)
+allow ledhidl_dt hwservicemanager_prop:file {map read open getattr};
+allow ledhidl_dt system_file:dir {read open getattr search};

@@ -1747,6 +1747,7 @@ bool InputDispatcher::dispatchKeyLocked(nsecs_t currentTime, std::shared_ptr<Key
 
     // Identify targets.
     InputEventInjectionResult injectionResult;
+    // 找焦点窗口
     sp<WindowInfoHandle> focusedWindow =
             findFocusedWindowTargetLocked(currentTime, *entry, nextWakeupTime,
                                           /*byref*/ injectionResult);
@@ -1759,16 +1760,19 @@ bool InputDispatcher::dispatchKeyLocked(nsecs_t currentTime, std::shared_ptr<Key
         return true;
     }
     LOG_ALWAYS_FATAL_IF(focusedWindow == nullptr);
-
+    // 组装inputTarget
     std::vector<InputTarget> inputTargets;
+    // 焦点窗口
     addWindowTargetLocked(focusedWindow,
                           InputTarget::Flags::FOREGROUND | InputTarget::Flags::DISPATCH_AS_IS,
                           /*pointerIds=*/{}, getDownTime(*entry), inputTargets);
 
     // Add monitor channels from event's or focused display.
+    // 让注册了“所有事件我都要看”的 InputMonitor 也能收到一份
     addGlobalMonitoringTargetsLocked(inputTargets, getTargetDisplayId(*entry));
 
     // Dispatch the key.
+    // 真正分发事件
     dispatchEventLocked(currentTime, entry, inputTargets);
     return true;
 }
@@ -1961,6 +1965,12 @@ void InputDispatcher::logOutboundMotionDetails(const char* prefix, const MotionE
     }
 }
 
+// 把 entry 拷贝进每个 target 的 Connection 队列，
+// 如果目标进程没死，事件会在下一次 socket 可写时通过 InputPublisher 送过去。
+// 函数返回 true，表示“这条事件已经离开调度器”，后续重试、ANR 都与它无关。
+// 做两件事情
+// 1.把事件从“调度器内部表示”转成“每个目标进程私有的 dispatch cycle”
+// 2.把转换后的任务压进对应 Connection 的 outbound 队列，后续由 InputPublisher 在 socket 可写时真正发出去
 void InputDispatcher::dispatchEventLocked(nsecs_t currentTime,
                                           std::shared_ptr<EventEntry> eventEntry,
                                           const std::vector<InputTarget>& inputTargets) {
@@ -1968,17 +1978,20 @@ void InputDispatcher::dispatchEventLocked(nsecs_t currentTime,
     if (DEBUG_DISPATCH_CYCLE) {
         ALOGD("dispatchEventToCurrentInputTargets");
     }
-
+    // 处理 “手势拦截” 相关副作用。更新 mLatencyAggregator，把事件从 enqueue 到 dispatch 的耗时采样进去，后面 dumpsys input 可以看到 latency 统计
+    // 这一步只改调度器内部状态
     processInteractionsLocked(*eventEntry, inputTargets);
 
     ALOG_ASSERT(eventEntry->dispatchInProgress); // should already have been set to true
 
     pokeUserActivityLocked(*eventEntry);
-
+    // 遍历 InputTarget → 找到 Connection → 启动 dispatch cycle
     for (const InputTarget& inputTarget : inputTargets) {
+        // 过 inputTarget.inputChannel->getConnectionToken() 拿到一个 BBinder 指针
         std::shared_ptr<Connection> connection =
                 getConnectionLocked(inputTarget.inputChannel->getConnectionToken());
         if (connection != nullptr) {
+            // 把 EventEntry 拆成一条或多条 DispatchEntry，压进 connection->outboundQueue
             prepareDispatchCycleLocked(currentTime, connection, eventEntry, inputTarget);
         } else {
             if (DEBUG_FOCUS) {
@@ -2081,15 +2094,16 @@ sp<WindowInfoHandle> InputDispatcher::findFocusedWindowTargetLocked(
         nsecs_t currentTime, const EventEntry& entry, nsecs_t* nextWakeupTime,
         InputEventInjectionResult& outInjectionResult) {
     std::string reason;
+    // 保证任何提前 return 都能让注入者收到“失败”
     outInjectionResult = InputEventInjectionResult::FAILED; // Default result
 
     int32_t displayId = getTargetDisplayId(entry);
+    // 获取焦点窗口
     sp<WindowInfoHandle> focusedWindowHandle = getFocusedWindowHandleLocked(displayId);
     std::shared_ptr<InputApplicationHandle> focusedApplicationHandle =
             getValueByKey(mFocusedApplicationHandlesByDisplay, displayId);
 
-    // If there is no currently focused window and no focused application
-    // then drop the event.
+    // 既没有焦点窗口也没有焦点应用：事件直接扔掉。典型场景：屏幕还没解锁、刚开机、所有 Activity 正在重启
     if (focusedWindowHandle == nullptr && focusedApplicationHandle == nullptr) {
         ALOGI("Dropping %s event because there is no focused window or focused application in "
               "display %" PRId32 ".",
@@ -2097,7 +2111,7 @@ sp<WindowInfoHandle> InputDispatcher::findFocusedWindowTargetLocked(
         return nullptr;
     }
 
-    // Drop key events if requested by input feature
+    // 有焦点窗口，但要求丢弃的事件
     if (focusedWindowHandle != nullptr && shouldDropInput(entry, focusedWindowHandle)) {
         return nullptr;
     }
@@ -2107,6 +2121,7 @@ sp<WindowInfoHandle> InputDispatcher::findFocusedWindowTargetLocked(
     // start interacting with another application via touch (app switch). This code can be removed
     // if the "no focused window ANR" is moved to the policy. Input doesn't know whether
     // an app is expected to have a focused window.
+    // 有焦点应用，但还没有焦点窗口
     if (focusedWindowHandle == nullptr && focusedApplicationHandle != nullptr) {
         if (!mNoFocusedWindowTimeoutTime.has_value()) {
             // We just discovered that there's no focused window. Start the ANR timer
@@ -2137,12 +2152,14 @@ sp<WindowInfoHandle> InputDispatcher::findFocusedWindowTargetLocked(
     resetNoFocusedWindowTimeoutLocked();
 
     // Verify targeted injection.
+    // 注入事件目标校验失败
     if (const auto err = verifyTargetedInjection(focusedWindowHandle, entry); err) {
         ALOGW("Dropping injected event: %s", (*err).c_str());
         outInjectionResult = InputEventInjectionResult::TARGET_MISMATCH;
         return nullptr;
     }
-
+    // 窗口自己暂停接收：窗口可以通过 WM.setPaused() 让 InputDispatcher 把事件先缓存起来
+    // 典型用途：多窗口切换、分屏动画、折叠屏展开瞬间
     if (focusedWindowHandle->getInfo()->inputConfig.test(
                 WindowInfo::InputConfig::PAUSE_DISPATCHING)) {
         ALOGI("Waiting because %s is paused", focusedWindowHandle->getName().c_str());
@@ -2161,6 +2178,7 @@ sp<WindowInfoHandle> InputDispatcher::findFocusedWindowTargetLocked(
     // often anticipate pending UI changes when typing on a keyboard.
     // To obtain this behavior, we must serialize key events with respect to all
     // prior input events.
+    // Key 事件必须等前面所有事件走完
     if (entry.type == EventEntry::Type::KEY) {
         if (shouldWaitToSendKeyLocked(currentTime, focusedWindowHandle->getName().c_str())) {
             *nextWakeupTime = *mKeyIsWaitingForEventsTimeout;
@@ -2168,7 +2186,8 @@ sp<WindowInfoHandle> InputDispatcher::findFocusedWindowTargetLocked(
             return nullptr;
         }
     }
-
+    // focusedWindowHandle 非空，调用者拿到它后就会去组装 InputTarget，
+    // 然后走 dispatchEventLocked 真正把事件塞进 socket
     outInjectionResult = InputEventInjectionResult::SUCCEEDED;
     return focusedWindowHandle;
 }
@@ -3593,15 +3612,17 @@ void InputDispatcher::startDispatchCycleLocked(nsecs_t currentTime,
     }
 
     while (connection->status == Connection::Status::NORMAL && !connection->outboundQueue.empty()) {
+        // 从该窗口的 outbound 队列头部拿出一条 DispatchEntry
         DispatchEntry* dispatchEntry = connection->outboundQueue.front();
-        dispatchEntry->deliveryTime = currentTime;
+        dispatchEntry->deliveryTime = currentTime; // 发送时间
         const std::chrono::nanoseconds timeout = getDispatchingTimeoutLocked(connection);
-        dispatchEntry->timeoutTime = currentTime + timeout.count();
+        dispatchEntry->timeoutTime = currentTime + timeout.count(); // 超时时间
 
         // Publish the event.
         status_t status;
         const EventEntry& eventEntry = *(dispatchEntry->eventEntry);
         switch (eventEntry.type) {
+            // 把按键事件塞进 socket——事件从此离开系统服务进程，进入用户空间的应用 UI 线程
             case EventEntry::Type::KEY: {
                 const KeyEntry& keyEntry = static_cast<const KeyEntry&>(eventEntry);
                 std::array<uint8_t, 32> hmac = getSignature(keyEntry, *dispatchEntry);
@@ -3611,6 +3632,19 @@ void InputDispatcher::startDispatchCycleLocked(nsecs_t currentTime,
                 }
 
                 // Publish the key event.
+                // 把条目里的数据原样填进 InputMessage，通过 InputPublisher 写进 socket 发送缓冲区；
+                // 写成功后，事件就离开 InputDispatcher 进程，进入 目标应用进程的 UI 线程
+                /**
+                connection->inputPublisher.publishKeyEvent(...) 内部流程：
+                构造一个 InputMessage（纯 POD 结构体，包含 seq、eventId、deviceId、action、flag、keyCode 等字段）；
+                调用 InputChannel::sendMessage(&InputMessage) → send(socketFd, ...)；
+                内核把数据拷进 目标应用的 socket 接收缓冲区；
+                目标应用的主线程在 Looper 里收到 EPOLLIN，NativeInputEventReceiver::consumeEvents() 被唤醒；
+                NativeInputEventReceiver 从 socket 读出 InputMessage，反序列化成 KeyEvent Java 对象，
+                通过 ViewRootImpl.dispatchInputEvent() 派发到 DecorView → 焦点 View；
+                应用处理完后，调用 finishInputEvent() → 反向写 socket 发 finish signal；
+                InputDispatcher 收到 finish signal，才把这条 DispatchEntry 从 waitQueue 移除，整个 dispatch cycle 结束。
+                */
                 status = connection->inputPublisher
                                  .publishKeyEvent(dispatchEntry->seq,
                                                   dispatchEntry->resolvedEventId, keyEntry.deviceId,
@@ -4950,9 +4984,11 @@ sp<WindowInfoHandle> InputDispatcher::getWindowHandleLocked(
     }
     return nullptr;
 }
-
+// 拿着屏幕号去问 FocusResolver 要焦点令牌，再用令牌去窗口表里捞出真正的窗口句柄
 sp<WindowInfoHandle> InputDispatcher::getFocusedWindowHandleLocked(int displayId) const {
+    // 返回一个 sp<IBinder>，指向 WMS 侧 WindowState.mToken；如果该屏幕当前没有任何窗口持有焦点，返回 nullptr
     sp<IBinder> focusedToken = mFocusResolver.getFocusedWindowToken(displayId);
+    // 在 mWindowHandles 表里按 token + displayId 查到对应的sp<WindowInfoHandle>
     return getWindowHandleLocked(focusedToken, displayId);
 }
 

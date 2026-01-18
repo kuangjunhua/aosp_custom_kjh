@@ -701,6 +701,7 @@ class ActivityStarter {
 
             // 解析Intent
             if (mRequest.activityInfo == null) {
+                // mRequest是ActivityStarter.Request对象，封装了启动请求的所有参数
                 mRequest.resolveActivity(mSupervisor);
             }
 

@@ -1071,6 +1071,7 @@ class ActivityStarter {
 
         boolean abort;
         try {
+            // 检测启动activity的权限
             abort = !mSupervisor.checkStartAnyActivityPermission(intent, aInfo, resultWho,
                     requestCode, callingPid, callingUid, callingPackage, callingFeatureId,
                     request.ignoreTargetSecurity, inTask != null, callerApp, resultRecord,
@@ -1637,7 +1638,7 @@ class ActivityStarter {
 
         setInitialState(r, options, inTask, inTaskFragment, startFlags, sourceRecord,
                 voiceSession, voiceInteractor, balCode, realCallingUid);
-
+        // 设置一些启动标记
         computeLaunchingTaskFlags();
         mIntent.setFlags(mLaunchFlags);
 
@@ -1654,6 +1655,7 @@ class ActivityStarter {
         // Get top task at beginning because the order may be changed when reusing existing task.
         final Task prevTopRootTask = mPreferredTaskDisplayArea.getFocusedRootTask();
         final Task prevTopTask = prevTopRootTask != null ? prevTopRootTask.getTopLeafTask() : null;
+        // 获取可复用的 Task
         final Task reusedTask = getReusableTask();
 
         // If requested, freeze the task list
@@ -1672,6 +1674,7 @@ class ActivityStarter {
         computeLaunchParams(r, sourceRecord, targetTask);
 
         // Check if starting activity on given task or on a new task is allowed.
+        // 是否允许启动
         int startResult = isAllowedToStart(r, newTask, targetTask);
         if (startResult != START_SUCCESS) {
             if (r.resultTo != null) {
@@ -1682,6 +1685,7 @@ class ActivityStarter {
         }
 
         if (targetTask != null) {
+            // 任务栈 300 个任务
             if (targetTask.getTreeWeight() > MAX_TASK_WEIGHT_FOR_ADDING_ACTIVITY) {
                 Slog.e(TAG, "Remove " + targetTask + " because it has contained too many"
                         + " activities or windows (abort starting " + r
@@ -1696,6 +1700,7 @@ class ActivityStarter {
                     && r.mTransitionController.isTransientHide(targetTask)) {
                 mAvoidMoveToFront = true;
             }
+            // 记录在启动/重用目标 task 前，栈上方原来是谁，以便后续处理过渡动画和任务顺序相关的逻辑
             mPriorAboveTask = TaskDisplayArea.getRootTaskAbove(targetTask.getRootTask());
         }
 

@@ -5028,6 +5028,8 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
             }
             // Post message to start process to avoid possible deadlock of calling into AMS with the
             // ATMS lock held.
+            // 进入到ActivityManagerService的startProcess方法中
+            // frameworks\base\services\core\java\com\android\server\am\ActivityManagerService.java
             final Message m = PooledLambda.obtainMessage(ActivityManagerInternal::startProcess,
                     mAmInternal, activity.processName, activity.info.applicationInfo, knownToBeDead,
                     isTop, hostingType, activity.intent.getComponent());
@@ -6484,6 +6486,7 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
                     Trace.traceBegin(TRACE_TAG_WINDOW_MANAGER, "attachApplication:" + wpc.mName);
                 }
                 try {
+                    // 10. 真正启动Activity
                     return mRootWindowContainer.attachApplication(wpc);
                 } finally {
                     Trace.traceEnd(TRACE_TAG_WINDOW_MANAGER);

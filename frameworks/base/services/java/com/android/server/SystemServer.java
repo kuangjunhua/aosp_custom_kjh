@@ -1633,8 +1633,10 @@ public final class SystemServer implements Dumpable {
             mSystemServiceManager.startBootPhase(t, SystemService.PHASE_WAIT_FOR_SENSOR_SERVICE);
             wm = WindowManagerService.main(context, inputManager, !mFirstBoot,
                     new PhoneWindowManager(), mActivityManagerService.mActivityTaskManager);
+            // "window"
             ServiceManager.addService(Context.WINDOW_SERVICE, wm, /* allowIsolated= */ false,
                     DUMP_FLAG_PRIORITY_CRITICAL | DUMP_FLAG_PROTO);
+            // "input"
             ServiceManager.addService(Context.INPUT_SERVICE, inputManager,
                     /* allowIsolated= */ false, DUMP_FLAG_PRIORITY_CRITICAL);
             t.traceEnd();
@@ -1644,6 +1646,7 @@ public final class SystemServer implements Dumpable {
             t.traceEnd();
 
             t.traceBegin("WindowManagerServiceOnInitReady");
+            // 是 WMS 启动后最后的准备工作，确保策略初始化、系统监控接入、调试水印和模拟器覆盖层等关键功能就绪，为后续窗口管理和系统交互做好准备
             wm.onInitReady();
             t.traceEnd();
 

@@ -781,7 +781,7 @@ public class ActivityTaskSupervisor implements RecentTasks.Callbacks {
                 filterCallingUid, callingPid);
         return resolveActivity(intent, rInfo, startFlags, profilerInfo);
     }
-
+    // 启动activity的核心逻辑
     boolean realStartActivityLocked(ActivityRecord r, WindowProcessController proc,
             boolean andResume, boolean checkConfig) throws RemoteException {
 
@@ -1053,7 +1053,7 @@ public class ActivityTaskSupervisor implements RecentTasks.Callbacks {
                     + ", icicle size: " + icicleSize);
         }
     }
-
+    // 启动activity
     void startSpecificActivity(ActivityRecord r, boolean andResume, boolean checkConfig) {
         // Is this activity's application already running?
         final WindowProcessController wpc =
@@ -1062,6 +1062,7 @@ public class ActivityTaskSupervisor implements RecentTasks.Callbacks {
         boolean knownToBeDead = false;
         if (wpc != null && wpc.hasThread()) {
             try {
+                // 进程已经存在了，直接启动activity
                 realStartActivityLocked(r, wpc, andResume, checkConfig);
                 return;
             } catch (RemoteException e) {
@@ -1086,6 +1087,7 @@ public class ActivityTaskSupervisor implements RecentTasks.Callbacks {
         r.notifyUnknownVisibilityLaunchedForKeyguardTransition();
 
         final boolean isTop = andResume && r.isTopRunningActivity();
+        // mService 是 ActivityTaskManagerService
         mService.startProcessAsync(r, knownToBeDead, isTop,
                 isTop ? HostingRecord.HOSTING_TYPE_TOP_ACTIVITY
                         : HostingRecord.HOSTING_TYPE_ACTIVITY);

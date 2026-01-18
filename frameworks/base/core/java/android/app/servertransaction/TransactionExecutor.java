@@ -135,7 +135,7 @@ public class TransactionExecutor {
                     cycleToPath(r, closestPreExecutionState, transaction);
                 }
             }
-
+            // 执行 frameworks/base/core/java/android/app/servertransaction/LaunchActivityItem.java 中的 execute 方法
             item.execute(mTransactionHandler, token, mPendingActions);
             item.postExecute(mTransactionHandler, token, mPendingActions);
             if (r == null) {

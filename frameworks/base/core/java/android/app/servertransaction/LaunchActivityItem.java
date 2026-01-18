@@ -100,6 +100,7 @@ public class LaunchActivityItem extends ClientTransactionItem {
                 mPendingResults, mPendingNewIntents, mActivityOptions, mIsForward, mProfilerInfo,
                 client, mAssistToken, mShareableActivityToken, mLaunchedFromBubble,
                 mTaskFragmentToken);
+        // 23. 调用 frameworks\base\core\java\android\app\ActivityThread.java 中的 handleLaunchActivity 方法
         client.handleLaunchActivity(r, pendingActions, mDeviceId, null /* customIntent */);
         Trace.traceEnd(TRACE_TAG_ACTIVITY_MANAGER);
     }

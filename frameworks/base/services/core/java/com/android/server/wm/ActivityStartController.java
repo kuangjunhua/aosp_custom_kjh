@@ -131,6 +131,7 @@ public class ActivityStartController {
      *         considered invalid and no longer modified or used.
      */
     ActivityStarter obtainStarter(Intent intent, String reason) {
+        // 从DefaultFactory工厂中获取一个ActivityStarter对象(实际是从内部维护的一个池子里面去取一个并返回)
         return mFactory.obtain().setIntent(intent).setReason(reason);
     }
 

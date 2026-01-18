@@ -4907,7 +4907,7 @@ public class ActivityManagerService extends IActivityManager.Stub
 
             updateLruProcessLocked(app, false, null);
             checkTime(startTime, "attachApplicationLocked: after updateLruProcessLocked");
-
+            // 设置进程在内存紧张时杀进程的策略
             updateOomAdjLocked(app, OOM_ADJ_REASON_PROCESS_BEGIN);
             checkTime(startTime, "attachApplicationLocked: after updateOomAdjLocked");
 
@@ -4993,6 +4993,7 @@ public class ActivityManagerService extends IActivityManager.Stub
             // See if the top visible activity is waiting to run in this process...
             if (normalMode) {
                 try {
+                    // 9. 会调到ATMS的attachApplication方法，启动Activity
                     didSomething = mAtmInternal.attachApplication(app.getWindowProcessController());
                 } catch (Exception e) {
                     Slog.wtf(TAG, "Exception thrown launching activities in " + app, e);

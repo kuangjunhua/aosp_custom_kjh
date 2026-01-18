@@ -75,7 +75,9 @@ class ServiceManagerProxy implements IServiceManager {
 
     public void addService(String name, IBinder service, boolean allowIsolated, int dumpPriority)
             throws RemoteException {
-        // 调用Proxy的addService方法
+        // 调用IServiceManager.Stub.Proxy的addService方法
+                // 在其内部将name, service等参数打包成Parcel数据
+                // 然后调用mRemote.transact方法（mRemote就是BinderProxy,就是调BinderProxy的transact）
         // 会调用Proxy对象的addService方法
         // 内部会调用mRemote.transact方法（mRemote就是BinderProxy,就是调BinderProxy的transact）
         mServiceManager.addService(name, service, allowIsolated, dumpPriority);

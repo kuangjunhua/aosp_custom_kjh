@@ -43,7 +43,9 @@ class ClientLifecycleManager {
      * @see ClientTransaction
      */
     void scheduleTransaction(ClientTransaction transaction) throws RemoteException {
+        // 获取传递进来的ClientTransaction中的IApplicationThread对象
         final IApplicationThread client = transaction.getClient();
+        // 调用ClientTransaction的schedule方法，真正将事务发送到客户端进程
         transaction.schedule();
         if (!(client instanceof Binder)) {
             // If client is not an instance of Binder - it's a remote call and at this point it is

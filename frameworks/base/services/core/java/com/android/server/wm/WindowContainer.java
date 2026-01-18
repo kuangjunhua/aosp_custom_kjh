@@ -2216,6 +2216,7 @@ class WindowContainer<E extends WindowContainer> extends ConfigurationContainer<
         int count = mChildren.size();
         if (traverseTopToBottom) {
             for (int i = count - 1; i >= 0; --i) {
+                // 12. 
                 mChildren.get(i).forAllRootTasks(callback, traverseTopToBottom);
             }
         } else {

@@ -8515,7 +8515,7 @@ public class Activity extends ContextThemeWrapper
 
         mFragments.attachHost(null /*parent*/);
         mActivityInfo = info;
-
+        // 关键点1：创建PhoneWindow对象
         mWindow = new PhoneWindow(this, window, activityConfigCallback);
         mWindow.setWindowControllerCallback(mWindowControllerCallback);
         mWindow.setCallback(this);
@@ -8551,7 +8551,8 @@ public class Activity extends ContextThemeWrapper
                         Looper.myLooper());
             }
         }
-
+        // 关键点2：设置WindowManager
+        // 方法是在Window中实现的（PhoneWindow继承自Window），
         mWindow.setWindowManager(
                 (WindowManager)context.getSystemService(Context.WINDOW_SERVICE),
                 mToken, mComponent.flattenToString(),
@@ -8559,6 +8560,7 @@ public class Activity extends ContextThemeWrapper
         if (mParent != null) {
             mWindow.setContainer(mParent.getWindow());
         }
+        // 关键点3：将之前创建的WindowManager对象保存在mWindowManager对象中
         mWindowManager = mWindow.getWindowManager();
         mCurrentConfig = config;
 
@@ -8617,6 +8619,7 @@ public class Activity extends ContextThemeWrapper
         mShouldDockBigOverlays = getResources().getBoolean(R.bool.config_dockBigOverlayWindows);
         restoreHasCurrentPermissionRequest(icicle);
         final long startTime = SystemClock.uptimeMillis();
+        // 调用Activity的onCreate方法
         if (persistentState != null) {
             onCreate(icicle, persistentState);
         } else {

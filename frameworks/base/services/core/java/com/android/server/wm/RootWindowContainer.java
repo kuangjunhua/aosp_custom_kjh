@@ -1844,6 +1844,7 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
 
     boolean attachApplication(WindowProcessController app) throws RemoteException {
         try {
+            // 11. 调用 AttachApplicationHelper 处理应用附加逻辑
             return mAttachApplicationHelper.process(app);
         } finally {
             mAttachApplicationHelper.reset();
@@ -3648,10 +3649,11 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
             mApp = null;
             mTop = null;
         }
-
+        // 处理应用附加逻辑 
         boolean process(WindowProcessController app) throws RemoteException {
             mApp = app;
             for (int displayNdx = getChildCount() - 1; displayNdx >= 0; --displayNdx) {
+                // 12. 遍历所有DisplayContent，调用forAllRootTasks
                 getChildAt(displayNdx).forAllRootTasks(this);
                 if (mRemoteException != null) {
                     throw mRemoteException;

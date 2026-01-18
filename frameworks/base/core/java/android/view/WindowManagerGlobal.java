@@ -131,9 +131,9 @@ public final class WindowManagerGlobal {
     private final Object mLock = new Object();
 
     @UnsupportedAppUsage
-    private final ArrayList<View> mViews = new ArrayList<View>();
+    private final ArrayList<View> mViews = new ArrayList<View>(); //保存所有顶层View的对象(DecorView)
     @UnsupportedAppUsage
-    private final ArrayList<ViewRootImpl> mRoots = new ArrayList<ViewRootImpl>();
+    private final ArrayList<ViewRootImpl> mRoots = new ArrayList<ViewRootImpl>();//保存和顶层View相关联的ViewRootImpl对象
     @UnsupportedAppUsage
     private final ArrayList<WindowManager.LayoutParams> mParams =
             new ArrayList<WindowManager.LayoutParams>();

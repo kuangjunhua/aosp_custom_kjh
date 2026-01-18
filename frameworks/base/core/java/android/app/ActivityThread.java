@@ -2465,7 +2465,7 @@ public final class ActivityThread extends ClientTransactionHandler
                     handleRunIsolatedEntryPoint((String) ((SomeArgs) msg.obj).arg1,
                             (String[]) ((SomeArgs) msg.obj).arg2);
                     break;
-                case EXECUTE_TRANSACTION:
+                case EXECUTE_TRANSACTION: // startActivity 20
                     final ClientTransaction transaction = (ClientTransaction) msg.obj;
                     mTransactionExecutor.execute(transaction);
                     if (isSystem()) {
@@ -3695,6 +3695,7 @@ public final class ActivityThread extends ClientTransactionHandler
     private Activity performLaunchActivity(ActivityClientRecord r, Intent customIntent) {
         ActivityInfo aInfo = r.activityInfo;
         if (r.packageInfo == null) {
+            // 获取应用包信息
             r.packageInfo = getPackageInfo(aInfo.applicationInfo, mCompatibilityInfo,
                     Context.CONTEXT_INCLUDE_CODE);
         }
@@ -3710,7 +3711,7 @@ public final class ActivityThread extends ClientTransactionHandler
             component = new ComponentName(r.activityInfo.packageName,
                     r.activityInfo.targetActivity);
         }
-
+        // 创建一个ContextImpl对象
         ContextImpl appContext = createBaseContextForActivity(r);
         Activity activity = null;
         try {
@@ -3733,6 +3734,7 @@ public final class ActivityThread extends ClientTransactionHandler
         }
 
         try {
+            // 创建一个 Application对象
             Application app = r.packageInfo.makeApplicationInner(false, mInstrumentation);
 
             if (localLOGV) Slog.v(TAG, "Performing launch of " + r);
@@ -3772,6 +3774,7 @@ public final class ActivityThread extends ClientTransactionHandler
                         app.getResources().getLoaders().toArray(new ResourcesLoader[0]));
 
                 appContext.setOuterContext(activity);
+                // 调用 frameworks/base/core/java/android/app/Activity#attach() 方法
                 activity.attach(appContext, this, getInstrumentation(), r.token,
                         r.ident, app, r.intent, r.activityInfo, title, r.parent,
                         r.embeddedID, r.lastNonConfigurationInstances, config,
@@ -3957,11 +3960,12 @@ public final class ActivityThread extends ClientTransactionHandler
                 && (r.activityInfo.flags & ActivityInfo.FLAG_HARDWARE_ACCELERATED) != 0) {
             HardwareRenderer.preload();
         }
+        // 确保 WindowManagerGlobal 已初始化
         WindowManagerGlobal.initialize();
 
         // Hint the GraphicsEnvironment that an activity is launching on the process.
         GraphicsEnvironment.hintActivityLaunch();
-
+        // 24. 
         final Activity a = performLaunchActivity(r, customIntent);
 
         if (a != null) {
@@ -8237,7 +8241,9 @@ public final class ActivityThread extends ClientTransactionHandler
                 }
             }
         }
+        // 1. 
         ActivityThread thread = new ActivityThread();
+        // 2. 
         thread.attach(false, startSeq);
 
         if (sMainThreadHandler == null) {

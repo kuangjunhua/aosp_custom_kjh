@@ -131,8 +131,9 @@ public class ClientTransaction implements Parcelable, ObjectPoolItem {
      * 2. The transaction message is scheduled.
      * 3. The client calls {@link TransactionExecutor#execute(ClientTransaction)}, which executes
      *    all callbacks and necessary lifecycle transitions.
-     */
+     */ 
     public void schedule() throws RemoteException {
+        // 调用 frameworks\base\core\java\android\app\ClientTransactionHandler.java 中的 scheduleTransaction 方法
         mClient.scheduleTransaction(this);
     }
 

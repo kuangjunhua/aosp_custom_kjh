@@ -865,9 +865,10 @@ public abstract class Window {
         mAppToken = appToken;
         mAppName = appName;
         mHardwareAccelerated = hardwareAccelerated;
-        if (wm == null) {
+        if (wm == null) { // 如果wm为空，则创建一个WindowManager对象
             wm = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
         }
+        // mWindowManager是一个LocalWindowManager
         mWindowManager = ((WindowManagerImpl)wm).createLocalWindowManager(this);
     }
 

@@ -1654,6 +1654,7 @@ class ActivityStarter {
         // Get top task at beginning because the order may be changed when reusing existing task.
         final Task prevTopRootTask = mPreferredTaskDisplayArea.getFocusedRootTask();
         final Task prevTopTask = prevTopRootTask != null ? prevTopRootTask.getTopLeafTask() : null;
+        // 步骤1：尝试获取可复用的任务
         final Task reusedTask = getReusableTask();
 
         // If requested, freeze the task list
@@ -1664,9 +1665,11 @@ class ActivityStarter {
             mSupervisor.mRecentTasks.setFreezeTaskListReordering();
         }
 
-        // Compute if there is an existing task that should be used for.
+        // 步骤2：计算最终的目标任务
         final Task targetTask = reusedTask != null ? reusedTask : computeTargetTask();
+        // 步骤3：判断是否是新任务
         final boolean newTask = targetTask == null;
+        // 步骤4：保存目标任务
         mTargetTask = targetTask;
 
         computeLaunchParams(r, sourceRecord, targetTask);
@@ -1680,12 +1683,13 @@ class ActivityStarter {
             }
             return startResult;
         }
-
+        // 步骤5：检查任务是否太重（包含太多Activity）
         if (targetTask != null) {
             if (targetTask.getTreeWeight() > MAX_TASK_WEIGHT_FOR_ADDING_ACTIVITY) {
                 Slog.e(TAG, "Remove " + targetTask + " because it has contained too many"
                         + " activities or windows (abort starting " + r
                         + " from uid=" + mCallingUid);
+                // 移除过重的任务
                 targetTask.removeImmediately("bulky-task");
                 return START_ABORTED;
             }
@@ -1856,14 +1860,20 @@ class ActivityStarter {
 
     /** Returns the leaf task where the target activity may be placed. */
     private Task computeTargetTask() {
+        // 情况1：没有源Activity + 没有指定任务 + 设置了NEW_TASK flag
         if (mStartActivity.resultTo == null && mInTask == null && !mAddingToTask
                 && (mLaunchFlags & FLAG_ACTIVITY_NEW_TASK) != 0) {
-            // A new task should be created instead of using existing one.
+            // 必须创建新任务
             return null;
-        } else if (mSourceRecord != null) {
+        } 
+        // 情况2：有源Activity（从某个Activity启动）
+        else if (mSourceRecord != null) {
+            // 优先使用源Activity的任务
             return mSourceRecord.getTask();
-        } else if (mInTask != null) {
-            // The task is specified from AppTaskImpl, so it may not be attached yet.
+        } 
+        // 情况3：明确指定了要放入的任务
+        else if (mInTask != null) {
+            // 检查并附加任务
             if (!mInTask.isAttached()) {
                 // Attach the task to display area. Ignore the returned root task (though usually
                 // they are the same) because "target task" should be leaf task.
@@ -1871,6 +1881,7 @@ class ActivityStarter {
             }
             return mInTask;
         } else {
+            // 情况4：其他情况，获取或创建任务栈
             final Task rootTask = getOrCreateRootTask(mStartActivity, mLaunchFlags, null /* task */,
                     mOptions);
             final ActivityRecord top = rootTask.getTopNonFinishingActivity();
@@ -2216,8 +2227,7 @@ class ActivityStarter {
     @VisibleForTesting
     int recycleTask(Task targetTask, ActivityRecord targetTaskTop, Task reusedTask,
             NeededUriGrants intentGrants) {
-        // Should not recycle task which is from a different user, just adding the starting
-        // activity to the task.
+        // 1. 如果目标任务的用户和启动Activity的用户不同
         if (targetTask.mUserId != mStartActivity.mUserId) {
             mTargetRootTask = targetTask.getRootTask();
             mAddingToTask = true;
@@ -2252,7 +2262,7 @@ class ActivityStarter {
                 && (mLastStartActivityRecord.finishing || mLastStartActivityRecord.noDisplay)) {
             mLastStartActivityRecord = targetTaskTop;
         }
-
+        // 3. 如果只是需要（START_FLAG_ONLY_IF_NEEDED）就返回意图到调用者
         if ((mStartFlags & START_FLAG_ONLY_IF_NEEDED) != 0) {
             // We don't need to start a new activity, and the client said not to do anything
             // if that is the case, so this is it!  And for paranoia, make sure we have
@@ -2265,7 +2275,7 @@ class ActivityStarter {
             resumeTargetRootTaskIfNeeded();
             return START_RETURN_INTENT_TO_CALLER;
         }
-
+        // 2. 如果设置了 FLAG_ACTIVITY_CLEAR_TOP 或 singleTask/singleInstance
         complyActivityFlags(targetTask,
                 reusedTask != null ? reusedTask.getTopNonFinishingActivity() : null, intentGrants);
 
@@ -2423,7 +2433,8 @@ class ActivityStarter {
         if (resetTask) {
             targetTaskTop = mTargetRootTask.resetTaskIfNeeded(targetTaskTop, mStartActivity);
         }
-
+        // 1. FLAG_ACTIVITY_NEW_TASK + FLAG_ACTIVITY_CLEAR_TASK
+        //    完全替换任务中的所有Activity
         if ((mLaunchFlags & (FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK))
                 == (FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK)) {
             // The caller has requested to completely replace any existing task with its new
@@ -2436,7 +2447,10 @@ class ActivityStarter {
             targetTask.setIntent(mStartActivity);
             mAddingToTask = true;
             mIsTaskCleared = true;
-        } else if ((mLaunchFlags & FLAG_ACTIVITY_CLEAR_TOP) != 0
+        } 
+        // 2. FLAG_ACTIVITY_CLEAR_TOP
+        //    清除目标Activity上面的所有Activity
+        else if ((mLaunchFlags & FLAG_ACTIVITY_CLEAR_TOP) != 0
                 || isDocumentLaunchesIntoExisting(mLaunchFlags)
                 || isLaunchModeOneOf(LAUNCH_SINGLE_INSTANCE, LAUNCH_SINGLE_TASK,
                         LAUNCH_SINGLE_INSTANCE_PER_TASK)) {
@@ -2457,12 +2471,12 @@ class ActivityStarter {
                     // so make sure the task now has the identity of the new intent.
                     clearTop.getTask().setIntent(mStartActivity);
                 }
-                deliverNewIntent(clearTop, intentGrants);
+                deliverNewIntent(clearTop, intentGrants); // 发送新Intent
             } else {
                 // A special case: we need to start the activity because it is not currently
                 // running, and the caller has asked to clear the current task to have this
                 // activity at the top.
-                mAddingToTask = true;
+                mAddingToTask = true;  // 需要添加新Activity
                 // Adding the new activity to the same embedded TF of the clear-top activity if
                 // possible.
                 if (clearTop != null && clearTop.getTaskFragment() != null
@@ -2478,7 +2492,10 @@ class ActivityStarter {
                             (mStartActivity.info.flags & FLAG_SHOW_FOR_ALL_USERS) != 0);
                 }
             }
-        } else if ((mLaunchFlags & FLAG_ACTIVITY_CLEAR_TOP) == 0 && !mAddingToTask
+        }
+        // 3. FLAG_ACTIVITY_REORDER_TO_FRONT
+        //    将Activity移到栈顶
+         else if ((mLaunchFlags & FLAG_ACTIVITY_CLEAR_TOP) == 0 && !mAddingToTask
                 && (mLaunchFlags & FLAG_ACTIVITY_REORDER_TO_FRONT) != 0) {
             // In this case, we are launching an activity in our own task that may
             // already be running somewhere in the history, and we want to shuffle it to
@@ -2785,8 +2802,7 @@ class ActivityStarter {
     }
 
     private void computeLaunchingTaskFlags() {
-        // If the caller is not coming from another activity, but has given us an explicit task into
-        // which they would like us to launch the new activity, then let's see about doing that.
+        
         if (mSourceRecord == null && mInTask != null && mInTask.getRootTask() != null) {
             final Intent baseIntent = mInTask.getBaseIntent();
             final ActivityRecord root = mInTask.getRootActivity();
@@ -2796,8 +2812,6 @@ class ActivityStarter {
                         + mInTask);
             }
 
-            // If this task is empty, then we are adding the first activity -- it
-            // determines the root, and must be launching as a NEW_TASK.
             if (isLaunchModeOneOf(LAUNCH_SINGLE_INSTANCE, LAUNCH_SINGLE_TASK)) {
                 if (!baseIntent.getComponent().equals(mStartActivity.intent.getComponent())) {
                     ActivityOptions.abort(mOptions);
@@ -2846,21 +2860,17 @@ class ActivityStarter {
 
         if (mInTask == null) {
             if (mSourceRecord == null) {
-                // This activity is not being started from another...  in this
-                // case we -always- start a new task.
+                // 从非Activity上下文启动必须设置NEW_TASK
                 if ((mLaunchFlags & FLAG_ACTIVITY_NEW_TASK) == 0 && mInTask == null) {
                     Slog.w(TAG, "startActivity called from non-Activity context; forcing " +
                             "Intent.FLAG_ACTIVITY_NEW_TASK for: " + mIntent);
                     mLaunchFlags |= FLAG_ACTIVITY_NEW_TASK;
                 }
             } else if (mSourceRecord.launchMode == LAUNCH_SINGLE_INSTANCE) {
-                // The original activity who is starting us is running as a single
-                // instance...  this new activity it is starting must go on its
-                // own task.
+                // 如果源Activity是singleInstance，新Activity也必须在新任务中
                 mLaunchFlags |= FLAG_ACTIVITY_NEW_TASK;
             } else if (isLaunchModeOneOf(LAUNCH_SINGLE_INSTANCE, LAUNCH_SINGLE_TASK)) {
-                // The activity being started is a single instance...  it always
-                // gets launched into its own task.
+                // singleInstance 或 singleTask 必须在新任务中启动
                 mLaunchFlags |= FLAG_ACTIVITY_NEW_TASK;
             }
         }
@@ -2877,61 +2887,58 @@ class ActivityStarter {
      * if not or an ActivityRecord with the task into which the new activity should be added.
      */
     private Task getReusableTask() {
-        // If a target task is specified, try to reuse that one
+        // 第一步：检查是否通过 ActivityOptions 明确指定了任务ID
         if (mOptions != null && mOptions.getLaunchTaskId() != INVALID_TASK_ID) {
             Task launchTask = mRootWindowContainer.anyTaskForId(mOptions.getLaunchTaskId());
             if (launchTask != null) {
-                return launchTask;
+                return launchTask; // 直接使用指定的任务
             }
             return null;
         }
-
-        // We may want to try to place the new activity in to an existing task.  We always
-        // do this if the target activity is singleTask or singleInstance; we will also do
-        // this if NEW_TASK has been requested, and there is not an additional qualifier telling
-        // us to still place it in a new task: multi task, always doc mode, or being asked to
-        // launch this as a new task behind the current one.
-        boolean putIntoExistingTask = ((mLaunchFlags & FLAG_ACTIVITY_NEW_TASK) != 0 &&
+        // 第二步：判断是否应该寻找已有任务
+        boolean putIntoExistingTask = 
+            // 情况1：设置了 FLAG_ACTIVITY_NEW_TASK，但没设置 FLAG_ACTIVITY_MULTIPLE_TASK
+            ((mLaunchFlags & FLAG_ACTIVITY_NEW_TASK) != 0 &&
                 (mLaunchFlags & FLAG_ACTIVITY_MULTIPLE_TASK) == 0)
+                // 情况2：启动模式是 singleInstance 或 singleTask
                 || isLaunchModeOneOf(LAUNCH_SINGLE_INSTANCE, LAUNCH_SINGLE_TASK);
-        // If bring to front is requested, and no result is requested and we have not been given
-        // an explicit task to launch in to, and we can find a task that was started with this
-        // same component, then instead of launching bring that one to the front.
-        putIntoExistingTask &= mInTask == null && mStartActivity.resultTo == null;
+        // 第三步：检查其他限制条件
+        putIntoExistingTask &= 
+            mInTask == null // 没有明确指定要放入的任务
+            && mStartActivity.resultTo == null; // 不需要返回结果
+
         ActivityRecord intentActivity = null;
         if (putIntoExistingTask) {
+            // 第四步：根据启动模式选择搜索策略
             if (LAUNCH_SINGLE_INSTANCE == mLaunchMode) {
-                // There can be one and only one instance of single instance activity in the
-                // history, and it is always in its own unique task, so we do a special search.
+                // singleInstance：查找唯一实例（全系统范围）
                 intentActivity = mRootWindowContainer.findActivity(mIntent, mStartActivity.info,
                        mStartActivity.isActivityTypeHome());
             } else if ((mLaunchFlags & FLAG_ACTIVITY_LAUNCH_ADJACENT) != 0) {
-                // For the launch adjacent case we only want to put the activity in an existing
-                // task if the activity already exists in the history.
+                // FLAG_ACTIVITY_LAUNCH_ADJACENT：在相邻显示区找任务
                 intentActivity = mRootWindowContainer.findActivity(mIntent, mStartActivity.info,
                         !(LAUNCH_SINGLE_TASK == mLaunchMode));
             } else {
-                // Otherwise find the best task to put the activity in.
+                // 其他情况：在首选显示区找最合适的任务
                 intentActivity =
                         mRootWindowContainer.findTask(mStartActivity, mPreferredTaskDisplayArea);
             }
         }
-
+        // 第五步：验证 singleInstancePerTask 的特殊情况
         if (intentActivity != null && mLaunchMode == LAUNCH_SINGLE_INSTANCE_PER_TASK
                 && !intentActivity.getTask().getRootActivity().mActivityComponent.equals(
                 mStartActivity.mActivityComponent)) {
-            // The task could be selected due to same task affinity. Do not reuse the task while
-            // starting the singleInstancePerTask activity if it is not the task root activity.
+            // 不能在非根 Activity 的任务中重新启动 singleInstancePerTask
             intentActivity = null;
         }
-
+        // 第六步：Home Activity 不能跨显示区复用
         if (intentActivity != null
                 && (mStartActivity.isActivityTypeHome() || intentActivity.isActivityTypeHome())
                 && intentActivity.getDisplayArea() != mPreferredTaskDisplayArea) {
             // Do not reuse home activity on other display areas.
             intentActivity = null;
         }
-
+        // 返回找到的任务
         return intentActivity != null ? intentActivity.getTask() : null;
     }
 

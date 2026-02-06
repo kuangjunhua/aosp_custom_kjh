@@ -45,10 +45,7 @@ size_t H4Protocol::Send(PacketType type, const std::vector<uint8_t>& vector) {
 }
 
 size_t H4Protocol::Send(PacketType type, const uint8_t* data, size_t length) {
-  /* For HCI communication over USB dongle, multiple write results in
-   * response timeout as driver expect type + data at once to process
-   * the command, so using "writev"(for atomicity) here.
-   */
+  // 对于通过USB加密狗进行的人机交互（HCI）通信，由于驱动程序期望一次处理类型+数据，因此多次写入会导致响应超时，因此这里使用“writev”（用于原子性）。
   struct iovec iov[2];
   ssize_t ret = 0;
   iov[0].iov_base = &type;

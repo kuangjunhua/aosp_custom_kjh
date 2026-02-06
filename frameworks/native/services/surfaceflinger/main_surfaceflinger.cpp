@@ -160,6 +160,7 @@ int main(int, char**) {
     }
 
     // run surface flinger in this thread
+    // Scheduler::run 进入死循环等待消息
     flinger->run();
 
     return 0;

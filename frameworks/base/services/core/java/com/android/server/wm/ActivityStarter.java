@@ -683,30 +683,33 @@ class ActivityStarter {
      */
     int execute() {
         try {
-            // 1. 标记启动流程已开始  mInExecution = true
+            // 阶段1：启动标记  mInExecution = true
             onExecutionStarted();
 
-            // Refuse possible leaked file descriptors
+            // 阶段2
+            // 拒绝包含文件描述符的 Intent（防止 FD 泄漏攻击）
             if (mRequest.intent != null && mRequest.intent.hasFileDescriptors()) {
                 throw new IllegalArgumentException("File descriptors passed in Intent");
             }
+            // 阶段 3: 性能追踪
             final LaunchingState launchingState;
             synchronized (mService.mGlobalLock) {
                 final ActivityRecord caller = ActivityRecord.forTokenLocked(mRequest.resultTo);
                 final int callingUid = mRequest.realCallingUid == Request.DEFAULT_REAL_CALLING_UID
                         ?  Binder.getCallingUid() : mRequest.realCallingUid;
+                // 通知 ActivityMetricsLogger 开始记录启动性能
                 launchingState = mSupervisor.getActivityMetricsLogger().notifyActivityLaunching(
                         mRequest.intent, caller, callingUid);
             }
 
-            // 解析Intent
+            // 阶段 4: 解析目标 Activity
             if (mRequest.activityInfo == null) {
                 // mRequest是ActivityStarter.Request对象，封装了启动请求的所有参数
                 mRequest.resolveActivity(mSupervisor);
             }
 
-            // Add checkpoint for this shutdown or reboot attempt, so we can record the original
-            // intent action and package name.
+            // 阶段 5: 关机检查点
+            // 记录关机/重启请求的原始意图（用于调试）
             if (mRequest.intent != null) {
                 String intentAction = mRequest.intent.getAction();
                 String callingPackage = mRequest.callingPackage;
@@ -719,7 +722,9 @@ class ActivityStarter {
             }
 
             int res;
+            // 阶段 6: 执行核心请求
             synchronized (mService.mGlobalLock) {
+                // 配置变更预处理
                 final boolean globalConfigWillChange = mRequest.globalConfig != null
                         && mService.getGlobalConfiguration().diff(mRequest.globalConfig) != 0;
                 final Task rootTask = mRootWindowContainer.getTopDisplayFocusedRootTask();
@@ -746,7 +751,7 @@ class ActivityStarter {
                 }
 
                 Binder.restoreCallingIdentity(origId);
-
+                // 配置变更后处理
                 if (globalConfigWillChange) {
                     // If the caller also wants to switch to a new configuration, do so now.
                     // This allows a clean switch, as we are waiting for the current activity
@@ -775,6 +780,7 @@ class ActivityStarter {
                 // Notify ActivityMetricsLogger that the activity has launched.
                 // ActivityMetricsLogger will then wait for the windows to be drawn and populate
                 // WaitResult.
+                // 通知性能追踪结束
                 mSupervisor.getActivityMetricsLogger().notifyActivityLaunched(launchingState, res,
                         newActivityCreated, launchingRecord, originalOptions);
                 if (mRequest.waitResult != null) {
@@ -786,7 +792,7 @@ class ActivityStarter {
             }
         } finally {
             // 通知控制器流程结束
-            onExecutionComplete();
+            onExecutionComplete();// 回收 Starter 到对象池
         }
     }
 

@@ -1,0 +1,559 @@
+--------- beginning of main
+05-10 11:08:18.468   687   775 D EGL_emulation: app_time_stats: avg=18447.53ms min=18447.53ms max=18447.53ms count=1
+--------- beginning of kernel
+05-10 11:08:20.408     0     0 I logd    : logdr: UID=0 GID=0 PID=2047 b tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+05-10 11:08:23.091  1049  1049 D LauncherEvents: Main / Touch event: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=398.9795, y[0]=1297.8906, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1003381, downTime=1003381, deviceId=4, source=0x5002, displayId=0, eventId=922493257 }
+05-10 11:08:23.093  1049  1049 D LauncherEvents: TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=398.9795, y[0]=1297.8906, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1003381, downTime=1003381, deviceId=4, source=0x5002, displayId=0, eventId=922493257 }
+05-10 11:08:23.171  1049  1049 D LauncherEvents: Main / Touch event: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=398.9795, y[0]=1297.8906, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1003461, downTime=1003381, deviceId=4, source=0x5002, displayId=0, eventId=428373892 }
+05-10 11:08:23.171  1049  1049 D LauncherEvents: TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=398.9795, y[0]=1297.8906, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=1003461, downTime=1003381, deviceId=4, source=0x5002, displayId=0, eventId=428373892 }
+05-10 11:08:23.184  1049  1049 D TaplEvents: Main / start: startAppShortcutOrInfoActivity
+05-10 11:08:23.185  1049  1049 D HotseatPredictionController: setPauseUIUpdate parameter `paused` is true
+05-10 11:08:23.187  1049  1428 D EGL_emulation: app_time_stats: avg=2795.98ms min=7.34ms max=27542.88ms count=10
+--------- beginning of system
+05-10 11:08:23.191   490   505 D CompatibilityChangeReporter: Compat change id reported: 161252188; UID 1000; state: DISABLED
+05-10 11:08:23.193   490   505 D CompatibilityChangeReporter: Compat change id reported: 265464455; UID 1000; state: DISABLED
+05-10 11:08:23.193   490   505 D CompatibilityChangeReporter: Compat change id reported: 265452344; UID 1000; state: DISABLED
+05-10 11:08:23.194   490   505 D CompatibilityChangeReporter: Compat change id reported: 266124927; UID 1000; state: DISABLED
+05-10 11:08:23.194   490   505 D CompatibilityChangeReporter: Compat change id reported: 265451093; UID 1000; state: DISABLED
+05-10 11:08:23.196   490   505 D CompatibilityChangeReporter: Compat change id reported: 265456536; UID 1000; state: DISABLED
+05-10 11:08:23.197   490   505 D CompatibilityChangeReporter: Compat change id reported: 255940284; UID 1000; state: DISABLED
+05-10 11:08:23.197   490   505 D CompatibilityChangeReporter: Compat change id reported: 236283604; UID 1000; state: DISABLED
+05-10 11:08:23.197   490   505 D CompatibilityChangeReporter: Compat change id reported: 263959004; UID 1000; state: DISABLED
+05-10 11:08:23.198   490   505 D CompatibilityChangeReporter: Compat change id reported: 264304459; UID 1000; state: DISABLED
+05-10 11:08:23.198   490   505 D CompatibilityChangeReporter: Compat change id reported: 264301586; UID 1000; state: DISABLED
+05-10 11:08:23.198   490   505 D CompatibilityChangeReporter: Compat change id reported: 254631730; UID 1000; state: DISABLED
+05-10 11:08:23.198   490   505 D CompatibilityChangeReporter: Compat change id reported: 273509367; UID 1000; state: DISABLED
+05-10 11:08:23.198   490   505 D CompatibilityChangeReporter: Compat change id reported: 263259275; UID 1000; state: DISABLED
+05-10 11:08:23.198   490   505 D CompatibilityChangeReporter: Compat change id reported: 174042980; UID 1000; state: DISABLED
+05-10 11:08:23.198   490   505 D CompatibilityChangeReporter: Compat change id reported: 174042936; UID 1000; state: DISABLED
+05-10 11:08:23.198   490   505 D CompatibilityChangeReporter: Compat change id reported: 181136395; UID 1000; state: DISABLED
+05-10 11:08:23.199   490   505 D CompatibilityChangeReporter: Compat change id reported: 194480991; UID 1000; state: ENABLED
+05-10 11:08:23.204   490   505 D CompatibilityChangeReporter: Compat change id reported: 197654537; UID 1000; state: ENABLED
+05-10 11:08:23.206   490   505 V SplashScreenExceptionList: SplashScreen checking exception for package com.android.settings (target sdk:34) -> false
+05-10 11:08:23.206   490   505 D CompatibilityChangeReporter: Compat change id reported: 205907456; UID 1000; state: ENABLED
+05-10 11:08:23.212   687   731 V WindowManagerShell: Transition requested: android.os.BinderProxy@a48f238 TransitionRequestInfo { type = 1, triggerTask = TaskInfo{userId=0 taskId=15 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.android.settings/.Settings } baseActivity=ComponentInfo{com.android.settings/com.android.settings.homepage.SettingsHomepageActivity} topActivity=ComponentInfo{com.android.settings/com.android.settings.homepage.SettingsHomepageActivity} origActivity=ComponentInfo{com.android.settings/com.android.settings.Settings} realActivity=ComponentInfo{com.android.settings/com.android.settings.homepage.SettingsHomepageActivity} numActivities=1 lastActiveTime=1003500 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@a2c6211} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{4ed1f76 com.android.settings.Settings} launchCookies=[android.os.BinderProxy@3d08977] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 isUserFullscreenOverrideEnabled=false isTopActivityTransparent=false locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@2b6f9e4, appThread = android.app.IApplicationThread$Stub$Proxy@2640e4d, debugName = QuickstepLaunch }, displayChange = null, flags = 0 }
+05-10 11:08:23.214   687   731 V WindowManagerShell: RemoteTransition directly requested for android.os.BinderProxy@a48f238: RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@2b6f9e4, appThread = android.app.IApplicationThread$Stub$Proxy@2640e4d, debugName = QuickstepLaunch }
+05-10 11:08:23.231   490   505 D CompatibilityChangeReporter: Compat change id reported: 194833441; UID 1000; state: ENABLED
+05-10 11:08:23.231   490   505 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.android.settings/.Settings bnds=[288,1145][576,1565]} with LAUNCH_MULTIPLE from uid 10115 (BAL_ALLOW_ALLOWLISTED_COMPONENT) result code=0
+05-10 11:08:23.233   490  1400 D CompatibilityChangeReporter: Compat change id reported: 168419799; UID 1000; state: DISABLED
+05-10 11:08:23.233   490  1400 D CompatibilityChangeReporter: Compat change id reported: 273564678; UID 1000; state: DISABLED
+05-10 11:08:23.242   325   325 W AudioFlinger: createTrack_l(): mismatch between requested flags (00000004) and output flags (00000002)
+05-10 11:08:23.245   490   601 D ActivityManager: quick sync unfreeze 872 for 1
+05-10 11:08:23.263   687   748 W System  : ClassLoader referenced unknown path: 
+05-10 11:08:23.263   687   748 D nativeloader: Configuring clns-shared-7 for other apk . target_sdk_version=34, uses_libraries=, library_path=/system_ext/priv-app/Settings/lib/x86_64:/system_ext/priv-app/Settings/Settings.apk!/lib/x86_64:/system/lib64:/system_ext/lib64, permitted_path=/data:/mnt/expand::/system_ext/priv-app/Settings:/system/lib64:/system_ext/lib64
+05-10 11:08:23.266   687   748 D SplashScreenView: Build android.window.SplashScreenView{aba5226 V.E...... ......ID 0,0-0,0}
+05-10 11:08:23.266   687   748 D SplashScreenView: Icon: view: android.widget.ImageView{5c0be67 V.ED..... ......I. 0,0-0,0 #10204f1 android:id/splashscreen_icon_view} drawable: com.android.wm.shell.startingsurface.SplashscreenIconDrawableFactory$ImmobileIconDrawable@7bea414 size: 560
+05-10 11:08:23.266   687   748 D SplashScreenView: Branding: view: android.view.View{da224bd G.ED..... ......I. 0,0-0,0 #10204f0 android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+05-10 11:08:23.268   325   325 D audioserver: logFgsApiBegin: FGS Logger Transaction failed, -129
+05-10 11:08:23.279   490   511 D ActivityManager: sync unfroze 872 com.android.settings for 1
+05-10 11:08:23.281   333   333 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+05-10 11:08:23.300   490   511 I ActivityManager: Killing 1596:android.process.media/u0a57 (adj 985): empty #17
+05-10 11:08:23.301   490   511 I ActivityManager: Killing 988:com.android.cellbroadcastreceiver.module/u0a132 (adj 985): empty #18
+05-10 11:08:23.301   490   511 I ActivityManager: Killing 1570:com.android.calendar/u0a98 (adj 995): empty #19
+05-10 11:08:23.302   490   511 I ActivityManager: Killing 1309:com.android.devicelockcontroller/u0a124 (adj 995): empty #20
+05-10 11:08:23.303   490   511 I ActivityManager: Killing 1448:com.android.keychain/1000 (adj 999): empty #21
+05-10 11:08:23.303   490   511 I ActivityManager: Killing 1521:com.android.localtransport/1000 (adj 999): empty #22
+05-10 11:08:23.303   490   511 I ActivityManager: Killing 1478:com.android.traceur/u0a90 (adj 999): empty #23
+05-10 11:08:23.303   490   511 I ActivityManager: Killing 1430:com.android.quicksearchbox/u0a97 (adj 999): empty #24
+05-10 11:08:23.303   490   511 I ActivityManager: Killing 1414:com.android.music/u0a106 (adj 999): empty #25
+05-10 11:08:23.322   490   520 I libprocessgroup: Successfully killed process cgroup uid 10057 pid 1596 in 0ms
+05-10 11:08:23.375   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.396   289   289 I Zygote  : Process 1521 exited due to signal 9 (Killed)
+05-10 11:08:23.407   490  1505 I MediaSessionStack: removeSession | record: com.android.music/MediaPlaybackService (userId=0)
+05-10 11:08:23.514     0     0 I binder  : undelivered transaction 61901, process died.
+05-10 11:08:23.515     0     0 I binder  : undelivered transaction 61902, process died.
+05-10 11:08:23.424   781   781 V MediaPlayerList: onActiveSessionsChanged: number of controllers: 0
+05-10 11:08:23.425   781   781 D AvrcpTargetJni: sendPlayerSettingsNative
+05-10 11:08:23.425   781   781 I bt_stack: [INFO:avrcp_service.cc(551)] virtual void bluetooth::avrcp::AvrcpService::SendPlayerSettingsChanged(std::vector<PlayerAttribute>, std::vector<uint8_t>)
+05-10 11:08:23.425   781   781 I bt_stack: [INFO:avrcp_service.cc(565)] attribute=PlayerAttribute::REPEAT : value=PlayerRepeatValue::OFF
+05-10 11:08:23.425   781   781 I bt_stack: attribute=PlayerAttribute::SHUFFLE : value=PlayerShuffleValue::OFF
+05-10 11:08:23.425   781   781 I bt_stack: 
+05-10 11:08:23.427   490   520 I libprocessgroup: Successfully killed process cgroup uid 10132 pid 988 in 0ms
+05-10 11:08:23.430   490   509 D DisplayManagerService: Drop pending events for gone uid 10090
+05-10 11:08:23.434   490   509 D DisplayManagerService: Drop pending events for gone uid 10106
+05-10 11:08:23.436   490   509 D DisplayManagerService: Drop pending events for gone uid 10124
+05-10 11:08:23.440   490   509 D DisplayManagerService: Drop pending events for gone uid 10057
+05-10 11:08:23.442   781   781 V MediaPlayerList: onActiveSessionsChanged: number of controllers: 0
+05-10 11:08:23.443   490   509 D DisplayManagerService: Drop pending events for gone uid 10098
+05-10 11:08:23.444   490   509 D DisplayManagerService: Drop pending events for gone uid 10097
+05-10 11:08:23.445   490   509 D DisplayManagerService: Drop pending events for gone uid 10132
+05-10 11:08:23.447   490   520 I libprocessgroup: Successfully killed process cgroup uid 10098 pid 1570 in 0ms
+05-10 11:08:23.447   490   520 I libprocessgroup: Successfully killed process cgroup uid 10124 pid 1309 in 0ms
+05-10 11:08:23.448   490   520 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 1448 in 0ms
+05-10 11:08:23.448   490   520 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 1521 in 0ms
+05-10 11:08:23.448   490   520 I libprocessgroup: Successfully killed process cgroup uid 10090 pid 1478 in 0ms
+05-10 11:08:23.448   490   520 I libprocessgroup: Successfully killed process cgroup uid 10097 pid 1430 in 0ms
+05-10 11:08:23.451   490   520 I libprocessgroup: Successfully killed process cgroup uid 10106 pid 1414 in 0ms
+05-10 11:08:23.454   289   289 I Zygote  : Process 988 exited due to signal 9 (Killed)
+05-10 11:08:23.454   289   289 I Zygote  : Process 1309 exited due to signal 9 (Killed)
+05-10 11:08:23.454   289   289 I Zygote  : Process 1414 exited due to signal 9 (Killed)
+05-10 11:08:23.454   289   289 I Zygote  : Process 1430 exited due to signal 9 (Killed)
+05-10 11:08:23.454   289   289 I Zygote  : Process 1448 exited due to signal 9 (Killed)
+05-10 11:08:23.454   289   289 I Zygote  : Process 1478 exited due to signal 9 (Killed)
+05-10 11:08:23.454   289   289 I Zygote  : Process 1570 exited due to signal 9 (Killed)
+05-10 11:08:23.454   289   289 I Zygote  : Process 1596 exited due to signal 9 (Killed)
+05-10 11:08:23.464   490   614 D ConnectivityService: releasing NetworkRequest [ REQUEST id=45, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10124 RequestorUid: 10124 RequestorPkg: com.android.devicelockcontroller UnderlyingNetworks: Null] ] (release request)
+05-10 11:08:23.476   325   454 D AudioFlinger: mixer(0x76261d663940) throttle end: throttle time(22)
+05-10 11:08:23.521   687   731 V WindowManagerShell: onTransitionReady android.os.BinderProxy@a48f238: {id=7 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@72e2e75} m=OPEN f=NONE leash=Surface(name=Task=15)/@0x17f7ffe sb=Rect(0, 0 - 1440, 2960) eb=Rect(0, 0 - 1440, 2960) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@44f9e0a} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x8bd135f sb=Rect(0, 0 - 1440, 2960) eb=Rect(0, 0 - 1440, 2960) d=0}]}
+05-10 11:08:23.521   687   731 V WindowManagerShell: Playing animation for (#7)android.os.BinderProxy@a48f238@0
+05-10 11:08:23.521   687   731 V WindowManagerShell:  try firstHandler com.android.wm.shell.transition.DefaultMixedHandler@f9e24fd
+05-10 11:08:23.522   687   731 V WindowManagerShell:  Delegate animation for #7 to RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@2b6f9e4, appThread = android.app.IApplicationThread$Stub$Proxy@2640e4d, debugName = QuickstepLaunch }
+05-10 11:08:23.522   490   508 V WindowManager: Sent Transition #7 createdAt=05-10 11:08:23.200 via request=TransitionRequestInfo { type = 1, triggerTask = TaskInfo{userId=0 taskId=15 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.android.settings/.Settings } baseActivity=ComponentInfo{com.android.settings/com.android.settings.homepage.SettingsHomepageActivity} topActivity=ComponentInfo{com.android.settings/com.android.settings.homepage.SettingsHomepageActivity} origActivity=ComponentInfo{com.android.settings/com.android.settings.Settings} realActivity=ComponentInfo{com.android.settings/com.android.settings.homepage.SettingsHomepageActivity} numActivities=1 lastActiveTime=1003500 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{7725168 Task{427fa11 #15 type=standard A=1000:com.android.settings.root}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{eea8981 com.android.settings.Settings} launchCookies=[android.os.BinderProxy@a880a26] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 isUserFullscreenOverrideEnabled=false isTopActivityTransparent=false locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@e681667, appThread = android.app.IApplicationThread$Stub$Proxy@3cf1c14, debugName = QuickstepLaunch }, displayChange = null, flags = 0 }
+05-10 11:08:23.522   490   508 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+05-10 11:08:23.523   490   508 V WindowManager:     info={id=7 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{7725168 Task{427fa11 #15 type=standard A=1000:com.android.settings.root}}} m=OPEN f=NONE leash=Surface(name=Task=15)/@0xd5a225a sb=Rect(0, 0 - 1440, 2960) eb=Rect(0, 0 - 1440, 2960) d=0},{WCT{RemoteToken{5353cbd Task{e8a7435 #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x18ede9d sb=Rect(0, 0 - 1440, 2960) eb=Rect(0, 0 - 1440, 2960) d=0}]}
+05-10 11:08:23.573   687   731 V WindowManagerShell:  animated by firstHandler
+05-10 11:08:23.575   687   731 W Looper  : Slow dispatch took 55ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.Transitions$TransitionPlayerImpl$$ExternalSyntheticLambda0@6403cf1 m=0
+05-10 11:08:23.579   490   504 W ActivityTaskManager: takeTaskSnapshot: taskId=11 not found or not visible
+05-10 11:08:23.582  1049  1049 D b/279059025: current animation cancelled
+05-10 11:08:23.586  1049  1049 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+05-10 11:08:23.586  1049  1049 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+05-10 11:08:23.586  1049  1049 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+05-10 11:08:23.590   872   872 D CompatibilityChangeReporter: Compat change id reported: 171228096; UID 1000; state: ENABLED
+05-10 11:08:23.593   325   454 D audioserver: logFgsApiEnd: FGS Logger Transaction failed, -129
+05-10 11:08:23.595   490   504 W ActivityTaskManager: takeTaskSnapshot: taskId=13 not found or not visible
+05-10 11:08:23.619  1049  1049 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+05-10 11:08:23.659   872   872 W ResourcesCompat: Failed to inflate ColorStateList, leaving it to the framework
+05-10 11:08:23.659   872   872 W ResourcesCompat: java.lang.UnsupportedOperationException: Failed to resolve attribute at index 0: TypedValue{t=0x2/d=0x7f040113 a=-1}, theme={InheritanceMap=[id=0x7f1403ebcom.android.settings:style/Theme.Settings.Home, id=0x7f1403edcom.android.settings:style/Theme.Settings.HomeBase, id=0x7f1403eecom.android.settings:style/Theme.Settings.NoActionBar, id=0x7f1403e9com.android.settings:style/Theme.Settings, id=0x7f1403efcom.android.settings:style/Theme.SettingsBase, id=0x7f1403f0com.android.settings:style/Theme.SettingsBase_v31, id=0x1030223android:style/Theme.DeviceDefault.Settings, id=0x103012bandroid:style/Theme.DeviceDefault.Light, id=0x1030237android:style/Theme.Material.Light, id=0x103000candroid:style/Theme.Light, id=0x1030005android:style/Theme], Themes=[com.android.settings:style/Theme.Settings.Home, forced, android:style/Theme.DeviceDefault.Light.DarkActionBar, forced]}
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.content.res.TypedArray.getColor(TypedArray.java:529)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at androidx.core.content.res.ColorStateListInflaterCompat.inflate(ColorStateListInflaterCompat.java:159)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at androidx.core.content.res.ColorStateListInflaterCompat.createFromXmlInner(ColorStateListInflaterCompat.java:124)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at androidx.core.content.res.ColorStateListInflaterCompat.createFromXml(ColorStateListInflaterCompat.java:103)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at androidx.core.content.res.ResourcesCompat.inflateColorStateList(ResourcesCompat.java:262)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at androidx.core.content.res.ResourcesCompat.getColorStateList(ResourcesCompat.java:236)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at androidx.core.content.ContextCompat.getColorStateList(ContextCompat.java:564)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at androidx.appcompat.content.res.AppCompatResources.getColorStateList(AppCompatResources.java:48)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at com.google.android.material.resources.MaterialResources.getColorStateList(MaterialResources.java:65)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at com.google.android.material.card.MaterialCardViewHelper.loadFromAttributes(MaterialCardViewHelper.java:178)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at com.google.android.material.card.MaterialCardView.<init>(MaterialCardView.java:183)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at com.google.android.material.card.MaterialCardView.<init>(MaterialCardView.java:160)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at java.lang.reflect.Constructor.newInstance0(Native Method)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at java.lang.reflect.Constructor.newInstance(Constructor.java:343)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.createView(LayoutInflater.java:866)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:1018)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:973)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1135)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.parseInclude(LayoutInflater.java:1275)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1131)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.parseInclude(LayoutInflater.java:1275)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1131)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1138)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1138)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:694)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:538)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:485)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at com.android.internal.policy.PhoneWindow.setContentView(PhoneWindow.java:475)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.app.Activity.setContentView(Activity.java:3689)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at androidx.activity.ComponentActivity.setContentView(ComponentActivity.java:464)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at com.android.settings.homepage.SettingsHomepageActivity.onCreate(SettingsHomepageActivity.java:199)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.app.Activity.performCreate(Activity.java:8621)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.app.Activity.performCreate(Activity.java:8599)
+05-10 11:08:23.659   872   872 W ResourcesCompat: 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1456)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3804)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3963)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:103)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:139)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:96)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2468)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at android.os.Looper.loopOnce(Looper.java:205)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at android.os.Looper.loop(Looper.java:294)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at android.app.ActivityThread.main(ActivityThread.java:8248)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at java.lang.reflect.Method.invoke(Native Method)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:552)
+05-10 11:08:23.660   872   872 W ResourcesCompat: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:971)
+05-10 11:08:23.661   872   872 W ResourcesCompat: Failed to inflate ColorStateList, leaving it to the framework
+05-10 11:08:23.661   872   872 W ResourcesCompat: java.lang.UnsupportedOperationException: Failed to resolve attribute at index 0: TypedValue{t=0x2/d=0x7f040113 a=-1}, theme={InheritanceMap=[id=0x7f1403ebcom.android.settings:style/Theme.Settings.Home, id=0x7f1403edcom.android.settings:style/Theme.Settings.HomeBase, id=0x7f1403eecom.android.settings:style/Theme.Settings.NoActionBar, id=0x7f1403e9com.android.settings:style/Theme.Settings, id=0x7f1403efcom.android.settings:style/Theme.SettingsBase, id=0x7f1403f0com.android.settings:style/Theme.SettingsBase_v31, id=0x1030223android:style/Theme.DeviceDefault.Settings, id=0x103012bandroid:style/Theme.DeviceDefault.Light, id=0x1030237android:style/Theme.Material.Light, id=0x103000candroid:style/Theme.Light, id=0x1030005android:style/Theme], Themes=[com.android.settings:style/Theme.Settings.Home, forced, android:style/Theme.DeviceDefault.Light.DarkActionBar, forced]}
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.content.res.TypedArray.getColor(TypedArray.java:529)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at androidx.core.content.res.ColorStateListInflaterCompat.inflate(ColorStateListInflaterCompat.java:159)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at androidx.core.content.res.ColorStateListInflaterCompat.createFromXmlInner(ColorStateListInflaterCompat.java:124)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at androidx.core.content.res.ColorStateListInflaterCompat.createFromXml(ColorStateListInflaterCompat.java:103)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at androidx.core.content.res.ResourcesCompat.inflateColorStateList(ResourcesCompat.java:262)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at androidx.core.content.res.ResourcesCompat.getColorStateList(ResourcesCompat.java:236)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at androidx.core.content.ContextCompat.getColorStateList(ContextCompat.java:564)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at androidx.appcompat.content.res.AppCompatResources.getColorStateList(AppCompatResources.java:48)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at com.google.android.material.resources.MaterialResources.getColorStateList(MaterialResources.java:65)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at com.google.android.material.card.MaterialCardViewHelper.loadFromAttributes(MaterialCardViewHelper.java:187)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at com.google.android.material.card.MaterialCardView.<init>(MaterialCardView.java:183)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at com.google.android.material.card.MaterialCardView.<init>(MaterialCardView.java:160)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at java.lang.reflect.Constructor.newInstance0(Native Method)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at java.lang.reflect.Constructor.newInstance(Constructor.java:343)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.createView(LayoutInflater.java:866)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:1018)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:973)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1135)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.parseInclude(LayoutInflater.java:1275)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1131)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.parseInclude(LayoutInflater.java:1275)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1131)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1138)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1138)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:694)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:538)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:485)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at com.android.internal.policy.PhoneWindow.setContentView(PhoneWindow.java:475)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.app.Activity.setContentView(Activity.java:3689)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at androidx.activity.ComponentActivity.setContentView(ComponentActivity.java:464)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at com.android.settings.homepage.SettingsHomepageActivity.onCreate(SettingsHomepageActivity.java:199)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.app.Activity.performCreate(Activity.java:8621)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.app.Activity.performCreate(Activity.java:8599)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1456)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3804)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3963)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:103)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:139)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:96)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2468)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.os.Looper.loopOnce(Looper.java:205)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.os.Looper.loop(Looper.java:294)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at android.app.ActivityThread.main(ActivityThread.java:8248)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at java.lang.reflect.Method.invoke(Native Method)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:552)
+05-10 11:08:23.661   872   872 W ResourcesCompat: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:971)
+05-10 11:08:23.667   872   872 W ResourcesCompat: Failed to inflate ColorStateList, leaving it to the framework
+05-10 11:08:23.667   872   872 W ResourcesCompat: java.lang.UnsupportedOperationException: Failed to resolve attribute at index 0: TypedValue{t=0x2/d=0x7f040113 a=-1}, theme={InheritanceMap=[id=0x7f1403ebcom.android.settings:style/Theme.Settings.Home, id=0x7f1403edcom.android.settings:style/Theme.Settings.HomeBase, id=0x7f1403eecom.android.settings:style/Theme.Settings.NoActionBar, id=0x7f1403e9com.android.settings:style/Theme.Settings, id=0x7f1403efcom.android.settings:style/Theme.SettingsBase, id=0x7f1403f0com.android.settings:style/Theme.SettingsBase_v31, id=0x1030223android:style/Theme.DeviceDefault.Settings, id=0x103012bandroid:style/Theme.DeviceDefault.Light, id=0x1030237android:style/Theme.Material.Light, id=0x103000candroid:style/Theme.Light, id=0x1030005android:style/Theme], Themes=[com.android.settings:style/Theme.Settings.Home, forced, android:style/Theme.DeviceDefault.Light.DarkActionBar, forced]}
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.content.res.TypedArray.getColor(TypedArray.java:529)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at androidx.core.content.res.ColorStateListInflaterCompat.inflate(ColorStateListInflaterCompat.java:159)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at androidx.core.content.res.ColorStateListInflaterCompat.createFromXmlInner(ColorStateListInflaterCompat.java:124)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at androidx.core.content.res.ColorStateListInflaterCompat.createFromXml(ColorStateListInflaterCompat.java:103)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at androidx.core.content.res.ResourcesCompat.inflateColorStateList(ResourcesCompat.java:262)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at androidx.core.content.res.ResourcesCompat.getColorStateList(ResourcesCompat.java:236)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at androidx.core.content.ContextCompat.getColorStateList(ContextCompat.java:564)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at androidx.appcompat.content.res.AppCompatResources.getColorStateList(AppCompatResources.java:48)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at com.google.android.material.resources.MaterialResources.getColorStateList(MaterialResources.java:65)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at com.google.android.material.card.MaterialCardViewHelper.loadFromAttributes(MaterialCardViewHelper.java:178)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at com.google.android.material.card.MaterialCardView.<init>(MaterialCardView.java:183)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at com.google.android.material.card.MaterialCardView.<init>(MaterialCardView.java:160)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at java.lang.reflect.Constructor.newInstance0(Native Method)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at java.lang.reflect.Constructor.newInstance(Constructor.java:343)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.createView(LayoutInflater.java:866)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:1018)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.parseInclude(LayoutInflater.java:1245)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1131)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.parseInclude(LayoutInflater.java:1275)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1131)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1138)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1138)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:694)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:538)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:485)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at com.android.internal.policy.PhoneWindow.setContentView(PhoneWindow.java:475)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.app.Activity.setContentView(Activity.java:3689)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at androidx.activity.ComponentActivity.setContentView(ComponentActivity.java:464)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at com.android.settings.homepage.SettingsHomepageActivity.onCreate(SettingsHomepageActivity.java:199)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.app.Activity.performCreate(Activity.java:8621)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.app.Activity.performCreate(Activity.java:8599)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1456)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3804)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3963)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:103)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:139)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:96)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2468)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.os.Looper.loopOnce(Looper.java:205)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.os.Looper.loop(Looper.java:294)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at android.app.ActivityThread.main(ActivityThread.java:8248)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at java.lang.reflect.Method.invoke(Native Method)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:552)
+05-10 11:08:23.667   872   872 W ResourcesCompat: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:971)
+05-10 11:08:23.669   872   872 W ResourcesCompat: Failed to inflate ColorStateList, leaving it to the framework
+05-10 11:08:23.669   872   872 W ResourcesCompat: java.lang.UnsupportedOperationException: Failed to resolve attribute at index 0: TypedValue{t=0x2/d=0x7f040113 a=-1}, theme={InheritanceMap=[id=0x7f1403ebcom.android.settings:style/Theme.Settings.Home, id=0x7f1403edcom.android.settings:style/Theme.Settings.HomeBase, id=0x7f1403eecom.android.settings:style/Theme.Settings.NoActionBar, id=0x7f1403e9com.android.settings:style/Theme.Settings, id=0x7f1403efcom.android.settings:style/Theme.SettingsBase, id=0x7f1403f0com.android.settings:style/Theme.SettingsBase_v31, id=0x1030223android:style/Theme.DeviceDefault.Settings, id=0x103012bandroid:style/Theme.DeviceDefault.Light, id=0x1030237android:style/Theme.Material.Light, id=0x103000candroid:style/Theme.Light, id=0x1030005android:style/Theme], Themes=[com.android.settings:style/Theme.Settings.Home, forced, android:style/Theme.DeviceDefault.Light.DarkActionBar, forced]}
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.content.res.TypedArray.getColor(TypedArray.java:529)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at androidx.core.content.res.ColorStateListInflaterCompat.inflate(ColorStateListInflaterCompat.java:159)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at androidx.core.content.res.ColorStateListInflaterCompat.createFromXmlInner(ColorStateListInflaterCompat.java:124)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at androidx.core.content.res.ColorStateListInflaterCompat.createFromXml(ColorStateListInflaterCompat.java:103)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at androidx.core.content.res.ResourcesCompat.inflateColorStateList(ResourcesCompat.java:262)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at androidx.core.content.res.ResourcesCompat.getColorStateList(ResourcesCompat.java:236)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at androidx.core.content.ContextCompat.getColorStateList(ContextCompat.java:564)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at androidx.appcompat.content.res.AppCompatResources.getColorStateList(AppCompatResources.java:48)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at com.google.android.material.resources.MaterialResources.getColorStateList(MaterialResources.java:65)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at com.google.android.material.card.MaterialCardViewHelper.loadFromAttributes(MaterialCardViewHelper.java:187)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at com.google.android.material.card.MaterialCardView.<init>(MaterialCardView.java:183)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at com.google.android.material.card.MaterialCardView.<init>(MaterialCardView.java:160)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at java.lang.reflect.Constructor.newInstance0(Native Method)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at java.lang.reflect.Constructor.newInstance(Constructor.java:343)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.createView(LayoutInflater.java:866)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:1018)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.parseInclude(LayoutInflater.java:1245)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1131)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.parseInclude(LayoutInflater.java:1275)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1131)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1138)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1138)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:1096)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:694)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:538)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:485)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at com.android.internal.policy.PhoneWindow.setContentView(PhoneWindow.java:475)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.app.Activity.setContentView(Activity.java:3689)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at androidx.activity.ComponentActivity.setContentView(ComponentActivity.java:464)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at com.android.settings.homepage.SettingsHomepageActivity.onCreate(SettingsHomepageActivity.java:199)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.app.Activity.performCreate(Activity.java:8621)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.app.Activity.performCreate(Activity.java:8599)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1456)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3804)
+05-10 11:08:23.669   872   872 W ResourcesCompat: 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3963)
+05-10 11:08:23.670   872   872 W ResourcesCompat: 	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:103)
+05-10 11:08:23.670   872   872 W ResourcesCompat: 	at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:139)
+05-10 11:08:23.670   872   872 W ResourcesCompat: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:96)
+05-10 11:08:23.670   872   872 W ResourcesCompat: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2468)
+05-10 11:08:23.670   872   872 W ResourcesCompat: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+05-10 11:08:23.670   872   872 W ResourcesCompat: 	at android.os.Looper.loopOnce(Looper.java:205)
+05-10 11:08:23.670   872   872 W ResourcesCompat: 	at android.os.Looper.loop(Looper.java:294)
+05-10 11:08:23.670   872   872 W ResourcesCompat: 	at android.app.ActivityThread.main(ActivityThread.java:8248)
+05-10 11:08:23.670   872   872 W ResourcesCompat: 	at java.lang.reflect.Method.invoke(Native Method)
+05-10 11:08:23.670   872   872 W ResourcesCompat: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:552)
+05-10 11:08:23.670   872   872 W ResourcesCompat: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:971)
+05-10 11:08:23.675   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.682   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.682   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.684   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.685   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.686   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.687   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.687   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.687   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.688   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.688   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.691   872   872 D AvatarViewMixin: Feature disabled by config. Skipping
+05-10 11:08:23.773   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.network.TopLevelNetworkEntryPreferenceController
+05-10 11:08:23.776   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.communal.CommunalPreferenceController
+05-10 11:08:23.776   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.connecteddevice.TopLevelConnectedDevicesPreferenceController
+05-10 11:08:23.777   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.fuelgauge.TopLevelBatteryPreferenceController
+05-10 11:08:23.778   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.deviceinfo.TopLevelStoragePreferenceController
+05-10 11:08:23.779   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.display.TopLevelDisplayPreferenceController
+05-10 11:08:23.780   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.display.TopLevelWallpaperPreferenceController
+05-10 11:08:23.780   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.accessibility.TopLevelAccessibilityPreferenceController
+05-10 11:08:23.781   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.safetycenter.TopLevelSafetyCenterEntryPreferenceController
+05-10 11:08:23.788   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.security.TopLevelSecurityEntryPreferenceController
+05-10 11:08:23.789   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.privacy.TopLevelPrivacyEntryPreferenceController
+05-10 11:08:23.789   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.location.TopLevelLocationPreferenceController
+05-10 11:08:23.790   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.accounts.TopLevelAccountEntryPreferenceController
+05-10 11:08:23.791   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.deviceinfo.aboutphone.TopLevelAboutDevicePreferenceController
+05-10 11:08:23.791   872   872 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.support.SupportPreferenceController
+05-10 11:08:23.793   872   872 D HighlightableMenu: parsing highlightable menu from xml
+05-10 11:08:23.817   490  1392 E UserRestrictionsUtils: Unknown restriction queried by uid 1000 (com.android.inputdevices et al): null
+05-10 11:08:23.818   872   872 W InstrumentedPrefFrag: Screen title missing for fragment com.android.settings.homepage.TopLevelSettings
+05-10 11:08:23.821   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.821   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.821   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.821   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.822   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.822   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.841   872   872 D TopLevelSettings: NO dashboard tiles for TopLevelSettings
+05-10 11:08:23.842   872   872 D TopLevelSettings: All preferences added, reporting fully drawn
+05-10 11:08:23.850   872   872 D ActivityEmbeddingUtils: isEmbeddingActivityEnabled = true
+05-10 11:08:23.871   872   872 D TopLevelHighlightMixin: Menu key: top_level_network
+05-10 11:08:23.871   872   872 D TopLevelHighlightMixin: onCreateAdapter, pref key: top_level_network
+05-10 11:08:23.874   872   872 D HighlightableTopLevelAdapter: Request highlight position 0
+05-10 11:08:23.874   872   872 D HighlightableTopLevelAdapter: Is highlight needed: false
+05-10 11:08:23.878   490  1392 D CompatibilityChangeReporter: Compat change id reported: 161145287; UID 1000; state: ENABLED
+05-10 11:08:23.879   872   872 D BatteryBroadcastRcvr: updateBatteryStatus: action=android.intent.action.BATTERY_CHANGED
+05-10 11:08:23.881   872   872 D BatteryBroadcastRcvr: Battery changed: level: 100%| status: Charged| chargingStatus: 0| health: 2
+05-10 11:08:23.881   872   872 D TopLvBatteryPrefControl: onBatteryChanged: type=0
+05-10 11:08:23.891   872   872 W ElapsedTimeUtils: getElapsedTime: sSuwFinishedTimeStamp is null
+05-10 11:08:23.893   490  1258 D TelephonyManager: requestModemActivityInfo: Sending result to app: ModemActivityInfo{ mTimestamp=1004183 mSleepTimeMs=0 mIdleTimeMs=1004176 mActivityStatsTechSpecificInfo=[{mRat=UNKNOWN,mFrequencyRange=UNKNOWN,mTxTimeMs[]=[0, 0, 0, 0, 0],mRxTimeMs=0}]}
+05-10 11:08:23.898   490   504 W BatteryExternalStatsWorker: error reading Bluetooth stats: 11
+05-10 11:08:23.910   490   525 W KernelCpuProcStringReader: File not found. It's normal if not implemented: /proc/uid_concurrent_policy_time
+05-10 11:08:23.925  1049  1064 I droid.launcher3: NativeAlloc concurrent copying GC freed 26818(1475KB) AllocSpace objects, 4(208KB) LOS objects, 49% free, 5361KB/10MB, paused 44.505ms,18us,53.208ms total 254.727ms
+05-10 11:08:23.936   872   872 D CompatibilityChangeReporter: Compat change id reported: 263076149; UID 1000; state: ENABLED
+05-10 11:08:23.941   872   872 D CategoryMixin: Skip categories update
+05-10 11:08:23.947   288   347 I netd    : tetherGetStats() -> {[]} <0.70ms>
+05-10 11:08:23.951   490  1392 W CpuPowerCalculator: UID 10143 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.951   490  1392 W CpuPowerCalculator: UID 10142 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.951   490  1392 W CpuPowerCalculator: UID 10142 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.951   490  1392 W CpuPowerCalculator: UID 10135 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.951   490  1392 W CpuPowerCalculator: UID 10135 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10132 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10132 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10130 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10130 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10126 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10126 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10124 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10124 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10123 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10123 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10118 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10118 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.952   490  1392 W CpuPowerCalculator: UID 10115 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10115 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10106 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10106 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10104 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10104 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10101 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10101 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10099 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10099 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10098 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10098 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10097 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.953   490  1392 W CpuPowerCalculator: UID 10097 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10095 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10095 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10094 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10094 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10092 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10092 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10090 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10090 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10075 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10075 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10073 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10073 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10065 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10065 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10062 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10062 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10059 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10059 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10058 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10058 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10057 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.954   490  1392 W CpuPowerCalculator: UID 10057 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 9999 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 9999 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 2000 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 2000 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1092 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1092 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1086 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1086 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1073 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1073 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1072 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1072 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1069 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1069 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1068 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1068 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1067 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1067 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1066 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1066 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1058 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1058 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1053 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1053 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1047 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1047 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.955   490  1392 W CpuPowerCalculator: UID 1046 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1046 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1041 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1041 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1040 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1040 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1036 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1036 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1021 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1021 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1020 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1020 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1017 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1017 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1013 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1013 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1010 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1010 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1003 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1003 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1002 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.956   490  1392 W CpuPowerCalculator: UID 1002 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.957   490  1392 W CpuPowerCalculator: UID 1001 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.957   490  1392 W CpuPowerCalculator: UID 1001 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.957   490  1392 W CpuPowerCalculator: UID 1000 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.957   490  1392 W CpuPowerCalculator: UID 1000 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.957   490  1392 W CpuPowerCalculator: UID 0 CPU cluster # mismatch: Power Profile # 1 actual # 2
+05-10 11:08:23.957   490  1392 W CpuPowerCalculator: UID 0 CPU freq # mismatch: Power Profile # 1 actual # 4
+05-10 11:08:23.962   872   872 D BatteryBroadcastRcvr: updateBatteryStatus: action=android.intent.action.BATTERY_CHANGED
+05-10 11:08:23.963   872   872 D BatteryBroadcastRcvr: Battery changed: level: 100%| status: Charged| chargingStatus: 0| health: 2
+05-10 11:08:23.964   872   872 D BatteryBroadcastRcvr: updateBatteryStatus: action=android.intent.action.BATTERY_CHANGED
+05-10 11:08:23.964   872   872 D BatteryBroadcastRcvr: Battery changed: level: 100%| status: Charged| chargingStatus: 0| health: 2
+05-10 11:08:23.964   490   504 D FileUtils: Rounded bytes from 13831323648 to 16000000000
+05-10 11:08:23.964   872  1263 D BatteryInfo: time for getStats: 0ms
+05-10 11:08:23.966   872  1263 D BatteryInfo: time for regular BatteryInfo: 0ms
+05-10 11:08:23.967   872  1263 D BatteryInfo: time for getBatteryInfo: 1ms
+05-10 11:08:23.977   490   504 D ActivityManager: sync unfroze 1164 com.android.permissioncontroller for 6
+05-10 11:08:24.045   490  1392 D CoreBackPreview: Window{bf38bc5 u0 com.android.settings/com.android.settings.Settings}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@2ce0227, mPriority=-1, mIsAnimationCallback=false}
+05-10 11:08:24.149   687   731 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#7)android.os.BinderProxy@a48f238@0
+05-10 11:08:24.150   490   508 V WindowManager: Finish Transition #7: created at 05-10 11:08:23.200 collect-started=0.037ms request-sent=9.267ms started=31.548ms ready=75.673ms sent=318.841ms finished=949.451ms
+05-10 11:08:24.153   687   731 V WindowManagerShell: Track 0 became idle
+05-10 11:08:24.153   687   731 V WindowManagerShell: All active transition animations finished
+05-10 11:08:24.161  1049  1049 D HotseatPredictionController: setPauseUIUpdate parameter `paused` is false
+05-10 11:08:24.162  1049  1049 D HotseatPredictionController: fillGapsWithPrediction flags: 
+05-10 11:08:24.162  1049  1049 D HotseatPredictionController: Hotseat app child is: com.android.launcher3.views.DoubleShadowBubbleTextView{b993c3 VFED..CL. ......ID 0,0-276,221 #1} and isPredictedIcon() evaluates to: false
+05-10 11:08:24.162  1049  1049 D HotseatPredictionController: Hotseat app child is: com.android.launcher3.views.DoubleShadowBubbleTextView{5db8440 VFED..CL. ......ID 276,0-552,221 #2} and isPredictedIcon() evaluates to: false
+05-10 11:08:24.162  1049  1049 D HotseatPredictionController: Hotseat app child is: null and isPredictedIcon() evaluates to: false
+05-10 11:08:24.162  1049  1049 D HotseatPredictionController: Remove predicted apps from the past
+05-10 11:08:24.162  1049  1049 D HotseatPredictionController: Prediction Index: 0
+05-10 11:08:24.162  1049  1049 D HotseatPredictionController: Hotseat app child is: com.android.launcher3.views.DoubleShadowBubbleTextView{a42ff79 VFED..CL. ......ID 828,0-1104,221 #3} and isPredictedIcon() evaluates to: false
+05-10 11:08:24.162  1049  1049 D HotseatPredictionController: Hotseat app child is: com.android.launcher3.views.DoubleShadowBubbleTextView{8f3d4be VFED..CL. ......ID 1104,0-1380,221 #4} and isPredictedIcon() evaluates to: false
+05-10 11:08:24.162  1049  1049 D HotseatPredictionController: bindItems to hotseat: []
+05-10 11:08:24.194  1049  1428 D EGL_emulation: app_time_stats: avg=32.87ms min=9.16ms max=125.26ms count=26
+05-10 11:08:24.225   490   674 D StorageStatsService: getFreeBytes: 9849180160
+05-10 11:08:24.246   872   879 I ndroid.settings: Background young concurrent copying GC freed 13940(1256KB) AllocSpace objects, 3(48KB) LOS objects, 27% free, 3426KB/4737KB, paused 64.645ms,9us,42.259ms total 274.488ms
+05-10 11:08:24.279  1049  1049 W FrameTracker: Missing HWUI jank callback for vsyncId: 4602, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:08:24.279  1049  1049 W FrameTracker: Missing HWUI jank callback for vsyncId: 4626, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:08:24.279  1049  1049 W FrameTracker: Missing HWUI jank callback for vsyncId: 4667, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:08:24.279  1049  1049 W FrameTracker: Missing HWUI jank callback for vsyncId: 4720, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:08:24.279  1049  1049 W FrameTracker: Missing HWUI jank callback for vsyncId: 4728, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:08:24.279  1049  1049 W FrameTracker: Missing HWUI jank callback for vsyncId: 4758, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:08:24.279  1049  1049 W FrameTracker: Missing SF jank callback for vsyncId: 4774, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:08:24.279  1049  1394 V PerfettoTrigger: Triggering /system/bin/trigger_perfetto com.android.telemetry.interaction-jank-monitor-8
+05-10 11:08:24.313   872  1260 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+05-10 11:08:24.864   872   872 D TopLvBatteryPrefControl: getBatteryInfo: com.android.settings.fuelgauge.BatteryInfo@753dfbd
+05-10 11:08:24.864   872   872 D TopLvBatteryPrefControl: getDashboardLabel: null batteryStatusUpdate=true
+05-10 11:08:24.869   490   508 I ActivityTaskManager: Displayed com.android.settings/.Settings for user 0: +1s674ms
+05-10 11:08:24.870   490   508 I ActivityTaskManager: Fully drawn com.android.settings/.Settings: +1s674ms
+05-10 11:08:24.879   872  1594 I OpenGLRenderer: Davey! duration=914ms; Flags=1, FrameTimelineVsyncId=4689, IntendedVsync=1004238518851, Vsync=1004321852181, InputEventId=0, HandleInputStart=1004335286176, AnimationStart=1004335286658, PerformTraversalsStart=1004335287044, DrawStart=1004620157120, FrameDeadline=1004255185517, FrameInterval=1004335277925, FrameStartTime=16666666, SyncQueued=1004626260291, SyncStart=1004626551945, IssueDrawCommandsStart=1004626720811, SwapBuffers=1004999796163, FrameCompleted=1005153350091, DequeueBufferDuration=2901, QueueBufferDuration=167943, GpuCompleted=1004999796163, SwapBuffersCompleted=1005153350091, DisplayPresentTime=0, CommandSubmissionCompleted=1004999796163, 
+05-10 11:08:24.880   872   872 D BatteryInfo: time for callback: 17ms
+05-10 11:08:24.881   872   872 I Choreographer: Skipped 50 frames!  The application may be doing too much work on its main thread.
+05-10 11:08:24.989   872  1594 I OpenGLRenderer: Davey! duration=858ms; Flags=0, FrameTimelineVsyncId=4743, IntendedVsync=1004338518847, Vsync=1005171852147, InputEventId=0, HandleInputStart=1005172960479, AnimationStart=1005172961037, PerformTraversalsStart=1005173269707, DrawStart=1005178856028, FrameDeadline=1005021852153, FrameInterval=1005171912815, FrameStartTime=16666666, SyncQueued=1005182118150, SyncStart=1005182680104, IssueDrawCommandsStart=1005184424529, SwapBuffers=1005186354926, FrameCompleted=1005197820263, DequeueBufferDuration=2794, QueueBufferDuration=116812, GpuCompleted=1005186354926, SwapBuffersCompleted=1005197820263, DisplayPresentTime=0, CommandSubmissionCompleted=1005186354926, 
+05-10 11:08:25.039   490   601 D CompatibilityChangeReporter: Compat change id reported: 214016041; UID 1000; state: ENABLED
+05-10 11:08:25.039   490   601 I ImeTracker: com.android.settings:97b21a3e: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+05-10 11:08:25.039   490   601 I ImeTracker: com.android.settings:97b21a3e: onCancelled at PHASE_SERVER_SHOULD_HIDE
+05-10 11:08:25.329   490   601 W InputManager-JNI: Input channel object 'c81264d Splash Screen com.android.settings (client)' was disposed without first being removed with the input manager!
+05-10 11:08:25.333  1049  1049 D BaseDepthController: setSurface:
+05-10 11:08:25.333  1049  1049 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+05-10 11:08:25.333  1049  1049 D BaseDepthController: 	mSurface: null
+05-10 11:08:25.333  1049  1049 D BaseDepthController: mSurface is null and mCurrentBlur is: 23
+05-10 11:08:25.336  1049  1083 I ImeTracker: com.android.launcher3:5a7694e0: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+05-10 11:08:25.337  1049  1083 I ImeTracker: com.android.launcher3:5a7694e0: onFailed at PHASE_CLIENT_VIEW_SERVED
+05-10 11:08:25.350   490   504 W ProcessStats: Tracking association SourceState{cf11762 com.android.settings/1000 BTop #486} whose proc state 2 is better than process ProcessState{addd5e2 com.android.permissioncontroller/10126 pkg=com.android.permissioncontroller} proc state 15 (0 skipped)
+05-10 11:08:25.379   687   747 W FrameTracker: Missed App frame:UNKNOWN: 10, 4877, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.379   687   747 W FrameTracker: Missed SF frame:UNKNOWN: 10, 4877, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.379   687   747 W FrameTracker: Missing HWUI jank callback for vsyncId: 4877, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.379   687   747 W FrameTracker: Missed App frame:UNKNOWN: 74, 4899, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.379   687   747 W FrameTracker: Missed SF frame:UNKNOWN: 74, 4899, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.379   687   747 W FrameTracker: Missing HWUI jank callback for vsyncId: 4899, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.379   687   747 W FrameTracker: Missed App frame:UNKNOWN: 74, 4914, 312628704, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.379   687   747 W FrameTracker: Missed SF frame:UNKNOWN: 74, 4914, 312628704, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.379   687   747 W FrameTracker: Missed App frame:UNKNOWN: 74, 4922, 266843187, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.379   687   747 W FrameTracker: Missed SF frame:UNKNOWN: 74, 4922, 266843187, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.379   687   747 W FrameTracker: Missed App frame:UNKNOWN: 74, 4967, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.379   687   747 W FrameTracker: Missed SF frame:UNKNOWN: 74, 4967, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.379   687   747 W FrameTracker: Missing HWUI jank callback for vsyncId: 4967, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:08:25.381   687   740 V PerfettoTrigger: Triggering /system/bin/trigger_perfetto com.android.telemetry.interaction-jank-monitor-39
+05-10 11:08:25.932   872  1260 D EGL_emulation: app_time_stats: avg=44.67ms min=7.11ms max=266.94ms count=21
+05-10 11:08:26.213   490  1397 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+05-10 11:08:26.483   292  2051 D android.hardware.audio@7.1-impl.ranchu: threadLoop: entering standby, frames: 149056
+05-10 11:08:26.949   872  1260 D EGL_emulation: app_time_stats: avg=136.32ms min=6.89ms max=862.40ms count=7

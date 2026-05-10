@@ -1,0 +1,181 @@
+--------- beginning of system
+01-23 22:46:45.506   473   554 D ActivityManager: freezing 1201 com.android.settings
+--------- beginning of main
+01-23 22:46:46.749   282  1951 I resolv  : GetAddrInfoHandler::run: {100 983140 100 983140 1073 1}
+01-23 22:46:46.749   282  1953 I resolv  : res_nmkquery: (QUERY, IN, A)
+01-23 22:46:46.749   282  1952 I resolv  : res_nmkquery: (QUERY, IN, AAAA)
+01-23 22:46:46.805   282  1953 I resolv  : res_nsend: used send_dg 101 terrno: 0
+01-23 22:46:46.805   282  1953 I resolv  : doQuery: rcode=0, ancount=4, return value=101
+01-23 22:46:46.812   282  1952 I resolv  : res_nsend: used send_dg 149 terrno: 0
+01-23 22:46:46.812   282  1952 I resolv  : doQuery: rcode=0, ancount=4, return value=149
+01-23 22:46:46.813   789  1937 D TrafficStats: tagSocket(98) with statsTag=0xffffff81, statsUid=-1
+01-23 22:46:50.686   473   660 D ActivityManager: sync unfroze 1145 com.android.permissioncontroller for 6
+01-23 22:46:50.689   473   660 D CompatibilityChangeReporter: Compat change id reported: 261072174; UID 1000; state: ENABLED
+01-23 22:46:50.689   473   660 D OomAdjuster: Not killing cached processes
+01-23 22:46:50.696  1145  1854 I PermissionControllerServiceImpl: Updating user sensitive for user 0
+01-23 22:46:53.771   789  1938 D TrafficStats: tagSocket(99) with statsTag=0xffffff81, statsUid=-1
+01-23 22:46:53.773   789  1938 D NetworkMonitor/100: PROBE_HTTPS https://www.google.com/generate_204 Probe failed with exception java.net.ConnectException: Failed to connect to www.google.com/[2001::1]:443
+01-23 22:46:56.821   789  1937 D TrafficStats: tagSocket(98) with statsTag=0xffffff81, statsUid=-1
+01-23 22:46:56.823   789  1937 D NetworkMonitor/100: PROBE_FALLBACK http://play.googleapis.com/generate_204 Probe failed with exception java.net.ConnectException: Failed to connect to play.googleapis.com/[2001:4860:4802:32::223]:80
+01-23 22:46:56.823   789  1937 D NetworkMonitor/100: isCaptivePortal: isSuccessful()=false isPortal()=false RedirectUrl=null isPartialConnectivity()=true Time=13076ms
+01-23 22:46:56.824   473   605 D ConnectivityService: [100 CELLULAR] validation failed
+01-23 22:46:59.000   473   598 E WifiScoringParams: Invalid frequency(-1), using 5G as default rssi array
+01-23 22:46:59.005   473   602 D InstantWifi: Drop, size: 0
+01-23 22:46:59.240   677  1110 W ndroid.systemui: No such thread id for suspend: 102
+01-23 22:46:59.240   677  1107 W ndroid.systemui: No such thread id for suspend: 102
+01-23 22:46:59.240   677  1109 W ndroid.systemui: No such thread id for suspend: 102
+01-23 22:46:59.240   677   894 W ndroid.systemui: No such thread id for suspend: 102
+01-23 22:47:00.009   677   677 V KeyguardStatusViewController: onTimeChanged
+01-23 22:47:00.034   677   775 D EGL_emulation: app_time_stats: avg=4911.74ms min=4.15ms max=48599.54ms count=10
+01-23 22:47:00.151   473   707 W BatteryExternalStatsWorker: error reading Bluetooth stats: 11
+01-23 22:47:00.154   473   707 D TelephonyManager: requestModemActivityInfo: Sending result to app: ModemActivityInfo{ mTimestamp=84697 mSleepTimeMs=0 mIdleTimeMs=84693 mActivityStatsTechSpecificInfo=[{mRat=UNKNOWN,mFrequencyRange=UNKNOWN,mTxTimeMs[]=[0, 0, 0, 0, 0],mRxTimeMs=0}]}
+01-23 22:47:00.174   282   324 I netd    : tetherGetStats() -> {[]} <1.57ms>
+01-23 22:47:00.796   473   660 D OomAdjuster: Not killing cached processes
+01-23 22:47:02.764   473   488 D WifiNl80211Manager: Scan result ready event
+01-23 22:47:02.765   473   488 D WifiNative: Scan result ready event
+01-23 22:47:04.835   789  1955 D TrafficStats: tagSocket(98) with statsTag=0xffffff81, statsUid=-1
+01-23 22:47:04.835   789  1956 D TrafficStats: tagSocket(99) with statsTag=0xffffff81, statsUid=-1
+01-23 22:47:04.836   789  1956 D TrafficStats: tagSocket(98) with statsTag=0xffffff81, statsUid=-1
+01-23 22:47:04.836   789  1955 D TrafficStats: tagSocket(102) with statsTag=0xffffff81, statsUid=-1
+01-23 22:47:04.836   282  1957 I resolv  : ResNSendHandler::run: 0 / {100 983140 100 983140 1073 1}
+01-23 22:47:04.837   282  1958 I resolv  : ResNSendHandler::run: 0 / {100 983140 100 983140 1073 1}
+01-23 22:47:04.839   282  1959 I resolv  : ResNSendHandler::run: 0 / {100 983140 100 983140 1073 1}
+01-23 22:47:04.839   282  1960 I resolv  : ResNSendHandler::run: 0 / {100 983140 100 983140 1073 1}
+01-23 22:47:04.844   282  1960 I resolv  : res_nsend: used send_dg 48 terrno: 0
+01-23 22:47:04.844   282  1958 I resolv  : res_nsend: used send_dg 60 terrno: 0
+01-23 22:47:04.845   282  1959 I resolv  : res_nsend: used send_dg 63 terrno: 0
+01-23 22:47:04.845   789   789 D TrafficStats: tagSocket(99) with statsTag=0xffffffff, statsUid=-1
+01-23 22:47:04.846   789   789 D StrictMode: StrictMode policy violation: android.os.strictmode.UntaggedSocketViolation: Untagged socket detected; use TrafficStats.setTrafficStatsTag() to track all network usage
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.os.StrictMode.onUntaggedSocket(StrictMode.java:2287)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.os.StrictMode.noteUntaggedSocket(StrictMode.java:2741)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.net.TrafficStats$SocketTagger.tag(TrafficStats.java:255)
+01-23 22:47:04.846   789   789 D StrictMode: 	at libcore.io.BlockGuardOs.tagSocket(BlockGuardOs.java:55)
+01-23 22:47:04.846   789   789 D StrictMode: 	at libcore.io.BlockGuardOs.socket(BlockGuardOs.java:404)
+01-23 22:47:04.846   789   789 D StrictMode: 	at libcore.io.ForwardingOs.socket(ForwardingOs.java:821)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.system.Os.socket(Os.java:834)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.net.connectivity.android.net.util.DnsUtils.findSrcAddress(DnsUtils.java:169)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.net.connectivity.android.net.util.DnsUtils.rfc6724Sort(DnsUtils.java:144)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.net.DnsResolver$InetAddressAnswerAccumulator.maybeReportAnswer(DnsResolver.java:283)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.net.DnsResolver$InetAddressAnswerAccumulator.onAnswer(DnsResolver.java:305)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.net.DnsResolver$InetAddressAnswerAccumulator.onAnswer(DnsResolver.java:251)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.net.DnsResolver.lambda$registerFDListener$8(DnsResolver.java:511)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.net.DnsResolver$$ExternalSyntheticLambda9.run(Unknown Source:8)
+01-23 22:47:04.846   789   789 D StrictMode: 	at com.android.networkstack.util.DnsUtils.lambda$getAllByName$0(DnsUtils.java:132)
+01-23 22:47:04.846   789   789 D StrictMode: 	at com.android.networkstack.util.DnsUtils.$r8$lambda$rStL6e0vqOKGL6b_Ik6ob6JiY2U(DnsUtils.java:0)
+01-23 22:47:04.846   789   789 D StrictMode: 	at com.android.networkstack.util.DnsUtils$$ExternalSyntheticLambda0.execute(R8$$SyntheticClass:0)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.net.DnsResolver.lambda$registerFDListener$9(DnsResolver.java:493)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.net.DnsResolver$$ExternalSyntheticLambda3.onFileDescriptorEvents(Unknown Source:12)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.os.MessageQueue.dispatchEvents(MessageQueue.java:293)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.os.MessageQueue.nativePollOnce(Native Method)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.os.MessageQueue.next(MessageQueue.java:335)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.os.Looper.loopOnce(Looper.java:162)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.os.Looper.loop(Looper.java:294)
+01-23 22:47:04.846   789   789 D StrictMode: 	at android.app.ActivityThread.main(ActivityThread.java:8248)
+01-23 22:47:04.846   789   789 D StrictMode: 	at java.lang.reflect.Method.invoke(Native Method)
+01-23 22:47:04.846   789   789 D StrictMode: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:552)
+01-23 22:47:04.846   789   789 D StrictMode: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:971)
+01-23 22:47:04.847   789   789 D TrafficStats: tagSocket(99) with statsTag=0xffffffff, statsUid=-1
+01-23 22:47:04.848   789  1955 D NetworkMonitor/100: PROBE_DNS www.google.com 13ms OK 31.13.73.169,2001::1
+01-23 22:47:04.849   282  1961 I resolv  : GetAddrInfoHandler::run: {100 983140 100 983140 1073 1}
+01-23 22:47:04.849   282  1962 I resolv  : res_nmkquery: (QUERY, IN, AAAA)
+01-23 22:47:04.849   282  1962 I resolv  : resolv_cache_lookup: FOUND IN CACHE entry=0x77ec907bd6d0
+01-23 22:47:04.849   282  1962 I resolv  : doQuery: rcode=0, ancount=1, return value=60
+01-23 22:47:04.849   282  1963 I resolv  : res_nmkquery: (QUERY, IN, A)
+01-23 22:47:04.849   282  1963 I resolv  : resolv_cache_lookup: FOUND IN CACHE entry=0x77ec707bdf00
+01-23 22:47:04.849   282  1963 I resolv  : doQuery: rcode=0, ancount=1, return value=48
+01-23 22:47:04.850   789  1955 D TrafficStats: tagSocket(99) with statsTag=0xffffff81, statsUid=-1
+01-23 22:47:04.882   282  1957 I resolv  : res_nsend: used send_dg 47 terrno: 0
+01-23 22:47:04.883   789   789 D TrafficStats: tagSocket(98) with statsTag=0xffffffff, statsUid=-1
+01-23 22:47:04.884   789  1956 D NetworkMonitor/100: PROBE_DNS connectivitycheck.gstatic.com 49ms OK 120.253.253.98
+01-23 22:47:04.885   282  1964 I resolv  : GetAddrInfoHandler::run: {100 983140 100 983140 1073 1}
+01-23 22:47:04.885   282  1966 I resolv  : res_nmkquery: (QUERY, IN, A)
+01-23 22:47:04.885   282  1966 I resolv  : resolv_cache_lookup: FOUND IN CACHE entry=0x77ebb07c3710
+01-23 22:47:04.885   282  1966 I resolv  : doQuery: rcode=0, ancount=1, return value=63
+01-23 22:47:04.885   282  1965 I resolv  : res_nmkquery: (QUERY, IN, AAAA)
+01-23 22:47:04.886   282  1965 I resolv  : res_nsend: used send_dg 47 terrno: 0
+01-23 22:47:04.886   282  1965 I resolv  : doQuery: rcode=0, ancount=0, return value=47
+01-23 22:47:04.886   789  1956 D TrafficStats: tagSocket(98) with statsTag=0xffffff81, statsUid=-1
+01-23 22:47:05.080   789  1956 D NetworkMonitor/100: PROBE_HTTP http://connectivitycheck.gstatic.com/generate_204 time=195ms ret=204 request={Connection=[close], User-Agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.32 Safari/537.36]} headers={null=[HTTP/1.1 204 No Content], Connection=[close], Content-Length=[0], Cross-Origin-Resource-Policy=[cross-origin], Date=[Sat, 24 Jan 2026 06:47:05 GMT], X-Android-Received-Millis=[1769237225079], X-Android-Response-Source=[NETWORK 204], X-Android-Selected-Protocol=[http/1.1], X-Android-Sent-Millis=[1769237224955]}
+01-23 22:47:07.837   282  1967 I resolv  : GetAddrInfoHandler::run: {100 983140 100 983140 1073 1}
+01-23 22:47:07.837   282  1968 I resolv  : res_nmkquery: (QUERY, IN, AAAA)
+01-23 22:47:07.837   282  1969 I resolv  : res_nmkquery: (QUERY, IN, A)
+01-23 22:47:07.841   282  1968 I resolv  : res_nsend: used send_dg 149 terrno: 0
+01-23 22:47:07.841   282  1968 I resolv  : doQuery: rcode=0, ancount=4, return value=149
+01-23 22:47:07.847   282  1969 I resolv  : res_nsend: used send_dg 101 terrno: 0
+01-23 22:47:07.847   282  1969 I resolv  : doQuery: rcode=0, ancount=4, return value=101
+01-23 22:47:07.847   789  1954 D TrafficStats: tagSocket(98) with statsTag=0xffffff81, statsUid=-1
+01-23 22:47:10.804   473   554 D ActivityManager: freezing 1145 com.android.permissioncontroller
+01-23 22:47:14.860   789  1955 D TrafficStats: tagSocket(6) with statsTag=0xffffff81, statsUid=-1
+01-23 22:47:14.862   789  1955 D NetworkMonitor/100: PROBE_HTTPS https://www.google.com/generate_204 Probe failed with exception java.net.ConnectException: Failed to connect to www.google.com/[2001::1]:443
+--------- beginning of kernel
+01-23 22:47:17.563     0     0 I logd    : logdr: UID=0 GID=0 PID=1970 b tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+01-23 22:47:17.858   789  1954 D TrafficStats: tagSocket(6) with statsTag=0xffffff81, statsUid=-1
+01-23 22:47:17.859   789  1954 D NetworkMonitor/100: PROBE_FALLBACK http://play.googleapis.com/generate_204 Probe failed with exception java.net.ConnectException: Failed to connect to play.googleapis.com/[2001:4860:4802:38::223]:80
+01-23 22:47:17.860   789  1954 D NetworkMonitor/100: isCaptivePortal: isSuccessful()=false isPortal()=false RedirectUrl=null isPartialConnectivity()=true Time=13026ms
+01-23 22:47:17.860   473   605 D ConnectivityService: [100 CELLULAR] validation failed
+01-23 22:47:18.545  1004  1004 D LauncherEvents: TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=757.96875, y[0]=1422.9102, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=103083, downTime=103083, deviceId=4, source=0x5002, displayId=0, eventId=325721448 }
+01-23 22:47:18.574  1858  1880 D EGL_emulation: app_time_stats: avg=8943.50ms min=6.44ms max=62400.69ms count=7
+01-23 22:47:18.669  1004  1004 D LauncherEvents: TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=757.96875, y[0]=1422.9102, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=103213, downTime=103083, deviceId=4, source=0x5002, displayId=0, eventId=221830730 }
+01-23 22:47:18.694   336   336 D audioserver: logFgsApiBegin: FGS Logger Transaction failed, -129
+01-23 22:47:18.698   473   707 D CompatibilityChangeReporter: Compat change id reported: 265464455; UID 10143; state: DISABLED
+01-23 22:47:18.699   473   707 D CompatibilityChangeReporter: Compat change id reported: 265452344; UID 10143; state: DISABLED
+01-23 22:47:18.699   473   707 D CompatibilityChangeReporter: Compat change id reported: 266124927; UID 10143; state: DISABLED
+01-23 22:47:18.699   473   707 D CompatibilityChangeReporter: Compat change id reported: 265451093; UID 10143; state: DISABLED
+01-23 22:47:18.699   473   707 D CompatibilityChangeReporter: Compat change id reported: 265456536; UID 10143; state: DISABLED
+01-23 22:47:18.700   473   707 D CompatibilityChangeReporter: Compat change id reported: 255940284; UID 10143; state: DISABLED
+01-23 22:47:18.701   473   707 D CompatibilityChangeReporter: Compat change id reported: 236283604; UID 10143; state: DISABLED
+01-23 22:47:18.701   473   707 D CompatibilityChangeReporter: Compat change id reported: 263959004; UID 10143; state: DISABLED
+01-23 22:47:18.701   473   707 D CompatibilityChangeReporter: Compat change id reported: 264304459; UID 10143; state: DISABLED
+01-23 22:47:18.702   473   707 D CompatibilityChangeReporter: Compat change id reported: 264301586; UID 10143; state: DISABLED
+01-23 22:47:18.702   473   707 D CompatibilityChangeReporter: Compat change id reported: 254631730; UID 10143; state: DISABLED
+01-23 22:47:18.702   473   707 D CompatibilityChangeReporter: Compat change id reported: 273509367; UID 10143; state: DISABLED
+01-23 22:47:18.703   473   707 D CompatibilityChangeReporter: Compat change id reported: 263259275; UID 10143; state: DISABLED
+01-23 22:47:18.703   473   707 D CompatibilityChangeReporter: Compat change id reported: 174042980; UID 10143; state: DISABLED
+01-23 22:47:18.703   473   707 D CompatibilityChangeReporter: Compat change id reported: 174042936; UID 10143; state: DISABLED
+01-23 22:47:18.703   473   707 D CompatibilityChangeReporter: Compat change id reported: 181136395; UID 10143; state: DISABLED
+01-23 22:47:18.704   473   707 D CompatibilityChangeReporter: Compat change id reported: 194480991; UID 10143; state: ENABLED
+01-23 22:47:18.710   473   707 D CompatibilityChangeReporter: Compat change id reported: 197654537; UID 10143; state: ENABLED
+01-23 22:47:18.711   473   707 D CompatibilityChangeReporter: Compat change id reported: 184838306; UID 10143; state: DISABLED
+01-23 22:47:18.711   473   707 D CompatibilityChangeReporter: Compat change id reported: 185004937; UID 10143; state: DISABLED
+01-23 22:47:18.717   473   707 E Transition: Trying to add a ready-group twice: Display{#0 state=ON size=1440x2960 ROTATION_0}
+01-23 22:47:18.719   473   707 D CompatibilityChangeReporter: Compat change id reported: 194833441; UID 10143; state: ENABLED
+01-23 22:47:18.719   677   713 V WindowManagerShell: Transition requested: android.os.BinderProxy@d24048c TransitionRequestInfo { type = 1, triggerTask = TaskInfo{userId=0 taskId=11 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.jh.ams_learn_demo_01/.MainActivity } baseActivity=ComponentInfo{com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.MainActivity} topActivity=ComponentInfo{com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.activity.StartDemoActivity} origActivity=null realActivity=ComponentInfo{com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.MainActivity} numActivities=2 lastActiveTime=103260 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@200c7d5} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{af62bea com.jh.ams_learn_demo_01.activity.StartDemoActivity} launchCookies=[android.os.BinderProxy@29faf38] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 isUserFullscreenOverrideEnabled=false isTopActivityTransparent=false locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null, flags = 0 }
+01-23 22:47:18.719   473   707 I ActivityTaskManager: START u0 {cmp=com.jh.ams_learn_demo_01/.activity.StartDemoActivity} with LAUNCH_MULTIPLE from uid 10143 (BAL_ALLOW_VISIBLE_WINDOW) result code=0
+01-23 22:47:18.738   342   342 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+01-23 22:47:18.754   336   437 D AudioFlinger: mixer(0x708489f42940) throttle end: throttle time(25)
+01-23 22:47:18.769   473   494 D OomAdjuster: Not killing cached processes
+01-23 22:47:18.868   336   437 D audioserver: logFgsApiEnd: FGS Logger Transaction failed, -129
+01-23 22:47:18.973   473  1547 D CompatibilityChangeReporter: Compat change id reported: 168419799; UID 10143; state: DISABLED
+01-23 22:47:18.973   473  1547 D CompatibilityChangeReporter: Compat change id reported: 273564678; UID 10143; state: DISABLED
+01-23 22:47:18.984   473  1547 D CoreBackPreview: Window{9177e91 u0 com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.activity.StartDemoActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@a6439f7, mPriority=0, mIsAnimationCallback=false}
+01-23 22:47:19.127   473   491 I ActivityTaskManager: Displayed com.jh.ams_learn_demo_01/.activity.StartDemoActivity for user 0: +432ms
+01-23 22:47:19.128   473   491 V WindowManager: Sent Transition #10 createdAt=01-23 22:47:18.707 via request=TransitionRequestInfo { type = 1, triggerTask = TaskInfo{userId=0 taskId=11 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.jh.ams_learn_demo_01/.MainActivity } baseActivity=ComponentInfo{com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.MainActivity} topActivity=ComponentInfo{com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.activity.StartDemoActivity} origActivity=null realActivity=ComponentInfo{com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.MainActivity} numActivities=2 lastActiveTime=103260 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{8ac512d Task{44e8c9e #11 type=standard A=10143:com.jh.ams_learn_demo_01}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{e9099ce com.jh.ams_learn_demo_01.activity.StartDemoActivity} launchCookies=[android.os.BinderProxy@3d873f3] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 isUserFullscreenOverrideEnabled=false isTopActivityTransparent=false locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null, flags = 0 }
+01-23 22:47:19.128   473   491 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+01-23 22:47:19.128   473   491 V WindowManager:     info={id=10 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{null m=OPEN f=FILLS_TASK leash=Surface(name=ActivityRecord{5d67d2a u0 com.jh.ams_learn_demo_01/.activity.StartDemoActivity)/@0x930ded0 sb=Rect(0, 0 - 0, 0) eb=Rect(0, 0 - 1440, 2960) d=-1->0 r=-1->0:-1},{null m=TO_BACK f=FILLS_TASK leash=Surface(name=ActivityRecord{cb82ad9 u0 com.jh.ams_learn_demo_01/.MainActivity)/@0x34bfe2b sb=Rect(0, 0 - 1440, 2960) eb=Rect(0, 0 - 1440, 2960) d=0}]}
+01-23 22:47:19.129   677   713 V WindowManagerShell: onTransitionReady android.os.BinderProxy@d24048c: {id=10 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{null m=OPEN f=FILLS_TASK leash=Surface(name=ActivityRecord{5d67d2a u0 com.jh.ams_learn_demo_01/.activity.StartDemoActivity)/@0xd2e2edb sb=Rect(0, 0 - 0, 0) eb=Rect(0, 0 - 1440, 2960) d=-1->0 r=-1->0:-1},{null m=TO_BACK f=FILLS_TASK leash=Surface(name=ActivityRecord{cb82ad9 u0 com.jh.ams_learn_demo_01/.MainActivity)/@0x752dd78 sb=Rect(0, 0 - 1440, 2960) eb=Rect(0, 0 - 1440, 2960) d=0}]}
+01-23 22:47:19.130   677   713 V WindowManagerShell: Playing animation for (#10)android.os.BinderProxy@d24048c@0
+01-23 22:47:19.130   677   713 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultMixedHandler@b2375eb
+01-23 22:47:19.130   677   713 V WindowManagerShell:  try handler com.android.wm.shell.keyguard.KeyguardTransitionHandler@ac8ff48
+01-23 22:47:19.130   677   713 V WindowManagerShell:  try handler com.android.wm.shell.pip.PipTransition@f0cd1e1
+01-23 22:47:19.130   677   713 V WindowManagerShell:  try handler com.android.wm.shell.activityembedding.ActivityEmbeddingController@56e1b06
+01-23 22:47:19.130   677   713 V WindowManagerShell:  try handler com.android.wm.shell.recents.RecentsTransitionHandler@8c185c7
+01-23 22:47:19.130   677   713 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+01-23 22:47:19.130   677   713 V WindowManagerShell:  try handler com.android.wm.shell.splitscreen.StageCoordinator@12c7f4
+01-23 22:47:19.130   677   713 V WindowManagerShell:  try handler com.android.wm.shell.transition.RemoteTransitionHandler@ba3ab1d
+01-23 22:47:19.130   677   713 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=10 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{null m=OPEN f=FILLS_TASK leash=Surface(name=ActivityRecord{5d67d2a u0 com.jh.ams_learn_demo_01/.activity.StartDemoActivity)/@0xd2e2edb sb=Rect(0, 0 - 0, 0) eb=Rect(0, 0 - 1440, 2960) d=-1->0 r=-1->0:-1},{null m=TO_BACK f=FILLS_TASK leash=Surface(name=ActivityRecord{cb82ad9 u0 com.jh.ams_learn_demo_01/.MainActivity)/@0x752dd78 sb=Rect(0, 0 - 1440, 2960) eb=Rect(0, 0 - 1440, 2960) d=0}]}
+01-23 22:47:19.130   677   713 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher}},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@840e192, appThread = android.app.IApplicationThread$Stub$Proxy@146b763, debugName = QuickstepLaunchHome }}
+01-23 22:47:19.130   677   713 V WindowManagerShell:  Delegate animation for #10 to null
+01-23 22:47:19.130   677   713 V WindowManagerShell:  try handler com.android.wm.shell.transition.DefaultTransitionHandler@8e6f60
+01-23 22:47:19.130   677   713 V WindowManagerShell: start default transition animation, info = {id=10 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{null m=OPEN f=FILLS_TASK leash=Surface(name=ActivityRecord{5d67d2a u0 com.jh.ams_learn_demo_01/.activity.StartDemoActivity)/@0xd2e2edb sb=Rect(0, 0 - 0, 0) eb=Rect(0, 0 - 1440, 2960) d=-1->0 r=-1->0:-1},{null m=TO_BACK f=FILLS_TASK leash=Surface(name=ActivityRecord{cb82ad9 u0 com.jh.ams_learn_demo_01/.MainActivity)/@0x752dd78 sb=Rect(0, 0 - 1440, 2960) eb=Rect(0, 0 - 1440, 2960) d=0}]}
+01-23 22:47:19.132   677   713 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@f945924 animAttr=0x5 type=OPEN isEntrance=false
+01-23 22:47:19.137   677   775 E OpenGLRenderer: Unable to match the desired swap behavior.
+01-23 22:47:19.191   677   713 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@8b9f489 animAttr=0x4 type=OPEN isEntrance=true
+01-23 22:47:19.236   677   775 E OpenGLRenderer: Unable to match the desired swap behavior.
+01-23 22:47:19.250   677   713 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@8e6f60
+01-23 22:47:19.251   677   713 W Looper  : Slow dispatch took 122ms wmshell.main h=android.os.Handler c=com.android.wm.shell.transition.Transitions$TransitionPlayerImpl$$ExternalSyntheticLambda0@8f7a8bc m=0
+01-23 22:47:19.341   473  1547 I ImeTracker: com.jh.ams_learn_demo_01:7957b18: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+01-23 22:47:19.341   473  1547 I ImeTracker: com.jh.ams_learn_demo_01:7957b18: onCancelled at PHASE_SERVER_SHOULD_HIDE
+01-23 22:47:19.705   677   713 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#10)android.os.BinderProxy@d24048c@0
+01-23 22:47:19.711   473   491 V WindowManager: Finish Transition #10: created at 01-23 22:47:18.707 collect-started=0.159ms request-sent=9.907ms started=12.729ms ready=57.04ms sent=419.15ms finished=999.264ms
+01-23 22:47:19.714   677   713 V WindowManagerShell: Track 0 became idle
+01-23 22:47:19.714   677   713 V WindowManagerShell: All active transition animations finished

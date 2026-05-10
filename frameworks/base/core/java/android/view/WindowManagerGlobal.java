@@ -392,7 +392,7 @@ public final class WindowManagerGlobal {
                     }
                 }
             }
-
+            // 
             if (windowlessSession == null) {
                 root = new ViewRootImpl(view.getContext(), display);
             } else {

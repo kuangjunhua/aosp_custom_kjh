@@ -1,0 +1,198 @@
+--------- beginning of kernel
+05-10 11:55:41.539     0     0 I logd    : logdr: UID=0 GID=0 PID=2230 b tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+--------- beginning of main
+05-10 11:55:43.175  1049  1049 D LauncherEvents: Main / Touch event: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=450.9668, y[0]=499.89746, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=3843464, downTime=3843464, deviceId=4, source=0x5002, displayId=0, eventId=986108385 }
+05-10 11:55:43.176  1049  1049 D LauncherEvents: TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=450.9668, y[0]=499.89746, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=3843464, downTime=3843464, deviceId=4, source=0x5002, displayId=0, eventId=986108385 }
+05-10 11:55:43.270  1049  1049 D LauncherEvents: Main / Touch event: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=450.9668, y[0]=499.89746, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=3843561, downTime=3843464, deviceId=4, source=0x5002, displayId=0, eventId=850933079 }
+05-10 11:55:43.271  1049  1049 D LauncherEvents: TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=450.9668, y[0]=499.89746, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=3843561, downTime=3843464, deviceId=4, source=0x5002, displayId=0, eventId=850933079 }
+05-10 11:55:43.282  1049  1049 D TaplEvents: Main / start: startAppShortcutOrInfoActivity
+05-10 11:55:43.283  1049  1049 D HotseatPredictionController: setPauseUIUpdate parameter `paused` is true
+--------- beginning of system
+05-10 11:55:43.284   490  2056 D CompatibilityChangeReporter: Compat change id reported: 161252188; UID 10143; state: DISABLED
+05-10 11:55:43.285   490  2056 D CompatibilityChangeReporter: Compat change id reported: 265464455; UID 10143; state: DISABLED
+05-10 11:55:43.285   490  2056 D CompatibilityChangeReporter: Compat change id reported: 265452344; UID 10143; state: DISABLED
+05-10 11:55:43.285   490  2056 D CompatibilityChangeReporter: Compat change id reported: 266124927; UID 10143; state: DISABLED
+05-10 11:55:43.285   490  2056 D CompatibilityChangeReporter: Compat change id reported: 265451093; UID 10143; state: DISABLED
+05-10 11:55:43.286   490  2056 D CompatibilityChangeReporter: Compat change id reported: 265456536; UID 10143; state: DISABLED
+05-10 11:55:43.286   490  2056 D CompatibilityChangeReporter: Compat change id reported: 255940284; UID 10143; state: DISABLED
+05-10 11:55:43.286   490  2056 D CompatibilityChangeReporter: Compat change id reported: 236283604; UID 10143; state: DISABLED
+05-10 11:55:43.286   490  2056 D CompatibilityChangeReporter: Compat change id reported: 263959004; UID 10143; state: DISABLED
+05-10 11:55:43.286   490  2056 D CompatibilityChangeReporter: Compat change id reported: 264304459; UID 10143; state: DISABLED
+05-10 11:55:43.286   490  2056 D CompatibilityChangeReporter: Compat change id reported: 264301586; UID 10143; state: DISABLED
+05-10 11:55:43.287   490  2056 D CompatibilityChangeReporter: Compat change id reported: 254631730; UID 10143; state: DISABLED
+05-10 11:55:43.287   490  2056 D CompatibilityChangeReporter: Compat change id reported: 273509367; UID 10143; state: DISABLED
+05-10 11:55:43.287   490  2056 D CompatibilityChangeReporter: Compat change id reported: 263259275; UID 10143; state: DISABLED
+05-10 11:55:43.287   490  2056 D CompatibilityChangeReporter: Compat change id reported: 174042980; UID 10143; state: DISABLED
+05-10 11:55:43.287   490  2056 D CompatibilityChangeReporter: Compat change id reported: 174042936; UID 10143; state: DISABLED
+05-10 11:55:43.288   490  2056 D CompatibilityChangeReporter: Compat change id reported: 181136395; UID 10143; state: DISABLED
+05-10 11:55:43.288  1049  1428 D EGL_emulation: app_time_stats: avg=25316.45ms min=9.02ms max=151786.73ms count=6
+05-10 11:55:43.290   325   417 D audioserver: logFgsApiBegin: FGS Logger Transaction failed, -129
+05-10 11:55:43.291   325   454 D AudioFlinger: mixer(0x76261d663940) throttle end: throttle time(35)
+05-10 11:55:43.293   490  2056 D CompatibilityChangeReporter: Compat change id reported: 194480991; UID 10143; state: ENABLED
+05-10 11:55:43.294   687   731 W Looper  : Drained
+05-10 11:55:43.295   490  2056 D CompatibilityChangeReporter: Compat change id reported: 184838306; UID 10143; state: DISABLED
+05-10 11:55:43.295   490  2056 D CompatibilityChangeReporter: Compat change id reported: 185004937; UID 10143; state: DISABLED
+05-10 11:55:43.296   490  2056 D CompatibilityChangeReporter: Compat change id reported: 197654537; UID 10143; state: ENABLED
+05-10 11:55:43.297   490  2056 D CompatibilityChangeReporter: Compat change id reported: 205907456; UID 10143; state: ENABLED
+05-10 11:55:43.299   490  2056 D CompatibilityChangeReporter: Compat change id reported: 194833441; UID 10143; state: ENABLED
+05-10 11:55:43.299   490  2056 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.jh.ams_learn_demo_01/.MainActivity bnds=[288,305][576,725]} with LAUNCH_MULTIPLE from uid 10115 (BAL_ALLOW_ALLOWLISTED_COMPONENT) result code=0
+05-10 11:55:43.310   687   748 D CompatibilityChangeReporter: Compat change id reported: 289878283; UID 10118; state: ENABLED
+05-10 11:55:43.313   687   731 V WindowManagerShell: Transition requested: android.os.BinderProxy@296c2fe TransitionRequestInfo { type = 1, triggerTask = TaskInfo{userId=0 taskId=16 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.jh.ams_learn_demo_01/.MainActivity } baseActivity=ComponentInfo{com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.MainActivity} topActivity=ComponentInfo{com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.MainActivity} origActivity=null realActivity=ComponentInfo{com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.MainActivity} numActivities=1 lastActiveTime=3843589 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@80e9a5f} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{5badcac com.jh.ams_learn_demo_01.MainActivity} launchCookies=[android.os.BinderProxy@8d48d75] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 isUserFullscreenOverrideEnabled=false isTopActivityTransparent=false locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@318110a, appThread = android.app.IApplicationThread$Stub$Proxy@e2c7d7b, debugName = QuickstepLaunch }, displayChange = null, flags = 0 }
+05-10 11:55:43.313   687   731 V WindowManagerShell: RemoteTransition directly requested for android.os.BinderProxy@296c2fe: RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@318110a, appThread = android.app.IApplicationThread$Stub$Proxy@e2c7d7b, debugName = QuickstepLaunch }
+05-10 11:55:43.314   490   674 D CompatibilityChangeReporter: Compat change id reported: 168419799; UID 10143; state: DISABLED
+05-10 11:55:43.315   687   748 D SplashScreenView: Build android.window.SplashScreenView{f4f1798 V.E...... ......ID 0,0-0,0}
+05-10 11:55:43.315   687   748 D SplashScreenView: Icon: view: android.widget.ImageView{56d8bf1 V.ED..... ......I. 0,0-0,0 #10204f1 android:id/splashscreen_icon_view} drawable: com.android.wm.shell.startingsurface.SplashscreenIconDrawableFactory$ImmobileIconDrawable@dae33d6 size: 560
+05-10 11:55:43.315   687   748 D SplashScreenView: Branding: view: android.view.View{47b7657 G.ED..... ......I. 0,0-0,0 #10204f0 android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+05-10 11:55:43.315   490   674 D CompatibilityChangeReporter: Compat change id reported: 273564678; UID 10143; state: DISABLED
+05-10 11:55:43.324   490   674 D CoreBackPreview: Window{6256af0 u0 Splash Screen com.jh.ams_learn_demo_01}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@76952ee, mPriority=0, mIsAnimationCallback=false}
+05-10 11:55:43.326   490   511 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10143; state: DISABLED
+05-10 11:55:43.327   490   511 D CompatibilityChangeReporter: Compat change id reported: 177438394; UID 10143; state: DISABLED
+05-10 11:55:43.327   490   511 D CompatibilityChangeReporter: Compat change id reported: 135772972; UID 10143; state: DISABLED
+05-10 11:55:43.327   490   511 D CompatibilityChangeReporter: Compat change id reported: 135754954; UID 10143; state: ENABLED
+05-10 11:55:43.328   490   519 D CompatibilityChangeReporter: Compat change id reported: 143937733; UID 10143; state: ENABLED
+05-10 11:55:43.340   325   454 D AudioFlinger: mixer(0x76261d663940) throttle end: throttle time(33)
+05-10 11:55:43.364   333   333 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+05-10 11:55:43.373   687   731 V WindowManagerShell: onTransitionReady android.os.BinderProxy@296c2fe: {id=9 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@55ed0ba} m=OPEN f=NONE leash=Surface(name=Task=16)/@0xf38d94f sb=Rect(0, 0 - 1440, 2960) eb=Rect(0, 0 - 1440, 2960) d=0},{WCT{android.window.IWindowContainerToken$Stub$Proxy@6d3bb6b} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xf84c8dc sb=Rect(0, 0 - 1440, 2960) eb=Rect(0, 0 - 1440, 2960) d=0}]}
+05-10 11:55:43.373   687   731 V WindowManagerShell: Playing animation for (#9)android.os.BinderProxy@296c2fe@0
+05-10 11:55:43.373   687   731 V WindowManagerShell:  try firstHandler com.android.wm.shell.transition.DefaultMixedHandler@f9e24fd
+05-10 11:55:43.373   687   731 V WindowManagerShell:  Delegate animation for #9 to RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@318110a, appThread = android.app.IApplicationThread$Stub$Proxy@e2c7d7b, debugName = QuickstepLaunch }
+05-10 11:55:43.378   490   508 V WindowManager: Sent Transition #9 createdAt=05-10 11:55:43.293 via request=TransitionRequestInfo { type = 1, triggerTask = TaskInfo{userId=0 taskId=16 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.jh.ams_learn_demo_01/.MainActivity } baseActivity=ComponentInfo{com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.MainActivity} topActivity=ComponentInfo{com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.MainActivity} origActivity=null realActivity=ComponentInfo{com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.MainActivity} numActivities=1 lastActiveTime=3843589 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{2364323 Task{f34826d #16 type=standard A=10143:com.jh.ams_learn_demo_01}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{9a17020 com.jh.ams_learn_demo_01.MainActivity} launchCookies=[android.os.BinderProxy@2a6add9] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false isLetterboxDoubleTapEnabled= false topActivityEligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 isUserFullscreenOverrideEnabled=false isTopActivityTransparent=false locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@8c6539e, appThread = android.app.IApplicationThread$Stub$Proxy@41fee7f, debugName = QuickstepLaunch }, displayChange = null, flags = 0 }
+05-10 11:55:43.383   687   731 V WindowManagerShell:  animated by firstHandler
+05-10 11:55:43.385   490   508 V WindowManager:     startWCT=WindowContainerTransaction { changes = {} hops = [] errorCallbackToken=null taskFragmentOrganizer=null }
+05-10 11:55:43.385   490   508 V WindowManager:     info={id=9 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{2364323 Task{f34826d #16 type=standard A=10143:com.jh.ams_learn_demo_01}}} m=OPEN f=NONE leash=Surface(name=Task=16)/@0xee52ba1 sb=Rect(0, 0 - 1440, 2960) eb=Rect(0, 0 - 1440, 2960) d=0},{WCT{RemoteToken{5353cbd Task{e8a7435 #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x18ede9d sb=Rect(0, 0 - 1440, 2960) eb=Rect(0, 0 - 1440, 2960) d=0}]}
+05-10 11:55:43.385   490   555 D CompatibilityChangeReporter: Compat change id reported: 265195908; UID 10143; state: ENABLED
+05-10 11:55:43.392   289   289 D Zygote  : Forked child process 2235
+05-10 11:55:43.397   490   519 W ActivityManager: Slow operation: 71ms so far, now at startProcess: returned from zygote!
+05-10 11:55:43.397   490   519 W ActivityManager: Slow operation: 72ms so far, now at startProcess: done updating battery stats
+05-10 11:55:43.397   490   519 W ActivityManager: Slow operation: 72ms so far, now at startProcess: building log message
+05-10 11:55:43.397   490   519 I ActivityManager: Start proc 2235:com.jh.ams_learn_demo_01/u0a143 for next-top-activity {com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.MainActivity}
+05-10 11:55:43.397   490   519 W ActivityManager: Slow operation: 72ms so far, now at startProcess: starting to update pids map
+05-10 11:55:43.400   490   519 W ActivityManager: Slow operation: 74ms so far, now at startProcess: done updating pids map
+05-10 11:55:43.409  2235  2235 I s_learn_demo_01: Not late-enabling -Xcheck:jni (already on)
+05-10 11:55:43.415  1049  1049 D b/279059025: current animation cancelled
+05-10 11:55:43.416  1049  1049 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+05-10 11:55:43.416  1049  1049 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+05-10 11:55:43.416  1049  1049 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+05-10 11:55:43.428  1049  1049 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+05-10 11:55:43.429   490   674 W ActivityTaskManager: takeTaskSnapshot: taskId=13 not found or not visible
+05-10 11:55:43.435  2235  2235 I s_learn_demo_01: java.lang.Class<dalvik.system.ZygoteHooks> might not be fully debuggable/deoptimizable due to void dalvik.system.ZygoteHooks.nativePostForkChild(long, int, boolean, boolean, java.lang.String) appearing on the stack during zygote fork.
+05-10 11:55:43.435  2235  2235 I s_learn_demo_01: java.lang.Class<dalvik.system.ZygoteHooks> might not be fully debuggable/deoptimizable due to void dalvik.system.ZygoteHooks.postForkChild(int, boolean, boolean, java.lang.String) appearing on the stack during zygote fork.
+05-10 11:55:43.435  2235  2235 I s_learn_demo_01: java.lang.Class<com.android.internal.os.Zygote> might not be fully debuggable/deoptimizable due to void com.android.internal.os.Zygote.callPostForkChildHooks(int, boolean, boolean, java.lang.String) appearing on the stack during zygote fork.
+05-10 11:55:43.435  2235  2235 I s_learn_demo_01: java.lang.Class<com.android.internal.os.Zygote> might not be fully debuggable/deoptimizable due to void com.android.internal.os.Zygote.nativeSpecializeAppProcess(int, int, int[], int, int[][], int, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, boolean, java.lang.String[], java.lang.String[], boolean, boolean) appearing on the stack during zygote fork.
+05-10 11:55:43.435  2235  2235 I s_learn_demo_01: java.lang.Class<com.android.internal.os.Zygote> might not be fully debuggable/deoptimizable due to void com.android.internal.os.Zygote.specializeAppProcess(int, int, int[], int, int[][], int, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, boolean, java.lang.String[], java.lang.String[], boolean, boolean) appearing on the stack during zygote fork.
+05-10 11:55:43.435  2235  2235 I s_learn_demo_01: java.lang.Class<com.android.internal.os.Zygote> might not be fully debuggable/deoptimizable due to java.lang.Runnable com.android.internal.os.Zygote.childMain(com.android.internal.os.ZygoteCommandBuffer, android.net.LocalServerSocket, java.io.FileDescriptor) appearing on the stack during zygote fork.
+05-10 11:55:43.435  2235  2235 I s_learn_demo_01: java.lang.Class<com.android.internal.os.Zygote> might not be fully debuggable/deoptimizable due to java.lang.Runnable com.android.internal.os.Zygote.forkSimpleApps(com.android.internal.os.ZygoteCommandBuffer, java.io.FileDescriptor, int, int, java.lang.String) appearing on the stack during zygote fork.
+05-10 11:55:43.435  2235  2235 I s_learn_demo_01: java.lang.Class<com.android.internal.os.ZygoteConnection> might not be fully debuggable/deoptimizable due to java.lang.Runnable com.android.internal.os.ZygoteConnection.processCommand(com.android.internal.os.ZygoteServer, boolean) appearing on the stack during zygote fork.
+05-10 11:55:43.435  2235  2235 I s_learn_demo_01: java.lang.Class<com.android.internal.os.ZygoteServer> might not be fully debuggable/deoptimizable due to java.lang.Runnable com.android.internal.os.ZygoteServer.runSelectLoop(java.lang.String) appearing on the stack during zygote fork.
+05-10 11:55:43.435  2235  2235 I s_learn_demo_01: java.lang.Class<com.android.internal.os.ZygoteInit> might not be fully debuggable/deoptimizable due to void com.android.internal.os.ZygoteInit.main(java.lang.String[]) appearing on the stack during zygote fork.
+05-10 11:55:43.435  2235  2235 I s_learn_demo_01: Using CollectorTypeCC GC.
+05-10 11:55:43.437  2235  2235 W s_learn_demo_01: Unexpected CPU variant for x86: x86_64.
+05-10 11:55:43.437  2235  2235 W s_learn_demo_01: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, tremont, kabylake, default
+05-10 11:55:43.451   325   454 D audioserver: logFgsApiEnd: FGS Logger Transaction failed, -129
+05-10 11:55:43.477   364   386 I adbd    : jdwp connection from 2235
+05-10 11:55:43.516  2235  2235 D CompatibilityChangeReporter: Compat change id reported: 171979766; UID 10143; state: ENABLED
+05-10 11:55:43.517  2235  2235 D CompatibilityChangeReporter: Compat change id reported: 242716250; UID 10143; state: ENABLED
+05-10 11:55:43.524   490   674 D CompatibilityChangeReporter: Compat change id reported: 170503758; UID 10143; state: ENABLED
+05-10 11:55:43.529  2235  2235 W ziparchive: Unable to open '/data/app/~~8dmT7E8iIKCSqzM2K24N_A==/com.jh.ams_learn_demo_01-EpDsr0fj4XUMOBhi4koxSg==/base.dm': No such file or directory
+05-10 11:55:43.529  2235  2235 W ziparchive: Unable to open '/data/app/~~8dmT7E8iIKCSqzM2K24N_A==/com.jh.ams_learn_demo_01-EpDsr0fj4XUMOBhi4koxSg==/base.dm': No such file or directory
+05-10 11:55:43.615  2235  2235 D nativeloader: Configuring clns-6 for other apk /data/app/~~8dmT7E8iIKCSqzM2K24N_A==/com.jh.ams_learn_demo_01-EpDsr0fj4XUMOBhi4koxSg==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~8dmT7E8iIKCSqzM2K24N_A==/com.jh.ams_learn_demo_01-EpDsr0fj4XUMOBhi4koxSg==/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.jh.ams_learn_demo_01
+05-10 11:55:43.625  2235  2235 V GraphicsEnvironment: Currently set values for:
+05-10 11:55:43.625  2235  2235 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+05-10 11:55:43.626  2235  2235 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+05-10 11:55:43.626  2235  2235 V GraphicsEnvironment: ANGLE GameManagerService for com.jh.ams_learn_demo_01: false
+05-10 11:55:43.626  2235  2235 V GraphicsEnvironment: com.jh.ams_learn_demo_01 is not listed in per-application setting
+05-10 11:55:43.626  2235  2235 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+05-10 11:55:43.681  1049  1064 I droid.launcher3: NativeAlloc concurrent copying GC freed 11614(698KB) AllocSpace objects, 2(104KB) LOS objects, 49% free, 5434KB/10MB, paused 46.739ms,10us,38.457ms total 229.292ms
+05-10 11:55:43.681  1049  1064 W droid.launcher3: Reducing the number of considered missed Gc histogram windows from 284 to 100
+05-10 11:55:43.683  1049  1066 D StrictMode: StrictMode policy violation: android.os.strictmode.LeakedClosableViolation: A resource was acquired at attached stack trace but never released. See java.io.Closeable for information on avoiding resource leaks. Callsite: SurfaceControl.Builder
+05-10 11:55:43.683  1049  1066 D StrictMode: 	at android.os.StrictMode$AndroidCloseGuardReporter.report(StrictMode.java:1999)
+05-10 11:55:43.683  1049  1066 D StrictMode: 	at dalvik.system.CloseGuard.warnIfOpen(CloseGuard.java:338)
+05-10 11:55:43.683  1049  1066 D StrictMode: 	at android.view.SurfaceControl.finalize(SurfaceControl.java:1468)
+05-10 11:55:43.683  1049  1066 D StrictMode: 	at java.lang.Daemons$FinalizerDaemon.doFinalize(Daemons.java:339)
+05-10 11:55:43.683  1049  1066 D StrictMode: 	at java.lang.Daemons$FinalizerDaemon.processReference(Daemons.java:324)
+05-10 11:55:43.683  1049  1066 D StrictMode: 	at java.lang.Daemons$FinalizerDaemon.runInternal(Daemons.java:300)
+05-10 11:55:43.683  1049  1066 D StrictMode: 	at java.lang.Daemons$Daemon.run(Daemons.java:145)
+05-10 11:55:43.683  1049  1066 D StrictMode: 	at java.lang.Thread.run(Thread.java:1012)
+05-10 11:55:43.688   490   510 I DropBoxManagerService: add tag=system_app_strictmode isTagEnabled=true flags=0x2
+05-10 11:55:43.691   490   674 I AppsFilter: interaction: PackageSetting{fca6602 com.jh.ams_learn_demo_01/10143} -> PackageSetting{bce3b13 com.android.launcher3/10115} BLOCKED
+05-10 11:55:43.757  2235  2235 D AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+05-10 11:55:43.831  2235  2253 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+05-10 11:55:43.832  2235  2253 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+05-10 11:55:43.839  2235  2253 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+05-10 11:55:43.915  2235  2235 W s_learn_demo_01: Accessing hidden method Landroid/view/ViewGroup;->makeOptionalFitsSystemWindows()V (unsupported, reflection, allowed)
+05-10 11:55:43.933   687   731 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#9)android.os.BinderProxy@296c2fe@0
+05-10 11:55:43.934   490   508 V WindowManager: Finish Transition #9: created at 05-10 11:55:43.293 collect-started=0.03ms request-sent=4.827ms started=29.563ms ready=68.764ms sent=77.252ms finished=640.467ms
+05-10 11:55:43.936   687   731 V WindowManagerShell: Track 0 became idle
+05-10 11:55:43.936   687   731 V WindowManagerShell: All active transition animations finished
+05-10 11:55:43.945  1049  1049 D HotseatPredictionController: setPauseUIUpdate parameter `paused` is false
+05-10 11:55:43.945  1049  1049 D HotseatPredictionController: fillGapsWithPrediction flags: 
+05-10 11:55:43.945  1049  1049 D HotseatPredictionController: Hotseat app child is: com.android.launcher3.views.DoubleShadowBubbleTextView{b993c3 VFED..CL. ......ID 0,0-276,221 #1} and isPredictedIcon() evaluates to: false
+05-10 11:55:43.945  1049  1049 D HotseatPredictionController: Hotseat app child is: com.android.launcher3.views.DoubleShadowBubbleTextView{5db8440 VFED..CL. ......ID 276,0-552,221 #2} and isPredictedIcon() evaluates to: false
+05-10 11:55:43.945  1049  1049 D HotseatPredictionController: Hotseat app child is: null and isPredictedIcon() evaluates to: false
+05-10 11:55:43.945  1049  1049 D HotseatPredictionController: Remove predicted apps from the past
+05-10 11:55:43.945  1049  1049 D HotseatPredictionController: Prediction Index: 0
+05-10 11:55:43.945  1049  1049 D HotseatPredictionController: Hotseat app child is: com.android.launcher3.views.DoubleShadowBubbleTextView{a42ff79 VFED..CL. ......ID 828,0-1104,221 #3} and isPredictedIcon() evaluates to: false
+05-10 11:55:43.945  1049  1049 D HotseatPredictionController: Hotseat app child is: com.android.launcher3.views.DoubleShadowBubbleTextView{8f3d4be VFED..CL. ......ID 1104,0-1380,221 #4} and isPredictedIcon() evaluates to: false
+05-10 11:55:43.945  1049  1049 D HotseatPredictionController: bindItems to hotseat: []
+05-10 11:55:43.963  2235  2235 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10143; state: ENABLED
+05-10 11:55:44.014   687   775 D EGL_emulation: app_time_stats: avg=17089.15ms min=29.90ms max=152954.39ms count=9
+05-10 11:55:44.037  2235  2235 D CompatibilityChangeReporter: Compat change id reported: 237531167; UID 10143; state: DISABLED
+05-10 11:55:44.039  2235  2235 W OpenGLRenderer: Unknown dataspace 0
+05-10 11:55:44.040  1049  1049 W FrameTracker: Missing HWUI jank callback for vsyncId: 8345, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:55:44.040  1049  1049 W FrameTracker: Missing HWUI jank callback for vsyncId: 8369, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:55:44.040  1049  1049 W FrameTracker: Missing HWUI jank callback for vsyncId: 8384, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:55:44.040  1049  1049 W FrameTracker: Missing HWUI jank callback for vsyncId: 8463, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:55:44.040  1049  1049 W FrameTracker: Missed App frame:UNKNOWN: 74, 8471, 63617579, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:55:44.040  1049  1049 W FrameTracker: Missed SF frame:UNKNOWN: 74, 8471, 63617579, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:55:44.040  1049  1049 W FrameTracker: Missed App frame:UNKNOWN: 72, 8479, 0, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:55:44.040  1049  1049 W FrameTracker: Missing HWUI jank callback for vsyncId: 8479, CUJ=J<LAUNCHER_APP_LAUNCH_FROM_ICON>
+05-10 11:55:44.040  1049  1394 V PerfettoTrigger: Triggering /system/bin/trigger_perfetto com.android.telemetry.interaction-jank-monitor-8
+05-10 11:55:44.062   490   601 D CoreBackPreview: Window{4f0ab26 u0 com.jh.ams_learn_demo_01/com.jh.ams_learn_demo_01.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@b932514, mPriority=0, mIsAnimationCallback=false}
+05-10 11:55:44.163   333   476 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10143 pid=0
+05-10 11:55:44.163   333   476 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10143 => denied (361 us)
+05-10 11:55:44.163   333   476 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10143 pid=0
+05-10 11:55:44.163   333   476 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10143 => denied (109 us)
+05-10 11:55:44.163   333   476 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10143 pid=0
+05-10 11:55:44.163   333   476 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10143 => denied (90 us)
+05-10 11:55:44.179   136   136 I hwservicemanager: getTransport: Cannot find entry android.hardware.configstore@1.0::ISurfaceFlingerConfigs/default in either framework or device VINTF manifest.
+05-10 11:55:44.179  2235  2251 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+05-10 11:55:44.211   136   136 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+05-10 11:55:44.211  2235  2251 I Gralloc4: mapper 4.x is not supported
+05-10 11:55:44.301     0     0 I servicemanager: Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+05-10 11:55:44.625   490   674 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10143 pid=0
+05-10 11:55:44.629   490   674 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10143 => denied (6547 us)
+05-10 11:55:44.630   490   674 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10143 pid=0
+05-10 11:55:44.630  2235  2235 I Choreographer: Skipped 33 frames!  The application may be doing too much work on its main thread.
+05-10 11:55:44.631   490   674 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10143 => denied (769 us)
+05-10 11:55:44.631   490   674 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10143 pid=0
+05-10 11:55:44.631   490   674 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10143 => denied (83 us)
+05-10 11:55:44.683   490   508 W ziparchive: Unable to open '/data/app/~~8dmT7E8iIKCSqzM2K24N_A==/com.jh.ams_learn_demo_01-EpDsr0fj4XUMOBhi4koxSg==/base.dm': No such file or directory
+05-10 11:55:44.694   490   508 I ActivityTaskManager: Displayed com.jh.ams_learn_demo_01/.MainActivity for user 0: +1s362ms
+05-10 11:55:44.715   490   674 D CompatibilityChangeReporter: Compat change id reported: 214016041; UID 10143; state: ENABLED
+05-10 11:55:44.716   490   674 I ImeTracker: com.jh.ams_learn_demo_01:a03ec564: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+05-10 11:55:44.716   490   674 I ImeTracker: com.jh.ams_learn_demo_01:a03ec564: onCancelled at PHASE_SERVER_SHOULD_HIDE
+05-10 11:55:44.957   687   775 D EGL_emulation: app_time_stats: avg=44937.56ms min=44937.56ms max=44937.56ms count=1
+05-10 11:55:44.977   490   511 I ActivityManager: PendingStartActivityUids startActivity to updateOomAdj delay:1285ms, uid:10143
+05-10 11:55:44.981  1049  1049 D BaseDepthController: setSurface:
+05-10 11:55:44.981  1049  1049 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+05-10 11:55:44.981  1049  1049 D BaseDepthController: 	mSurface: null
+05-10 11:55:44.983  1049  1049 D BaseDepthController: mSurface is null and mCurrentBlur is: 23
+05-10 11:55:45.020  1049  1083 I ImeTracker: com.android.launcher3:156c5c55: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+05-10 11:55:45.021  1049  1083 I ImeTracker: com.android.launcher3:156c5c55: onFailed at PHASE_CLIENT_VIEW_SERVED
+05-10 11:55:45.025   687   775 D EGL_emulation: app_time_stats: avg=25.49ms min=1.37ms max=155.43ms count=28
+05-10 11:55:45.092   687   747 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@5b1b762
+05-10 11:55:45.092   490   601 D CoreBackPreview: Window{6256af0 u0 Splash Screen com.jh.ams_learn_demo_01 EXITING}: Setting back callback null
+05-10 11:55:45.093   490   601 W InputManager-JNI: Input channel object '6256af0 Splash Screen com.jh.ams_learn_demo_01 (client)' was disposed without first being removed with the input manager!
+05-10 11:55:45.141   687   747 W FrameTracker: Missed App frame:UNKNOWN: 10, 8850, 182108193, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:55:45.141   687   747 W FrameTracker: Missed SF frame:UNKNOWN: 10, 8850, 182108193, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:55:45.141   687   747 W FrameTracker: Missed App frame:UNKNOWN: 74, 8872, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:55:45.141   687   747 W FrameTracker: Missed SF frame:UNKNOWN: 74, 8872, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:55:45.141   687   747 W FrameTracker: Missing HWUI jank callback for vsyncId: 8872, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:55:45.141   687   747 W FrameTracker: Missed SF frame:UNKNOWN: 66, 8925, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:55:45.142   687   747 W FrameTracker: Missing HWUI jank callback for vsyncId: 8925, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:55:45.142   687   747 W FrameTracker: Missing SF jank callback for vsyncId: 8970, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+05-10 11:55:45.142   687   740 V PerfettoTrigger: Triggering /system/bin/trigger_perfetto com.android.telemetry.interaction-jank-monitor-39
+05-10 11:55:45.280   389   412 D AudioAnalytics: expiring previous audio state after 3600 seconds.
+05-10 11:55:46.336   292  2051 D android.hardware.audio@7.1-impl.ranchu: threadLoop: entering standby, frames: 443904
+05-10 11:55:47.306   490  1397 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+05-10 11:55:48.743   490   490 I ResourceTimer: GetResourceValue count=849 pvalues=26000,32000,45000,84000

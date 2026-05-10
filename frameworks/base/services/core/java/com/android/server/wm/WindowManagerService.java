@@ -1451,7 +1451,7 @@ public class WindowManagerService extends IWindowManager.Stub
             InputChannel outInputChannel, InsetsState outInsetsState,
             InsetsSourceControl.Array outActiveControls, Rect outAttachedFrame,
             float[] outSizeCompatScale) {
-        outActiveControls.set(null);
+        outActiveControls.set(null); 
         int[] appOp = new int[1];
         final boolean isRoundedCornerOverlay = (attrs.privateFlags
                 & PRIVATE_FLAG_IS_ROUNDED_CORNERS_OVERLAY) != 0;
